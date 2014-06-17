@@ -16,7 +16,7 @@ namespace AffectiveGame
         /// <summary>
         /// The target (direction) of the camera
         /// </summary>
-        Vector3 target;
+        Vector3 direction;
 
         /// <summary>
         /// The up vector of the camera
@@ -36,7 +36,7 @@ namespace AffectiveGame
         public Camera(Vector3 position, Vector3 target, Vector3 up)
         {
             this.position = position;
-            this.target = target;
+            this.direction = target;
             this.up = up;
 
             Setup(false);
@@ -45,7 +45,7 @@ namespace AffectiveGame
         public Camera(float positionX, float positionY, float positionZ, Vector3 target, Vector3 up)
         {
             this.position = new Vector3(positionX, positionY, positionZ);
-            this.target = target;
+            this.direction = target;
             this.up = up;
 
             Setup(false);
@@ -55,7 +55,7 @@ namespace AffectiveGame
                         float targetX, float targetY, float targetZ, Vector3 up)
         {
             this.position = new Vector3(positionX, positionY, positionZ);
-            this.target = new Vector3(targetX, targetY, targetZ);
+            this.direction = new Vector3(targetX, targetY, targetZ);
             this.up = up;
 
             Setup(false);
@@ -73,7 +73,7 @@ namespace AffectiveGame
 
         public void CalculateViewMatrix()
         {
-            viewMatrix = Matrix.CreateLookAt(position, target, up);
+            viewMatrix = Matrix.CreateLookAt(position, direction, up);
         }
 
         public void SetPosition(Vector3 newPosition)
@@ -91,12 +91,17 @@ namespace AffectiveGame
             this.movementSpeed = speed;
         }
 
+        public void HandleInput(InputHandler input)
+        {
+
+        }
+
         /// <summary>
         /// Moves the camera towards the target
         /// </summary>
         public void Move()
         {
-            position += target * movementSpeed;
+            position += direction * movementSpeed;
         }
 
         /// <summary>
@@ -109,7 +114,7 @@ namespace AffectiveGame
                 return;
 
             position += direction * movementSpeed;
-            target += direction * movementSpeed;
+            this.direction += direction * movementSpeed;
             CalculateViewMatrix();
         }
     }

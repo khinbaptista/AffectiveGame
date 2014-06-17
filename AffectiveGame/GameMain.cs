@@ -19,11 +19,18 @@ namespace AffectiveGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Camera camera;
+        //World world;
+        InputHandler input;
+
         public GameMain()
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = 1600;
+            graphics.PreferredBackBufferHeight = 900;
         }
 
         /// <summary>
@@ -35,6 +42,9 @@ namespace AffectiveGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            camera = new Camera(0, 0, 0, Vector3.UnitY, Vector3.Up);
+            input = new InputHandler();
+            //world = new World();
 
             base.Initialize();
         }
@@ -71,8 +81,16 @@ namespace AffectiveGame
                 Exit();
 
             // TODO: Add your update logic here
+            HandleInput();
 
             base.Update(gameTime);
+        }
+
+        private void HandleInput()
+        {
+            input.Update();
+
+            camera.HandleInput(input);
         }
 
         /// <summary>
@@ -81,7 +99,7 @@ namespace AffectiveGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.AntiqueWhite);
 
             // TODO: Add your drawing code here
 
