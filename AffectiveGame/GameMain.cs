@@ -20,7 +20,7 @@ namespace AffectiveGame
         SpriteBatch spriteBatch;
 
         Camera camera;
-        //World world;
+        World world;
         InputHandler input;
 
         public GameMain()
@@ -43,8 +43,11 @@ namespace AffectiveGame
         {
             // TODO: Add your initialization logic here
             camera = new Camera(0, 0, 0, Vector3.UnitY, Vector3.Up);
+            camera.Setup(16 / 8, true, 5);
+            camera.CalculateViewMatrix();
+
             input = new InputHandler();
-            //world = new World();
+            world = new World();
 
             base.Initialize();
         }
@@ -82,6 +85,7 @@ namespace AffectiveGame
 
             // TODO: Add your update logic here
             HandleInput();
+            camera.CalculateViewMatrix();
 
             base.Update(gameTime);
         }
@@ -100,6 +104,8 @@ namespace AffectiveGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.AntiqueWhite);
+
+            world.Draw(graphics.GraphicsDevice);
 
             // TODO: Add your drawing code here
 

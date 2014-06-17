@@ -28,6 +28,11 @@ namespace AffectiveGame
         /// </summary>
         Matrix viewMatrix;
 
+        /// <summary>
+        /// The projection matrix of this camera
+        /// </summary>
+        Matrix projectionMatrix;
+
         bool isMovable;
         float movementSpeed;
 
@@ -39,7 +44,7 @@ namespace AffectiveGame
             this.direction = target;
             this.up = up;
 
-            Setup(false);
+            //Setup(false);
         }
 
         public Camera(float positionX, float positionY, float positionZ, Vector3 target, Vector3 up)
@@ -48,7 +53,7 @@ namespace AffectiveGame
             this.direction = target;
             this.up = up;
 
-            Setup(false);
+            //Setup(false);
         }
 
         public Camera(float positionX, float positionY, float positionZ,
@@ -58,17 +63,19 @@ namespace AffectiveGame
             this.direction = new Vector3(targetX, targetY, targetZ);
             this.up = up;
 
-            Setup(false);
+            //Setup(false);
         }
 
         #endregion
 
-        public void Setup(bool isMovable, float movementSpeed = 0.0f)
+        public void Setup(float aspectRatio, bool isMovable, float movementSpeed = 0.0f)
         {
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView((float)(Math.PI / 2), aspectRatio, 0.1f, 100);
+
             this.isMovable = isMovable;
             this.movementSpeed = movementSpeed;
 
-            CalculateViewMatrix();
+            //CalculateViewMatrix();
         }
 
         public void CalculateViewMatrix()
@@ -93,7 +100,10 @@ namespace AffectiveGame
 
         public void HandleInput(InputHandler input)
         {
-
+            if (input.Contains(Input.Up))
+                Move();
+            if (input.Contains(Input.Down))
+                Move(-direction);
         }
 
         /// <summary>
@@ -114,7 +124,7 @@ namespace AffectiveGame
                 return;
 
             position += direction * movementSpeed;
-            this.direction += direction * movementSpeed;
+            //this.direction += direction * movementSpeed;
             CalculateViewMatrix();
         }
     }
