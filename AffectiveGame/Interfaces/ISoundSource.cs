@@ -8,7 +8,7 @@ namespace AffectiveGame.Interfaces
 {
     interface ISoundSource
     {
-        List<SoundEffect> soundEffects;
+        List<SoundEffect> soundEffects { get; set; }
 
         void Play(int effectIndex);
     }
