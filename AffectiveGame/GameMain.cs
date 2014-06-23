@@ -19,8 +19,6 @@ namespace AffectiveGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Camera camera;
-        World world;
         InputHandler input;
 
         public GameMain()
@@ -41,13 +39,7 @@ namespace AffectiveGame
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            camera = new Camera(0, 0, 0, Vector3.UnitY, Vector3.Up);
-            camera.Setup(16 / 8, true, 5);
-            camera.CalculateViewMatrix();
-
             input = new InputHandler();
-            world = new World();
 
             base.Initialize();
         }
@@ -83,9 +75,7 @@ namespace AffectiveGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
             HandleInput();
-            camera.CalculateViewMatrix();
 
             base.Update(gameTime);
         }
@@ -93,8 +83,6 @@ namespace AffectiveGame
         private void HandleInput()
         {
             input.Update();
-
-            camera.HandleInput(input);
         }
 
         /// <summary>
@@ -103,9 +91,7 @@ namespace AffectiveGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.AntiqueWhite);
-
-            world.Draw(graphics.GraphicsDevice);
+            GraphicsDevice.Clear(Color.WhiteSmoke);
 
             // TODO: Add your drawing code here
 
