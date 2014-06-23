@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace AffectiveGame.Screens
 {
@@ -21,6 +24,120 @@ namespace AffectiveGame.Screens
 
     class GameScreen
     {
-        
+        #region Attributes
+
+        /// <summary>
+        /// The game to which this screen belongs
+        /// </summary>
+        protected GameMain game;
+
+        /// <summary>
+        /// Time the screen takes to transition on
+        /// </summary>
+        public TimeSpan transitionOnTime { get; protected set; }
+
+        /// <summary>
+        /// Time the screen takes to transition off
+        /// </summary>
+        public TimeSpan transitionOffTime { get; protected set; }
+
+        /// <summary>
+        /// State of the transition, where 0 means fully active, and 1 means completely invisible
+        /// </summary>
+        public float transitionState { get; protected set; }
+
+        /// <summary>
+        /// The alpha value of the transition at the current time
+        /// </summary>
+        public byte transitionAlpha { get { return (byte)(255 * transitionState); } }
+
+        /// <summary>
+        /// The blank texture used to cover the screen, giving the impression of fading
+        /// </summary>
+        private Texture2D blank;
+
+        /// <summary>
+        /// Current screen state.
+        /// </summary>
+        public ScreenState screenState { get; protected set; }
+
+        /// <summary>
+        /// Indicates whether the screen should be deleted when hidden.
+        /// </summary>
+        public bool isExiting { get; protected set; }
+
+        /// <summary>
+        /// Tells the game manager to delete this screen
+        /// </summary>
+        public bool delete { get { return (isExiting && transitionState == 1); } }
+
+        /// <summary>
+        /// The viewport where to draw this screen
+        /// </summary>
+        protected Viewport viewport;
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Creates a new instance of a game screen
+        /// </summary>
+        /// <param name="game">The game to which this screen belongs</param>
+        /// <param name="viewport">The viewport where to draw this screen</param>
+        /// <param name="state">The state this screen must be initialized with</param>
+        public GameScreen(GameMain game, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
+        {
+            this.game = game;
+            this.viewport = viewport;
+            this.screenState = state;
+
+            if (screenState == ScreenState.TransitionOn || screenState == ScreenState.Hidden)
+                transitionState = 1;
+            else
+                transitionState = 0;
+        }
+
+        public virtual void LoadContent(ContentManager content)
+        {
+            //blank = content.Load<Texture2D>("blank");
+        }
+
+        public virtual void HandleInput(InputHandler input) { return; }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            // #############################################################################
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin();
+            spriteBatch.Draw(blank, new Rectangle(0, 0, viewport.Width, viewport.Height), new Color(0, 0, 0, transitionAlpha));
+            spriteBatch.End();
+        }
+
+        /// <summary>
+        /// Tells the screen to transition off and delete itself
+        /// </summary>
+        public void ExitScreen()
+        {
+            screenState = ScreenState.TransitionOff;
+            isExiting = true;
+            transitionState = 0;
+        }
+
+        /// <summary>
+        /// Toggles screen state between active and underneath (for pop up)
+        /// </summary>
+        public void ToggleUnderneath()
+        {
+            if (screenState == ScreenState.Underneath)
+                screenState = ScreenState.Active;
+            else if (screenState == ScreenState.Active)
+                screenState = ScreenState.Underneath;
+        }
+
+        #endregion
     }
 }
