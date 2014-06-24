@@ -41,8 +41,9 @@ namespace AffectiveGame
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            graphics.PreferredBackBufferWidth = 1600;
-            graphics.PreferredBackBufferHeight = 900;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            Window.IsBorderless = true;
         }
 
         /// <summary>
@@ -56,8 +57,6 @@ namespace AffectiveGame
             input = new InputHandler();
             screens = new List<Screens.GameScreen>();
 
-            // screens.Add(new Screens.GameScreen(this, GraphicsDevice.Viewport));
-
             base.Initialize();
         }
 
@@ -69,6 +68,8 @@ namespace AffectiveGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            screens.Add(new Screens.MainMenuScreen(this, GraphicsDevice.Viewport));
 
             foreach (Screens.GameScreen screen in screens)
                 screen.LoadContent(Content);
@@ -105,6 +106,7 @@ namespace AffectiveGame
                     continue;
                 }
 
+                screens[i].HandleInput(input);
                 screens[i].Update(gameTime);
                 i++;
             }
@@ -130,7 +132,7 @@ namespace AffectiveGame
 
         #region Auxiliar methods
 
-
+        public void AddScreen(Screens.GameScreen newScreen) { screens.Add(newScreen); }
 
         #endregion
 

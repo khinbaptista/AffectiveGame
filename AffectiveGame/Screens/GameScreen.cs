@@ -22,7 +22,7 @@ namespace AffectiveGame.Screens
         Hidden
     }
 
-    abstract class GameScreen
+    abstract public class GameScreen
     {
         #region Attributes
 

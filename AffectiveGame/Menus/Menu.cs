@@ -42,11 +42,11 @@ namespace AffectiveGame.Menus
             this.scale = fontScale;
             this.spacing = spacing;
 
-            selectedEntryColor = Color.SteelBlue;
-            notSelectedEntryColor = Color.White;
+            selectedEntryColor = Color.Black;
+            notSelectedEntryColor = Color.SteelBlue;
         }
 
-        public void LoadContent(ContentManager content, Viewport viewport)
+        public void LoadContent(ContentManager content)
         {
             font = content.Load<SpriteFont>("tempFont");
         }
