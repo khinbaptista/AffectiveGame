@@ -12,14 +12,28 @@ using Microsoft.Xna.Framework.GamerServices;
 namespace AffectiveGame
 {
     /// <summary>
-    /// This is the main type for your game
+    /// Manages the game itself
     /// </summary>
     public class GameMain : Game
     {
+        #region Attributes
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        /// <summary>
+        /// The input manager of this game; any classes interested may access input through this
+        /// </summary>
         InputHandler input;
+
+        /// <summary>
+        /// List of currently existing screens
+        /// </summary>
+        List<Screens.GameScreen> screens;
+
+        #endregion
+
+        #region Methods
 
         public GameMain()
             : base()
@@ -40,6 +54,9 @@ namespace AffectiveGame
         protected override void Initialize()
         {
             input = new InputHandler();
+            screens = new List<Screens.GameScreen>();
+
+            // screens.Add(new Screens.GameScreen(this, GraphicsDevice.Viewport));
 
             base.Initialize();
         }
@@ -53,7 +70,8 @@ namespace AffectiveGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            foreach (Screens.GameScreen screen in screens)
+                screen.LoadContent(Content);
         }
 
         /// <summary>
@@ -72,17 +90,26 @@ namespace AffectiveGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
+                || Keyboard.GetState().IsKeyDown(Keys.Escape) || screens.Count == 0)
                 Exit();
 
-            HandleInput();
+            input.Update();
+
+            int i = 0;
+            while (i < screens.Count)
+            {
+                if (screens[i].delete)
+                {
+                    screens.RemoveAt(i);
+                    continue;
+                }
+
+                screens[i].Update(gameTime);
+                i++;
+            }
 
             base.Update(gameTime);
-        }
-
-        private void HandleInput()
-        {
-            input.Update();
         }
 
         /// <summary>
@@ -93,9 +120,19 @@ namespace AffectiveGame
         {
             GraphicsDevice.Clear(Color.WhiteSmoke);
 
-            // TODO: Add your drawing code here
+            foreach (Screens.GameScreen screen in screens)
+                screen.Draw(gameTime, spriteBatch);
 
             base.Draw(gameTime);
         }
+
+        #endregion
+
+        #region Auxiliar methods
+
+
+
+        #endregion
+
     }
 }

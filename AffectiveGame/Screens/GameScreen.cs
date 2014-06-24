@@ -22,7 +22,7 @@ namespace AffectiveGame.Screens
         Hidden
     }
 
-    class GameScreen
+    abstract class GameScreen
     {
         #region Attributes
 
@@ -100,18 +100,60 @@ namespace AffectiveGame.Screens
 
         public virtual void LoadContent(ContentManager content)
         {
-            //blank = content.Load<Texture2D>("blank");
+            blank = content.Load<Texture2D>("blank");
         }
 
         public virtual void HandleInput(InputHandler input) { return; }
 
         public virtual void Update(GameTime gameTime)
         {
-            // #############################################################################
+            // Indicates whether the transitionState should be updated
+            bool isTransitioningOn = false;
+            bool isTransitioningOff = false;
+
+            // Updates the screen state, if neccessary
+            if (screenState == ScreenState.TransitionOn)
+                if (transitionState == 0)
+                    screenState = ScreenState.Active;
+                else
+                    isTransitioningOn = true;
+            else if (screenState == ScreenState.TransitionOff)
+                if (transitionState == 1)
+                    screenState = ScreenState.Hidden;
+                else
+                    isTransitioningOff = true;
+
+            if (!isTransitioningOn && !isTransitioningOff)
+                return;
+
+            // If the screen is transitioning, scale the step of the transition to match the time of the transition
+            float transitionDelta = 0;
+
+            if (isTransitioningOn)
+                if (transitionOnTime == TimeSpan.Zero)
+                    transitionDelta = 1;
+                else
+                    transitionDelta = (float)(gameTime.ElapsedGameTime.Milliseconds / transitionOnTime.TotalMilliseconds);
+            else if (isTransitioningOff)
+                if (transitionOffTime == TimeSpan.Zero)
+                    transitionDelta = 1;
+                else
+                    transitionDelta = (float)(gameTime.ElapsedGameTime.Milliseconds / transitionOffTime.TotalMilliseconds);
+
+            // Apply changes
+            if (screenState == ScreenState.TransitionOn)
+                transitionState -= transitionDelta;
+            else if (screenState == ScreenState.TransitionOff)
+                transitionState += transitionDelta;
+
+            transitionState = MathHelper.Clamp(transitionState, 0.0f, 1.0f);
         }
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (screenState == ScreenState.Hidden)
+                return;
+
             spriteBatch.Begin();
             spriteBatch.Draw(blank, new Rectangle(0, 0, viewport.Width, viewport.Height), new Color(0, 0, 0, transitionAlpha));
             spriteBatch.End();
