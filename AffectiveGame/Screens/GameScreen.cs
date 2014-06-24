@@ -32,6 +32,11 @@ namespace AffectiveGame.Screens
         protected GameMain game;
 
         /// <summary>
+        /// The screen that created this one
+        /// </summary>
+        protected GameScreen father;
+
+        /// <summary>
         /// Time the screen takes to transition on
         /// </summary>
         public TimeSpan transitionOnTime { get; protected set; }
@@ -76,6 +81,11 @@ namespace AffectiveGame.Screens
         /// </summary>
         protected Viewport viewport;
 
+        /// <summary>
+        /// Indicates whether or not this screen is a pop up
+        /// </summary>
+        public bool isPopup { get; protected set; }
+
         #endregion
 
         #region Methods
@@ -86,9 +96,10 @@ namespace AffectiveGame.Screens
         /// <param name="game">The game to which this screen belongs</param>
         /// <param name="viewport">The viewport where to draw this screen</param>
         /// <param name="state">The state this screen must be initialized with</param>
-        public GameScreen(GameMain game, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
+        public GameScreen(GameMain game, GameScreen father, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
         {
             this.game = game;
+            this.father = father;
             this.viewport = viewport;
             this.screenState = state;
 
@@ -167,6 +178,19 @@ namespace AffectiveGame.Screens
             screenState = ScreenState.TransitionOff;
             isExiting = true;
             transitionState = 0;
+        }
+
+        public void Hide()
+        {
+            screenState = ScreenState.TransitionOff;
+            isExiting = false;
+            transitionState = 0;
+        }
+
+        public void Unhide()
+        {
+            screenState = ScreenState.TransitionOn;
+            transitionState = 1;
         }
 
         /// <summary>

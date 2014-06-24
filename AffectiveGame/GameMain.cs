@@ -69,7 +69,7 @@ namespace AffectiveGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            screens.Add(new Screens.MainMenuScreen(this, GraphicsDevice.Viewport));
+            screens.Add(new Screens.MainMenuScreen(this, null, GraphicsDevice.Viewport));
 
             foreach (Screens.GameScreen screen in screens)
                 screen.LoadContent(Content);

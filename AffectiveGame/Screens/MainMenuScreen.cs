@@ -18,19 +18,20 @@ namespace AffectiveGame.Screens
 
         #region Methods
 
-        public MainMenuScreen(GameMain game, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
-            : base(game, viewport, state)
+        public MainMenuScreen(GameMain game, GameScreen father, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
+            : base(game, father, viewport, state)
         {
             this.transitionOnTime = TimeSpan.FromSeconds(0.5);
-            this.transitionOffTime = TimeSpan.FromSeconds(0.5);
+            this.transitionOffTime = TimeSpan.FromSeconds(0.1);
 
-            mainMenu = new Menus.Menu(viewport.Width / 2, viewport.Height / 2 + 50, true, false, 1, 30);
+            mainMenu = new Menus.Menu(viewport.Width / 2, viewport.Height / 2 + 150, true, false, 1, 30);
         }
 
         public override void LoadContent(ContentManager content)
         {
             mainMenu.LoadContent(content);
             mainMenu.AddEntry("Start game");
+            mainMenu.AddEntry("Screen tests");
             mainMenu.AddEntry("Exit");
 
             base.LoadContent(content);
@@ -43,27 +44,37 @@ namespace AffectiveGame.Screens
 
         public override void HandleInput(InputHandler input)
         {
+            if (screenState != ScreenState.Active)
+                return;
+
             if (input.IsNewStatus(Input.Up))
                 mainMenu.MoveSelection(false);
             else if (input.IsNewStatus(Input.Down))
                 mainMenu.MoveSelection(true);
             else if (input.IsNewStatus(Input.A))
-                //MenuSelected();
-                if (mainMenu.selectedEntry == 0)
-                {
-                    // game.AddScreen(new GameScreen(game, viewport));
-                }
-                else if (mainMenu.selectedEntry == 1)
-                    this.ExitScreen();
+                MenuSelected();
         }
 
         private void MenuSelected()
         {
-            
+            if (mainMenu.selectedEntry == 0)
+            {
+                // game.AddScreen(new GameScreen(game, viewport));
+            }
+            else if (mainMenu.selectedEntry == 1)
+            {
+                this.Hide();
+                game.AddScreen(new TestScreen(game, this, viewport));
+            }
+            else if (mainMenu.selectedEntry == 2)
+                this.ExitScreen();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (screenState == ScreenState.Hidden)
+                return;
+
             mainMenu.Draw(spriteBatch);
 
             base.Draw(gameTime, spriteBatch);
