@@ -37,6 +37,9 @@ namespace AffectiveGame.Screens
 
         public override void HandleInput(InputHandler input)
         {
+            if (screenState != ScreenState.Active)
+                return;
+
             if (input.IsNewStatus(Input.Up))
                 testMenu.MoveSelection(false);
             else if (input.IsNewStatus(Input.Down))
@@ -51,6 +54,11 @@ namespace AffectiveGame.Screens
             {
                 father.Unhide();
                 this.ExitScreen();
+            }
+            else if (testMenu.selectedEntry == 1)
+            {
+                game.AddScreen(new PopUpTestScreen(game, this, viewport, "Test pop up", "OK", "Cancel", new Rectangle(viewport.Width / 2 - 300, viewport.Height / 2 - 200, 600, 400)));
+                this.ToggleUnderneath();
             }
         }
 

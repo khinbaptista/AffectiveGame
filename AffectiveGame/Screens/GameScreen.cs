@@ -180,6 +180,9 @@ namespace AffectiveGame.Screens
             transitionState = 0;
         }
 
+        /// <summary>
+        /// Hides the current screen with transition (good for pause screens)
+        /// </summary>
         public void Hide()
         {
             screenState = ScreenState.TransitionOff;
@@ -187,6 +190,9 @@ namespace AffectiveGame.Screens
             transitionState = 0;
         }
 
+        /// <summary>
+        /// Unhides this screen with transition (good for pause screens)
+        /// </summary>
         public void Unhide()
         {
             screenState = ScreenState.TransitionOn;
@@ -194,7 +200,7 @@ namespace AffectiveGame.Screens
         }
 
         /// <summary>
-        /// Toggles screen state between active and underneath (for pop up)
+        /// Toggles screen state between active and underneath (good for pop ups)
         /// </summary>
         public void ToggleUnderneath()
         {
@@ -202,6 +208,60 @@ namespace AffectiveGame.Screens
                 screenState = ScreenState.Active;
             else if (screenState == ScreenState.Active)
                 screenState = ScreenState.Underneath;
+        }
+
+        /// <summary>
+        /// Kills the screen without transition (good for pop ups)
+        /// </summary>
+        public void KillScreen()
+        {
+            screenState = ScreenState.Hidden;
+            transitionState = 1;
+            isExiting = true;
+        }
+
+        /// <summary>
+        /// Creates a new pause screen managing the transition
+        /// </summary>
+        /// <param name="pauseScreen"></param>
+        protected void CreatePauseScreen(GameScreen pauseScreen)
+        {
+            this.Hide();
+            game.AddScreen(pauseScreen);
+        }
+
+        /// <summary>
+        /// If this is a pause screen, finish it managing the transition
+        /// </summary>
+        protected void FinishPauseScreen()
+        {
+            if (father == null)
+                this.ExitScreen();
+
+            father.Unhide();
+            this.ExitScreen();
+        }
+
+        /// <summary>
+        /// Creates a new pop up, managing the transition
+        /// </summary>
+        /// <param name="newPopupScreen"></param>
+        protected void CreatePopup(GameScreen newPopupScreen)
+        {
+            game.AddScreen(newPopupScreen);
+            this.ToggleUnderneath();
+        }
+
+        /// <summary>
+        /// Finishes this screen (if it is a pop up) managing the transition
+        /// </summary>
+        protected void FinishPopup()
+        {
+            if (!isPopup || father == null)
+                return;
+
+            this.KillScreen();
+            father.ToggleUnderneath();
         }
 
         #endregion
