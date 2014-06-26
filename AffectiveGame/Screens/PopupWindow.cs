@@ -93,14 +93,20 @@ namespace AffectiveGame.Screens
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Rectangle positionA = new Rectangle();
-            Rectangle positionB = new Rectangle();
+            Rectangle positionA = new Rectangle(backgroundRect.X + 50, backgroundRect.Bottom - 90, 53, 56);
+            Rectangle positionB = new Rectangle(backgroundRect.Right - 350, backgroundRect.Bottom - 90, 53, 56);
             int labelDistance = 20;
 
             spriteBatch.Begin();
             spriteBatch.Draw(background, backgroundRect, Color.White);
             spriteBatch.DrawString(font, message, messagePosition, Color.Black);
+            
+            spriteBatch.Draw(GUI, positionA, GUI_buttonA, Color.White);
+            spriteBatch.DrawString(font, textButtonA, new Vector2(positionA.Right + labelDistance, positionA.Y + positionA.Height / 2 - 10), Color.Black);
 
+            spriteBatch.Draw(GUI, positionB, GUI_buttonB, Color.White);
+            spriteBatch.DrawString(font, textButtonB, new Vector2(positionB.Right + labelDistance, positionB.Y + positionB.Height / 2 - 10), Color.Black);
+            
             spriteBatch.End();
             
             base.Draw(gameTime, spriteBatch);
