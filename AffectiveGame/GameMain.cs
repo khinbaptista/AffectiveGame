@@ -24,7 +24,7 @@ namespace AffectiveGame
         /// <summary>
         /// The input manager of this game; any classes interested may access input through this
         /// </summary>
-        InputHandler input;
+        //InputHandler input;
 
         /// <summary>
         /// List of currently existing screens
@@ -54,7 +54,7 @@ namespace AffectiveGame
         /// </summary>
         protected override void Initialize()
         {
-            input = new InputHandler();
+            //input = new InputHandler();
             screens = new List<Screens.GameScreen>();
 
             base.Initialize();
@@ -95,7 +95,7 @@ namespace AffectiveGame
                 || Keyboard.GetState().IsKeyDown(Keys.Escape) || screens.Count == 0)
                 Exit();
 
-            input.Update();
+            //input.Update();
 
             int i = 0;
             while (i < screens.Count)
@@ -106,7 +106,7 @@ namespace AffectiveGame
                     continue;
                 }
 
-                screens[i].HandleInput(input);
+                screens[i].HandleInput(gameTime);
                 screens[i].Update(gameTime);
                 i++;
             }
@@ -133,6 +133,8 @@ namespace AffectiveGame
         #region Auxiliar methods
 
         public void AddScreen(Screens.GameScreen newScreen) { screens.Add(newScreen); }
+
+        //public void FlushInput() { input.Flush(); }
 
         #endregion
 

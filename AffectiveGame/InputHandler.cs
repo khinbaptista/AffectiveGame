@@ -55,6 +55,10 @@ namespace AffectiveGame
 
         private const float buttonThreshold = 0.5f;
 
+        private TimeSpan activationTime;
+        private TimeSpan timer;
+        private bool isActive;
+
         public InputHandler()
         {
             previousStatus = new List<Input>();
@@ -63,10 +67,24 @@ namespace AffectiveGame
             currentValues = new TriggerValues();
 
             currentStatus = new List<Input>();
+
+            activationTime = TimeSpan.FromSeconds(0.3);
+            timer = TimeSpan.Zero;
+            isActive = false;
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
+            if (!isActive)
+            {
+                timer = timer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+
+                if (timer.TotalMilliseconds > activationTime.TotalMilliseconds)
+                    isActive = true;
+                else
+                    return;
+            }
+
             GamePadState padState = GamePad.GetState(PlayerIndex.One);
 
             // Clear previous status
@@ -171,6 +189,11 @@ namespace AffectiveGame
         public bool IsNewStatus(Input input)
         {
             return currentStatus.Contains(input) && !previousStatus.Contains(input);
+        }
+
+        public void Flush()
+        {
+            currentStatus.Clear();
         }
     }
 }

@@ -82,9 +82,14 @@ namespace AffectiveGame.Screens
         protected Viewport viewport;
 
         /// <summary>
-        /// Indicates whether or not this screen is a pop up
+        /// The return value of the pop up created
         /// </summary>
-        public bool isPopup { get; protected set; }
+        public PopupWindow.PopupReturn popupValue;
+
+        /// <summary>
+        /// The input handler for this screen
+        /// </summary>
+        protected InputHandler input;
 
         #endregion
 
@@ -103,10 +108,14 @@ namespace AffectiveGame.Screens
             this.viewport = viewport;
             this.screenState = state;
 
+            input = new InputHandler();
+
             if (screenState == ScreenState.TransitionOn || screenState == ScreenState.Hidden)
                 transitionState = 1;
             else
                 transitionState = 0;
+
+            popupValue = PopupWindow.PopupReturn.Null;
         }
 
         public virtual void LoadContent(ContentManager content)
@@ -114,7 +123,7 @@ namespace AffectiveGame.Screens
             blank = content.Load<Texture2D>("blank");
         }
 
-        public virtual void HandleInput(InputHandler input) { return; }
+        public virtual void HandleInput(GameTime gameTime) { input.Update(gameTime); }
 
         public virtual void Update(GameTime gameTime)
         {
@@ -210,6 +219,11 @@ namespace AffectiveGame.Screens
                 screenState = ScreenState.Underneath;
         }
 
+        public void SetUnderneath(bool isUnderneath)
+        {
+            screenState = isUnderneath ? ScreenState.Underneath : ScreenState.Active;
+        }
+
         /// <summary>
         /// Kills the screen without transition (good for pop ups)
         /// </summary>
@@ -246,22 +260,10 @@ namespace AffectiveGame.Screens
         /// Creates a new pop up, managing the transition
         /// </summary>
         /// <param name="newPopupScreen"></param>
-        protected void CreatePopup(GameScreen newPopupScreen)
+        protected void CreatePopup(string text, Rectangle position)
         {
-            game.AddScreen(newPopupScreen);
+            game.AddScreen(new PopupWindow(game, this, viewport, position, text));
             this.ToggleUnderneath();
-        }
-
-        /// <summary>
-        /// Finishes this screen (if it is a pop up) managing the transition
-        /// </summary>
-        protected void FinishPopup()
-        {
-            if (!isPopup || father == null)
-                return;
-
-            this.KillScreen();
-            father.ToggleUnderneath();
         }
 
         #endregion

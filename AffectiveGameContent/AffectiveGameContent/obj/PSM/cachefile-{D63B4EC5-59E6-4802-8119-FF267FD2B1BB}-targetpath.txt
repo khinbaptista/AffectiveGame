@@ -1,2 +1,4 @@
 Content\tempFont.xnb
 Content\blank.xnb
+Content\popupBackground.xnb
+Content\controllerButtons.xnb

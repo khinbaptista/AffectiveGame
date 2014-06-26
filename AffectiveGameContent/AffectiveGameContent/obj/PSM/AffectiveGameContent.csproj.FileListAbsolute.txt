@@ -4,3 +4,5 @@ C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameC
 C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\obj\PSM\IgnoreMe.dll
 C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\tempFont.xnb
 C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\blank.xnb
+C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\popupBackground.xnb
+C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\controllerButtons.xnb

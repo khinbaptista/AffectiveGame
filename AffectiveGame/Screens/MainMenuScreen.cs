@@ -42,8 +42,10 @@ namespace AffectiveGame.Screens
             base.Update(gameTime);
         }
 
-        public override void HandleInput(InputHandler input)
+        public override void HandleInput(GameTime gameTime)
         {
+            base.HandleInput(gameTime);
+
             if (screenState != ScreenState.Active)
                 return;
 

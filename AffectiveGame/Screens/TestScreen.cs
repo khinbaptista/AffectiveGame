@@ -35,8 +35,10 @@ namespace AffectiveGame.Screens
             testMenu.AddEntry("Back to main menu");
         }
 
-        public override void HandleInput(InputHandler input)
+        public override void HandleInput(GameTime gameTime)
         {
+            base.HandleInput(gameTime);
+
             if (screenState != ScreenState.Active)
                 return;
 
@@ -57,15 +59,17 @@ namespace AffectiveGame.Screens
             }
             else if (testMenu.selectedEntry == 1)
             {
-                game.AddScreen(new PopUpTestScreen(game, this, viewport, "Test pop up", "OK", "Cancel", new Rectangle(viewport.Width / 2 - 300, viewport.Height / 2 - 200, 600, 400)));
-                this.ToggleUnderneath();
+                CreatePopup("This is a pop up", new Rectangle(viewport.Width / 2 - 400, viewport.Height / 2 - 300, 800, 600));
             }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             testMenu.Draw(spriteBatch);
-            
+
+            if (!(popupValue == PopupWindow.PopupReturn.Null))
+                Console.WriteLine(popupValue);
+
             base.Draw(gameTime, spriteBatch);
         }
 

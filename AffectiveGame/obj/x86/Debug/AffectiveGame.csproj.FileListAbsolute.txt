@@ -26,3 +26,5 @@ C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGame\
 C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGame\obj\x86\Debug\AffectiveGame.pdb
 C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGame\bin\Windows\Debug\Content\tempFont.xnb
 C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGame\bin\Windows\Debug\Content\blank.xnb
+C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGame\bin\Windows\Debug\Content\popupBackground.xnb
+C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGame\bin\Windows\Debug\Content\controllerButtons.xnb

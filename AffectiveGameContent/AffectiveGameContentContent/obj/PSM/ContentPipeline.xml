@@ -19,16 +19,34 @@
       <Output>C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\blank.xnb</Output>
       <Time>2014-06-24T14:27:17.1264419+01:00</Time>
     </Item>
+    <Item>
+      <Source>popupBackground.png</Source>
+      <Name>popupBackground</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\popupBackground.xnb</Output>
+      <Time>2014-06-26T11:41:11.8144696+01:00</Time>
+    </Item>
+    <Item>
+      <Source>controllerButtons.png</Source>
+      <Name>controllerButtons</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\controllerButtons.xnb</Output>
+      <Time>2014-06-26T12:27:56.5059075+01:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
       <TargetProfile>HiDef</TargetProfile>
       <BuildConfiguration>PSM</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContentContent\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContentContent\obj\PSM\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContentContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContentContent\obj\PSM\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
