@@ -89,7 +89,7 @@ namespace AffectiveGame.Screens
         /// <summary>
         /// The input handler for this screen
         /// </summary>
-        protected InputHandler input;
+        public InputHandler input { get; protected set; }
 
         #endregion
 
@@ -206,6 +206,7 @@ namespace AffectiveGame.Screens
         {
             screenState = ScreenState.TransitionOn;
             transitionState = 1;
+            input.RestartTimer();
         }
 
         /// <summary>
@@ -214,7 +215,10 @@ namespace AffectiveGame.Screens
         public void ToggleUnderneath()
         {
             if (screenState == ScreenState.Underneath)
+            {
                 screenState = ScreenState.Active;
+                input.RestartTimer();
+            }
             else if (screenState == ScreenState.Active)
                 screenState = ScreenState.Underneath;
         }
@@ -238,22 +242,10 @@ namespace AffectiveGame.Screens
         /// Creates a new pause screen managing the transition
         /// </summary>
         /// <param name="pauseScreen"></param>
-        protected void CreatePauseScreen(GameScreen pauseScreen)
+        protected void CreatePauseScreen()
         {
             this.Hide();
-            game.AddScreen(pauseScreen);
-        }
-
-        /// <summary>
-        /// If this is a pause screen, finish it managing the transition
-        /// </summary>
-        protected void FinishPauseScreen()
-        {
-            if (father == null)
-                this.ExitScreen();
-
-            father.Unhide();
-            this.ExitScreen();
+            game.AddScreen(new PauseScreen(game, this, viewport));
         }
 
         /// <summary>

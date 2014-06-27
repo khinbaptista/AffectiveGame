@@ -58,9 +58,9 @@ namespace AffectiveGame.Screens
                 this.ExitScreen();
             }
             else if (testMenu.selectedEntry == 1)
-            {
                 CreatePopup("This is a pop up", new Rectangle(viewport.Width / 2 - 400, viewport.Height / 2 - 300, 800, 600));
-            }
+            else if (testMenu.selectedEntry == 0)
+                CreatePauseScreen();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

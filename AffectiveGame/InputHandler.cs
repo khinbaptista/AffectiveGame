@@ -195,5 +195,10 @@ namespace AffectiveGame
         {
             currentStatus.Clear();
         }
+
+        public void RestartTimer()
+        {
+            timer = TimeSpan.Zero;
+        }
     }
 }
