@@ -191,11 +191,6 @@ namespace AffectiveGame
             return currentStatus.Contains(input) && !previousStatus.Contains(input);
         }
 
-        public void Flush()
-        {
-            currentStatus.Clear();
-        }
-
         public void RestartTimer()
         {
             timer = TimeSpan.Zero;

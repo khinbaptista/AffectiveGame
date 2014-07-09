@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Media;
+
 
 namespace AffectiveGame.Screens
 {
@@ -14,6 +16,11 @@ namespace AffectiveGame.Screens
     class TestScreen : GameScreen
     {
         Menus.Menu testMenu;
+
+        // Video stuff
+        Video video;
+        // VideoPlayer vPlayer;     // NOPE!: it should be in Microsoft.Xna.Framework.Media
+        bool playVideo = false;
 
         public TestScreen(GameMain game, GameScreen father, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, state)
@@ -29,10 +36,24 @@ namespace AffectiveGame.Screens
         {
             base.LoadContent(content);
 
+            //video = content.Load<Video>("");
+
             testMenu.LoadContent(content);
             testMenu.AddEntry("Pause screen");
             testMenu.AddEntry("Pop up window");
+            testMenu.AddEntry("Play unstoppable short video");
             testMenu.AddEntry("Back to main menu");
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (playVideo)
+            {
+                playVideo = false;
+                // play the damn video
+            }
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -52,10 +73,14 @@ namespace AffectiveGame.Screens
 
         private void MenuSelected()
         {
-            if (testMenu.selectedEntry == 2)
+            if (testMenu.selectedEntry == 3)
             {
                 father.Unhide();
                 this.ExitScreen();
+            }
+            else if (testMenu.selectedEntry == 2)
+            {
+                playVideo = true;
             }
             else if (testMenu.selectedEntry == 1)
                 CreatePopup("This is a pop up", new Rectangle(viewport.Width / 2 - 400, viewport.Height / 2 - 300, 800, 600));
@@ -65,10 +90,12 @@ namespace AffectiveGame.Screens
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (screenState == ScreenState.Hidden)
+                return;
+
             testMenu.Draw(spriteBatch);
 
-            if (!(popupValue == PopupWindow.PopupReturn.Null))
-                Console.WriteLine(popupValue);
+            // draw the video (get last frame and draw it on screen)
 
             base.Draw(gameTime, spriteBatch);
         }

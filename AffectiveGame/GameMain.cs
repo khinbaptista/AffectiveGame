@@ -121,6 +121,8 @@ namespace AffectiveGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.WhiteSmoke);
+            //GraphicsDevice.Clear(Color.SeaShell);
+            GraphicsDevice.Clear(new Color(240, 240, 240));
 
             foreach (Screens.GameScreen screen in screens)
                 screen.Draw(gameTime, spriteBatch);
@@ -133,8 +135,6 @@ namespace AffectiveGame
         #region Auxiliar methods
 
         public void AddScreen(Screens.GameScreen newScreen) { screens.Add(newScreen); }
-
-        //public void FlushInput() { input.Flush(); }
 
         #endregion
 
