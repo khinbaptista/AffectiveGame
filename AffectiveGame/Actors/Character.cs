@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace AffectiveGame.Actors
 {
-    class Character : Actor//, Interfaces.ISoundSource
+    class Character : Actor
     {
         # region Attributes
 
@@ -34,19 +34,11 @@ namespace AffectiveGame.Actors
 
         # region Methods
 
-
-
-        # endregion
-
-        /*
-        # region Interface implementations
-
-        public void Play(int soundIndex)
+        public Character()
         {
-
+            
         }
 
         # endregion
-        */
     }
 }

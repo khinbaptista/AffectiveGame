@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AffectiveGame.Actors
 {
-    class Actor
+    abstract class Actor
     {
         List<Animation> animations;
 
