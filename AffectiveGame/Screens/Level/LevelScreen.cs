@@ -8,10 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AffectiveGame.Screens.Level
 {
-    abstract class LevelScreen : GameScreen
+    class LevelScreen : GameScreen
     {
         protected readonly float gravitySpeed;
         protected readonly Actors.Character Edon;
+        
+        protected Texture2D background;
 
         public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 5, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, state)
@@ -26,7 +28,7 @@ namespace AffectiveGame.Screens.Level
         {
             base.LoadContent(content);
 
-            
+            background = content.Load<Texture2D>("Sky");
         }
 
         public override void Update(GameTime gameTime)
@@ -39,12 +41,21 @@ namespace AffectiveGame.Screens.Level
             base.HandleInput(gameTime);
 
             Edon.HandleInput(input);
+
+            if (input.getStatus().Count != 0)
+            {
+                game.AddScreen(new MainMenuScreen(game, null, viewport));
+                this.ExitScreen();
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             base.Draw(gameTime, spriteBatch);
 
+            spriteBatch.Begin();
+            spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
+            spriteBatch.End();
         }
     }
 }

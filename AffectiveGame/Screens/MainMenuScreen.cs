@@ -25,6 +25,7 @@ namespace AffectiveGame.Screens
             this.transitionOffTime = TimeSpan.FromSeconds(0.1);
 
             mainMenu = new Menus.Menu(viewport.Width / 2, viewport.Height / 2 + 150, true, false, 1, 30);
+            LoadContent(game.Content);
         }
 
         public override void LoadContent(ContentManager content)
@@ -61,7 +62,8 @@ namespace AffectiveGame.Screens
         {
             if (mainMenu.selectedEntry == 0)
             {
-                // game.AddScreen(new GameScreen(game, viewport));
+                game.AddScreen(new Level.LevelScreen(game, null, viewport));
+                this.ExitScreen();
             }
             else if (mainMenu.selectedEntry == 1)
             {

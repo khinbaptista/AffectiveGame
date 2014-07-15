@@ -70,9 +70,6 @@ namespace AffectiveGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             screens.Add(new Screens.MainMenuScreen(this, null, GraphicsDevice.Viewport));
-
-            foreach (Screens.GameScreen screen in screens)
-                screen.LoadContent(Content);
         }
 
         /// <summary>
