@@ -10,13 +10,46 @@ namespace AffectiveGame.Actors
 {
     abstract class Actor
     {
-        List<Animation> animations;
+        protected Screens.Level.LevelScreen levelScreen;
+        protected List<Animation> animations;
 
-        public Actor() { }
+        /// <summary>
+        /// Time it takes to move to the next frame in the animation
+        /// </summary>
+        protected readonly TimeSpan frameInterval;
+
+        /// <summary>
+        /// Controls the time 
+        /// </summary>
+        protected TimeSpan frameTimer;
+
+        /// <summary>
+        /// Indicated whether or not the frame should be updated
+        /// </summary>
+        protected bool updateFrame;
+
+        public Actor(Screens.Level.LevelScreen levelScreen)
+        {
+            this.levelScreen = levelScreen;
+
+            frameInterval = TimeSpan.FromMilliseconds(150);
+            frameTimer = TimeSpan.Zero;
+        }
 
         public virtual void LoadContent(ContentManager content) { }
 
-        public virtual void Update(GameTime gameTime) { }
+        public virtual void Update(GameTime gameTime)
+        {
+            frameTimer = frameTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+
+            if (frameTimer.TotalMilliseconds > frameInterval.TotalMilliseconds)
+            {
+                frameTimer = TimeSpan.Zero;
+                updateFrame = true;
+            }
+            else if (updateFrame)
+                updateFrame = false;
+        }
 
         public virtual void HandleInput(InputHandler input) { }
 

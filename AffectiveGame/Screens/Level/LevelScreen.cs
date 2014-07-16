@@ -19,7 +19,7 @@ namespace AffectiveGame.Screens.Level
             : base(game, father, viewport, state)
         {
             this.gravitySpeed = gravitySpeed;
-            Edon = new Actors.Character();
+            Edon = new Actors.Character(this);
 
             LoadContent(game.Content);
         }
@@ -57,5 +57,7 @@ namespace AffectiveGame.Screens.Level
             spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
             spriteBatch.End();
         }
+
+        public ContentManager GetContentRef() { return game.Content; }
     }
 }
