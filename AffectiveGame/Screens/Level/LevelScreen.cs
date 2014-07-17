@@ -10,7 +10,7 @@ namespace AffectiveGame.Screens.Level
 {
     class LevelScreen : GameScreen
     {
-        protected readonly float gravitySpeed;
+        protected readonly Vector2 gravitySpeed;
         protected readonly Actors.Character Edon;
         
         protected Texture2D background;
@@ -18,7 +18,7 @@ namespace AffectiveGame.Screens.Level
         public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 5, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, state)
         {
-            this.gravitySpeed = gravitySpeed;
+            this.gravitySpeed = new Vector2(0, gravitySpeed);
             Edon = new Actors.Character(this);
 
             LoadContent(game.Content);

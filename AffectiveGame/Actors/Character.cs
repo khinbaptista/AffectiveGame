@@ -28,9 +28,13 @@ namespace AffectiveGame.Actors
         private Texture2D spriteSheet;
 
         Rectangle position;
-        //int frameIndex; // not neccessary anymore - frame control is now inside the animation, which makes a lot more sense.
         
         private bool isFacingLeft;
+
+        private Vector2 movement;
+        private const float movementSpeed = 10;
+        private float jumpSpeed;
+        private const float maxJumpSpeed = 30;
 
         # endregion
 
@@ -40,6 +44,8 @@ namespace AffectiveGame.Actors
             : base (levelScreen)
         {
             LoadContent(levelScreen.GetContentRef());
+
+            position = new Rectangle(0, 0, 50, 50);
         }
 
         public override void LoadContent(ContentManager content)
@@ -48,11 +54,13 @@ namespace AffectiveGame.Actors
 
             spriteSheet = content.Load<Texture2D>("");
 
+            movement = Vector2.Zero;
+            
             animations.Add(new Animation(true)); // idle
             animations.Add(new Animation(true)); // walk
             animations.Add(new Animation(true)); // jump
-
-            animations[(int)Action.Idle].InsertFrame(new Rectangle(94, 216, 370, 280));
+            
+            animations[(int)Action.Idle].InsertFrame(new Rectangle(94, 216, 370, 280)); // yeah this won't work - those are the colliders, not the frames (they also will be scaled)
             animations[(int)Action.Walk].InsertFrame(new Rectangle(94, 216, 370, 280));
             animations[(int)Action.Jump].InsertFrame(new Rectangle(751, 65, 249, 609));
         }
@@ -65,6 +73,9 @@ namespace AffectiveGame.Actors
                 animations[(int)action].UpdateFrame();
 
             // treat end of animation and input-independant status machine
+
+            position.Offset((int)movement.X, (int)movement.Y);
+            movement = Vector2.Zero;
         }
 
         public override void HandleInput(InputHandler input)
@@ -77,34 +88,28 @@ namespace AffectiveGame.Actors
                     if (!isFacingLeft)
                         isFacingLeft = true;
                     else
-                        action = Action.Walk;
+                        ChangeAction(Action.Walk);
                 else if (input.Contains(Input.Right))
                     if (isFacingLeft)
                         isFacingLeft = false;
                     else
-                        action = Action.Walk;
+                        ChangeAction(Action.Walk);
                 else if (input.Contains(Input.A))
-                    action = Action.Jump;
+                    ChangeAction(Action.Jump);
             }
             else if (action == Action.Walk)
             {
                 if (!Move(input))
                 {
                     if (input.Contains(Input.A))
-                        action = Action.Jump;
+                        ChangeAction(Action.Jump);
                     else
-                        action = Action.Idle;
+                        ChangeAction(Action.Idle);
                 }
             }
             else if (action == Action.Jump)
             {
-                if (!Move(input))
-                {
-                    if (input.Contains(Input.A))
-                    {
-                        //********************************************
-                    }
-                }
+                
             }
         }
 
@@ -118,7 +123,7 @@ namespace AffectiveGame.Actors
 
                 if (isFacingLeft)
                 {
-                    // move left
+                    movement += new Vector2(-movementSpeed, 0);
                 }
                 else
                     isFacingLeft = true;
@@ -129,13 +134,19 @@ namespace AffectiveGame.Actors
 
                 if (!isFacingLeft)
                 {
-                    // move right
+                    movement += new Vector2(movementSpeed, 0);
                 }
                 else
                     isFacingLeft = false;
             }
 
             return hasMoved;
+        }
+
+        private void ChangeAction(Action newAction)
+        {
+            action = newAction;
+            animations[(int)action].Play();
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
