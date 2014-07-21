@@ -12,6 +12,7 @@ namespace AffectiveGame.Screens.Level
     {
         protected readonly Vector2 gravitySpeed;
         protected readonly Actors.Character Edon;
+        protected List<Rectangle> environmentColliders;
         
         protected Texture2D background;
 
@@ -22,6 +23,7 @@ namespace AffectiveGame.Screens.Level
             Edon = new Actors.Character(this);
 
             LoadContent(game.Content);
+            environmentColliders = new List<Rectangle>();
         }
 
         public override void LoadContent(ContentManager content)
@@ -34,6 +36,8 @@ namespace AffectiveGame.Screens.Level
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            Edon.Update(gameTime);
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -52,12 +56,21 @@ namespace AffectiveGame.Screens.Level
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             base.Draw(gameTime, spriteBatch);
-
+            
+            if (screenState == ScreenState.Hidden)
+                return;
+            
             spriteBatch.Begin();
             spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
             spriteBatch.End();
+
+            Edon.Draw(spriteBatch, gameTime);
         }
 
         public ContentManager GetContentRef() { return game.Content; }
+
+        public List<Rectangle> GetColliders() { return environmentColliders; }
+
+        public Vector2 GetGravity() { return gravitySpeed; }
     }
 }
