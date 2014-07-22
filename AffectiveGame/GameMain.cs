@@ -88,8 +88,7 @@ namespace AffectiveGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-                || Keyboard.GetState().IsKeyDown(Keys.Escape) || screens.Count == 0)
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape) || screens.Count == 0)
                 Exit();
 
             //input.Update();

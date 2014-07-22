@@ -59,7 +59,7 @@ namespace AffectiveGame.Screens
         /// <summary>
         /// The blank texture used to cover the screen, giving the impression of fading
         /// </summary>
-        private Texture2D blank;
+        protected Texture2D blank;
 
         /// <summary>
         /// Current screen state.

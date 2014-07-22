@@ -8,22 +8,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AffectiveGame.Screens.Level
 {
-    class LevelScreen : GameScreen
+    abstract class LevelScreen : GameScreen
     {
         protected readonly Vector2 gravitySpeed;
-        protected readonly Actors.Character Edon;
+        protected Actors.Character Edon;
         protected List<Rectangle> environmentColliders;
         
         protected Texture2D background;
 
-        public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 5, ScreenState state = ScreenState.TransitionOn)
+        public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 10, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, state)
         {
             this.gravitySpeed = new Vector2(0, gravitySpeed);
-            Edon = new Actors.Character(this);
 
             LoadContent(game.Content);
-            environmentColliders = new List<Rectangle>();
         }
 
         public override void LoadContent(ContentManager content)
@@ -46,7 +44,7 @@ namespace AffectiveGame.Screens.Level
 
             Edon.HandleInput(input);
 
-            if (input.getStatus().Count != 0)
+            if (input.getStatus().Contains(Input.LeftBumper))
             {
                 game.AddScreen(new MainMenuScreen(game, null, viewport));
                 this.ExitScreen();

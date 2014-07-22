@@ -36,6 +36,7 @@ namespace AffectiveGame.Actors
         public Animation(bool isLoop = true)
         {
             frames = new List<Rectangle>();
+            framesColliders = new List<Rectangle>();
 
             this.isLoop = isLoop;
             isFinished = false;

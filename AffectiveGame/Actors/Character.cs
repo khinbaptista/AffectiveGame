@@ -39,6 +39,7 @@ namespace AffectiveGame.Actors
         private float jumpSpeed;
         private const float maxJumpSpeed = 30;
         private const int collisionThreshold = movementSpeed + 2;
+        private const int maxSpeed = 20;
 
         # endregion
 
@@ -49,6 +50,7 @@ namespace AffectiveGame.Actors
         {
             LoadContent(levelScreen.GetContentRef());
 
+            action = Action.Idle;
             position = new Rectangle(0, 0, positionWidth, positionHeight);
         }
 
@@ -108,7 +110,7 @@ namespace AffectiveGame.Actors
             }
             else if (action == Action.Jump)
             {
-                
+                movement += new Vector2(0, maxJumpSpeed);
             }
         }
 
@@ -124,7 +126,13 @@ namespace AffectiveGame.Actors
             //inertia = Vector2.Zero;
 
             movement += levelScreen.GetGravity(); // apply gravity
-            //position.Offset((int)movement.X, (int)movement.Y);
+
+            if (movement.Length() > maxSpeed)
+            {
+                movement.Normalize();
+                movement = maxSpeed * movement;
+            }
+            
             position = new Rectangle(position.X + (int)movement.X, position.Y + (int)movement.Y, position.Width, position.Height);
 
             CheckCollisions();
@@ -173,7 +181,7 @@ namespace AffectiveGame.Actors
             base.Draw(spriteBatch, gameTime);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(spriteSheet, position, animations[(int)action].GetFrame(), Color.White);
+            spriteBatch.Draw(spriteSheet, position, animations[(int)action].GetFrame(), Color.White, 0, Vector2.Zero, isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             spriteBatch.End();
         }
 
@@ -185,34 +193,39 @@ namespace AffectiveGame.Actors
         private void CheckCollisions()
         {
             Rectangle characterCollider = animations[(int)action].GetCollider();
+            Rectangle characterColliderPositioned = new Rectangle(position.X + characterCollider.X, position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
 
             foreach (Rectangle rect in levelScreen.GetColliders())
-                if (this.Intersect(rect))   // correct the position in case it collided
-                {                                                                           // REMEMBER TO OFFSET THE COLLIDERS LATER (RELATIVE TO POSITION)
+                if (characterColliderPositioned.Intersects(rect))   // correct the position in case it collided
+                {
                     // test every possible collision
-                    if (characterCollider.Bottom > rect.Top && characterCollider.Top < rect.Top)
-                        //&& characterCollider.Left < rect.Right && characterCollider.Right > rect.Left)
+                    if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top)
+                        //&& characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
                     {
-                        this.position = new Rectangle(position.X, position.Y - (position.Bottom - rect.Top), position.Width, position.Height);
+                        this.position = new Rectangle(position.X, position.Y - (characterColliderPositioned.Bottom - rect.Top), position.Width, position.Height);
+                        Collide(Vector2.UnitY);
+
+                        if (action == Action.Jump) action = Action.Idle;
+                    }
+                    else if (characterColliderPositioned.Top < rect.Bottom && characterColliderPositioned.Bottom > rect.Bottom)
+                    //&& characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
+                    {
+                        this.position = new Rectangle(position.X, position.Y + (rect.Bottom - characterColliderPositioned.Top), position.Width, position.Height);
                         Collide(Vector2.UnitY);
                     }
-                    else if (characterCollider.Top < rect.Bottom && characterCollider.Bottom > rect.Bottom)
-                        //&& characterCollider.Left < rect.Right && characterCollider.Right > rect.Left)
-                    {
-                        this.position = new Rectangle(position.X, position.Y + (rect.Bottom - position.Top), position.Width, position.Height);
-                        Collide(Vector2.UnitY);
-                    }
-                    else if (characterCollider.Right > rect.Left && characterCollider.Left < rect.Left)
+                    else if (characterColliderPositioned.Right > rect.Left && characterColliderPositioned.Left < rect.Left)
                         //&&
                     {
-                        this.position = new Rectangle(position.X - (position.Right - rect.Left), position.Y, position.Width, position.Height);
+                        this.position = new Rectangle(position.X - (characterColliderPositioned.Right - rect.Left), position.Y, position.Width, position.Height);
                         Collide(Vector2.UnitX);
                     }
-                    else if (characterCollider.Left < rect.Right && characterCollider.Right > rect.Right)
+                    else if (characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Right)
                     {
-                        this.position = new Rectangle(position.X + (rect.Right - characterCollider.Left), position.Y, position.Width, position.Height);
+                        this.position = new Rectangle(position.X + (rect.Right - characterColliderPositioned.Left), position.Y, position.Width, position.Height);
                         Collide(Vector2.UnitX);
                     }
+
+                    characterColliderPositioned = new Rectangle(position.X + characterCollider.X, position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
                 }
         }
 
@@ -232,7 +245,12 @@ namespace AffectiveGame.Actors
 
         private bool Intersect(Rectangle rect)
         {
-            return animations[(int)action].GetCollider().Intersects(rect);
+            Rectangle characterCollider = animations[(int)action].GetCollider();
+            Rectangle characterColliderPositioned = new Rectangle(position.X + characterCollider.X, position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
+
+            return characterColliderPositioned.Intersects(rect);
+
+            //return animations[(int)action].GetCollider().Intersects(rect);
         }
     }
 }
