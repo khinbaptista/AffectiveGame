@@ -16,7 +16,7 @@ namespace AffectiveGame.Screens.Level
         
         protected Texture2D background;
 
-        public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 10, ScreenState state = ScreenState.TransitionOn)
+        public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, state)
         {
             this.gravitySpeed = new Vector2(0, gravitySpeed);

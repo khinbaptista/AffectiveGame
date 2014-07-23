@@ -10,7 +10,7 @@ namespace AffectiveGame.Screens.Level
 {
     class LevelOne : LevelScreen
     {
-        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 1, ScreenState state = ScreenState.TransitionOn)
+        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 5, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, gravitySpeed, state)
         {
             LoadContent(game.Content);
@@ -23,7 +23,10 @@ namespace AffectiveGame.Screens.Level
             base.LoadContent(content);
 
             environmentColliders = new List<Rectangle>();
-            environmentColliders.Add(new Rectangle(-50, viewport.Height - 80, viewport.Width + 100, 80)); // ground
+            environmentColliders.Add(new Rectangle(-500, viewport.Height - 80, viewport.Width + 1000, 80)); // ground
+            environmentColliders.Add(new Rectangle());
+            environmentColliders.Add(new Rectangle());
+            environmentColliders.Add(new Rectangle());
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -41,7 +44,10 @@ namespace AffectiveGame.Screens.Level
             base.Draw(gameTime, spriteBatch);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(blank, environmentColliders[0], new Color(0.6f, 0.5f, 0.2f, 0.0f));
+
+            for (int i = 0; i < environmentColliders.Count; i++)
+                spriteBatch.Draw(blank, environmentColliders[i], new Color(0.6f, 0.5f, 0.2f, 0.0f));
+            
             spriteBatch.End();
         }
 

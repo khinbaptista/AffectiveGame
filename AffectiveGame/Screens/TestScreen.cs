@@ -63,11 +63,11 @@ namespace AffectiveGame.Screens
             if (screenState != ScreenState.Active)
                 return;
 
-            if (input.IsNewStatus(Input.Up))
+            if (input.WasPressed(Input.Up))
                 testMenu.MoveSelection(false);
-            else if (input.IsNewStatus(Input.Down))
+            else if (input.WasPressed(Input.Down))
                 testMenu.MoveSelection(true);
-            else if (input.IsNewStatus(Input.A))
+            else if (input.WasPressed(Input.A))
                 MenuSelected();
         }
 

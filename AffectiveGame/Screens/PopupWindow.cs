@@ -79,12 +79,12 @@ namespace AffectiveGame.Screens
         {
             base.HandleInput(gameTime);
 
-            if (input.IsNewStatus(Input.A))
+            if (input.WasPressed(Input.A))
             {
                 father.popupValue = PopupReturn.OK;
                 FinishPopup();
             }
-            if (input.IsNewStatus(Input.B))
+            if (input.WasPressed(Input.B))
             {
                 father.popupValue = PopupReturn.Cancel;
                 FinishPopup();

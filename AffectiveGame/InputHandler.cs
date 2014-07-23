@@ -186,9 +186,14 @@ namespace AffectiveGame
             return currentStatus.Contains(input);
         }
 
-        public bool IsNewStatus(Input input)
+        public bool WasPressed(Input input)
         {
             return currentStatus.Contains(input) && !previousStatus.Contains(input);
+        }
+
+        public bool WasReleased(Input input)
+        {
+            return previousStatus.Contains(input) && !currentStatus.Contains(input);
         }
 
         public void RestartTimer()
