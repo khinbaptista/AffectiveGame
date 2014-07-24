@@ -37,6 +37,7 @@ namespace AffectiveGame.Actors
         
         private bool isFacingLeft;
         private bool grounded;
+        private Screens.Level.Collider lastSafeCollider;
 
         private const float atrito = 0.85f;
 
@@ -59,7 +60,7 @@ namespace AffectiveGame.Actors
             LoadContent(levelScreen.GetContentRef());
 
             action = Action.Fall;
-            position = new Rectangle(100, 500, positionWidth, positionHeight);
+            position = new Rectangle(100, 200, positionWidth, positionHeight);
         }
 
         public override void LoadContent(ContentManager content)
@@ -106,50 +107,75 @@ namespace AffectiveGame.Actors
         /// <param name="input"></param>
         private void AnimationControl(InputHandler input)
         {
+            bool dont_move = false;
+
+            switch (action)
+            {
+                case Action.Howl:
+                    break;
+                case Action.Dig:
+                    break;
+                case Action.Drink:
+                    break;
+                default:
+                    break;
+            }
+
+            if (dont_move)
+                return;
+
             bool moved = Move(input);
-            
-            if (action == Action.Idle)
-            {
-                if (moved)
-                    ChangeAction(Action.Walk);
-                if (input.WasPressed(Input.A))
-                    ChangeAction(Action.Jump);
-                else if (!moved)
-                    movement.X = movement.X * atrito;
-            }
-            if (action == Action.Walk)
-            {
-                if (!moved)
-                    ChangeAction(Action.Idle);
-                if (input.WasPressed(Input.A))
-                    ChangeAction(Action.Jump);
-            }
-            if (action == Action.Jump)
-            {
-                if (input.Contains(Input.A))
-                {
-                    jumpSpeed += jumpSpeedStep;
 
-                    if (jumpSpeed >= maxJumpSpeed)
+            switch (action)
+            {
+                case Action.Idle:
                     {
-                        jumpSpeed = 0;
-                        ChangeAction(Action.Fall);
-                    }
-                }
-                else if (input.WasReleased(Input.A))
-                {
-                    jumpSpeed = 0;
-                    ChangeAction(Action.Fall);
-                }
+                        if (moved)
+                            ChangeAction(Action.Walk);
+                        if (input.WasPressed(Input.A) && grounded && CanJump())
+                            ChangeAction(Action.Jump);
+                        else if (!moved)
+                            movement.X = movement.X * atrito;
+                    } break;
 
-                movement += new Vector2(0, -jumpSpeed);
+                case Action.Walk:
+                    {
+                        if (!moved)
+                            ChangeAction(Action.Idle);
+                        if (input.WasPressed(Input.A) && grounded && CanJump())
+                            ChangeAction(Action.Jump);
+                    } break;
+
+                case Action.Jump:
+                    {
+                        if (input.Contains(Input.A))
+                        {
+                            jumpSpeed += jumpSpeedStep;
+
+                            if (jumpSpeed >= maxJumpSpeed)
+                            {
+                                jumpSpeed = 0;
+                                ChangeAction(Action.Fall);
+                            }
+                        }
+                        else if (input.WasReleased(Input.A))
+                        {
+                            jumpSpeed = 0;
+                            ChangeAction(Action.Fall);
+                        }
+
+                        movement += new Vector2(0, -jumpSpeed);
+                    } break;
+
+                case Action.Fall:
+                    if (grounded)
+                        ChangeAction(Action.Idle);
+                    break;
+
+                default:
+                    break;
             }
-            if (action == Action.Fall)
-            {
-                if (grounded)
-                    ChangeAction(Action.Idle);
-                
-            }
+            
         }
 
         public override void Update(GameTime gameTime)
@@ -227,7 +253,10 @@ namespace AffectiveGame.Actors
             spriteBatch.Begin();
             spriteBatch.Draw(spriteSheet, position, animations[(int)action].GetFrame(), Color.White, 0, Vector2.Zero, isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             if (debug)
-                spriteBatch.DrawString(font, action.ToString(), new Vector2(50, 50), Color.White);
+            {
+                spriteBatch.DrawString(font, "Action: " + action.ToString(), new Vector2(50, 50), Color.White);
+                spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
+            }
             spriteBatch.End();
         }
 
@@ -243,27 +272,36 @@ namespace AffectiveGame.Actors
 
             grounded = false;
 
-            foreach (Rectangle rect in levelScreen.GetColliders())
+            foreach (Screens.Level.Collider col in levelScreen.GetColliders())
+            {
+                Rectangle rect = col.GetBox();
+
                 if (characterColliderPositioned.Intersects(rect))   // correct the position in case it collided
                 {
+                    if (col.isHarmful)
+                    {
+                        // check damage and everything
+                        return;
+                    }
+
                     // test every possible collision
-                    if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top)
-                        //&& characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
+                    if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top//)
+                    && characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
                     {
                         this.position = new Rectangle(position.X, position.Y - (characterColliderPositioned.Bottom - rect.Top), position.Width, position.Height);
                         Collide(Vector2.UnitY);
-
+                        lastSafeCollider = col;
                         grounded = true;
-                        //if (action == Action.Jump) action = Action.Idle;
                     }
                     else if (characterColliderPositioned.Top < rect.Bottom && characterColliderPositioned.Bottom > rect.Bottom)
                     //&& characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
                     {
                         this.position = new Rectangle(position.X, position.Y + (rect.Bottom - characterColliderPositioned.Top), position.Width, position.Height);
                         Collide(Vector2.UnitY);
+                        ChangeAction(Action.Fall);
                     }
                     else if (characterColliderPositioned.Right > rect.Left && characterColliderPositioned.Left < rect.Left)
-                        //&&
+                    //&&
                     {
                         this.position = new Rectangle(position.X - (characterColliderPositioned.Right - rect.Left), position.Y, position.Width, position.Height);
                         Collide(Vector2.UnitX);
@@ -276,12 +314,27 @@ namespace AffectiveGame.Actors
 
                     characterColliderPositioned = new Rectangle(position.X + characterCollider.X, position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
                 }
+            }
         }
 
+        private bool CanJump()
+        {
+            bool canJump = true;
+
+            Rectangle characterCollider = animations[(int)action].GetCollider();
+            Rectangle characterColliderPositioned = new Rectangle(position.X + characterCollider.X,
+                position.Y + characterCollider.Y - characterCollider.Height, characterCollider.Width, characterCollider.Height);
+
+            foreach (Screens.Level.Collider collider in levelScreen.GetColliders())
+                if (collider.GetBox().Intersects(characterColliderPositioned))
+                    canJump = false;
+
+            return canJump;
+        }
         /// <summary>
         /// Cancel inertia in the direction specified
         /// </summary>
-        /// <param name="axis">Unit vector in the axis to be canceled</param>
+        /// <param name="axis">Unit vector in the axis to be canceled (TIP: use Vector2.UnitX / Vector2.UnitY)</param>
         private void Collide(Vector2 axis)
         {
             if (axis == Vector2.UnitX)

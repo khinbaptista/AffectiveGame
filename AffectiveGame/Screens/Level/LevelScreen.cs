@@ -12,7 +12,7 @@ namespace AffectiveGame.Screens.Level
     {
         protected readonly Vector2 gravitySpeed;
         protected Actors.Character Edon;
-        protected List<Rectangle> environmentColliders;
+        protected List<Collider> environmentColliders;
         
         protected Texture2D background;
 
@@ -67,7 +67,7 @@ namespace AffectiveGame.Screens.Level
 
         public ContentManager GetContentRef() { return game.Content; }
 
-        public List<Rectangle> GetColliders() { return environmentColliders; }
+        public List<Collider> GetColliders() { return environmentColliders; }
 
         public Vector2 GetGravity() { return gravitySpeed; }
     }

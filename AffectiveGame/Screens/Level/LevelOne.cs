@@ -22,11 +22,11 @@ namespace AffectiveGame.Screens.Level
         {
             base.LoadContent(content);
 
-            environmentColliders = new List<Rectangle>();
-            environmentColliders.Add(new Rectangle(-500, viewport.Height - 80, viewport.Width + 1000, 80)); // ground
-            environmentColliders.Add(new Rectangle());
-            environmentColliders.Add(new Rectangle());
-            environmentColliders.Add(new Rectangle());
+            environmentColliders = new List<Collider>();
+            environmentColliders.Add(new Collider(-500, viewport.Height - 80, viewport.Width + 1000, 80)); // ground
+            environmentColliders.Add(new Collider(-500, viewport.Height - 800, 510, 800));
+            environmentColliders.Add(new Collider(viewport.Width - 10, viewport.Height - 800, 300, 800));
+            environmentColliders.Add(new Collider(150, 850, 500, 20));
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -46,7 +46,7 @@ namespace AffectiveGame.Screens.Level
             spriteBatch.Begin();
 
             for (int i = 0; i < environmentColliders.Count; i++)
-                spriteBatch.Draw(blank, environmentColliders[i], new Color(0.6f, 0.5f, 0.2f, 0.0f));
+                spriteBatch.Draw(blank, environmentColliders[i].GetBox(), new Color(0.6f, 0.5f, 0.2f, 0.0f));
             
             spriteBatch.End();
         }

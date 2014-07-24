@@ -46,6 +46,7 @@
     <Compile Include="Interfaces\ISoundSource.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\Level\Collider.cs" />
     <Compile Include="Screens\Level\LevelOne.cs" />
     <Compile Include="Screens\Level\LevelScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
