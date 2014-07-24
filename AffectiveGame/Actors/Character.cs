@@ -39,7 +39,7 @@ namespace AffectiveGame.Actors
         private bool grounded;
         private Screens.Level.Collider lastSafeCollider;
 
-        private const float atrito = 0.85f;
+        private const float friction = 0.85f;
 
         private Vector2 movement;
         private Vector2 inertia;
@@ -135,7 +135,7 @@ namespace AffectiveGame.Actors
                         if (input.WasPressed(Input.A) && grounded && CanJump())
                             ChangeAction(Action.Jump);
                         else if (!moved)
-                            movement.X = movement.X * atrito;
+                            movement.X = movement.X * friction;
                     } break;
 
                 case Action.Walk:
@@ -187,25 +187,8 @@ namespace AffectiveGame.Actors
 
             movement += levelScreen.GetGravity(); // apply gravity
 
-            if (false)
-            {
-                if (movement.Length() > maxSpeed)
-                {
-                    movement.Normalize();
-                    movement = maxSpeed * movement;
-                }
-            }
-            else
-            {/*
-                if (movement.X > maxSpeed) movement.X = maxSpeed;
-                else if (movement.X < -maxSpeed) movement.X = -maxSpeed;
-
-                if (movement.Y > maxSpeed) movement.Y = maxSpeed;
-                else if (movement.Y < -maxSpeed) movement.Y = -maxSpeed;*/
-
-                movement.X = MathHelper.Clamp(movement.X, -maxSpeed, maxSpeed);
-                movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
-            }
+            movement.X = MathHelper.Clamp(movement.X, -maxSpeed, maxSpeed);
+            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
 
             position = new Rectangle(position.X + (int)movement.X, position.Y + (int)movement.Y, position.Width, position.Height);
 
@@ -317,6 +300,9 @@ namespace AffectiveGame.Actors
             }
         }
 
+        /// <summary>
+        /// Checks whether or not there is room above Edon for him to perform a jump
+        /// </summary>
         private bool CanJump()
         {
             bool canJump = true;
@@ -343,16 +329,6 @@ namespace AffectiveGame.Actors
                 inertia.Y = 0;
             else
                 inertia = Vector2.Zero;
-        }
-
-        private bool Intersect(Rectangle rect)
-        {
-            Rectangle characterCollider = animations[(int)action].GetCollider();
-            Rectangle characterColliderPositioned = new Rectangle(position.X + characterCollider.X, position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
-
-            return characterColliderPositioned.Intersects(rect);
-
-            //return animations[(int)action].GetCollider().Intersects(rect);
         }
     }
 }
