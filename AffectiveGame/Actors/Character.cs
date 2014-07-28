@@ -39,8 +39,6 @@ namespace AffectiveGame.Actors
         private bool grounded;
         private Screens.Level.Collider lastSafeCollider;
 
-        private const float friction = 0.85f;
-
         private Vector2 movement;
         private Vector2 inertia;
         private const int movementSpeed = 10;
@@ -112,11 +110,20 @@ namespace AffectiveGame.Actors
             switch (action)
             {
                 case Action.Howl:
-                    break;
+                    {
+                        dont_move = true;
+
+                    } break;
                 case Action.Dig:
-                    break;
+                    {
+                        dont_move = true;
+
+                    } break;
                 case Action.Drink:
-                    break;
+                    {
+                        dont_move = true;
+
+                    } break;
                 default:
                     break;
             }
@@ -135,7 +142,7 @@ namespace AffectiveGame.Actors
                         if (input.WasPressed(Input.A) && grounded && CanJump())
                             ChangeAction(Action.Jump);
                         else if (!moved)
-                            movement.X = movement.X * friction;
+                            movement.X = movement.X * lastSafeCollider.friction;
                     } break;
 
                 case Action.Walk:
@@ -239,6 +246,9 @@ namespace AffectiveGame.Actors
             {
                 spriteBatch.DrawString(font, "Action: " + action.ToString(), new Vector2(50, 50), Color.White);
                 spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
+
+                if (lastSafeCollider != null)
+                    spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
             }
             spriteBatch.End();
         }
