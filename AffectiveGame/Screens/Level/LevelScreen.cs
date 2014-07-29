@@ -14,6 +14,8 @@ namespace AffectiveGame.Screens.Level
         protected Actors.Character Edon;
         protected List<Collider> environmentColliders;
         
+        public bool fullMoon { get; protected set; }
+        
         protected Texture2D background;
 
         public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed, ScreenState state = ScreenState.TransitionOn)

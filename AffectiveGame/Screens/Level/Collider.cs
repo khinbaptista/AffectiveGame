@@ -16,6 +16,7 @@ namespace AffectiveGame.Screens.Level
         private bool _isWater;
         private float _damage;
         private float _friction;
+        private bool _isActive;
 
         # endregion
 
@@ -50,11 +51,19 @@ namespace AffectiveGame.Screens.Level
             set { _damage = value; } }
 
         /// <summary>
-        /// Gets the friction for this collider - a value greather than 0 and lesser than 1, to be multiplied in the movement when idle
+        /// Gets the friction for this collider - a value between 0 and 1, to be multiplied in the movement when idle
         /// </summary>
         public float friction
         {
             get { return _friction; }
+        }
+
+        /// <summary>
+        /// Indicates if this collider is active (every collider is active by default, but can be digged, which disables them)
+        /// </summary>
+        public bool isActive
+        {
+            get { return _isActive; }
         }
 
         # endregion
@@ -68,6 +77,7 @@ namespace AffectiveGame.Screens.Level
             _isDiggable = false;
             _isWater = false;
             _friction = 0.85f;
+            _isActive = true;
         }
 
         public Collider(int posX, int posY, int posWidth, int posHeight, bool isHarmful, bool isDiggable, bool isWater, float friction)
@@ -77,9 +87,25 @@ namespace AffectiveGame.Screens.Level
             _isDiggable = isDiggable;
             _isWater = isWater;
             _friction = friction;
+            _isActive = true;
         }
 
         public Rectangle GetBox() { return box; }
+
+        /// <summary>
+        /// When a diggable collider is digged, it disappears
+        /// </summary>
+        public void Dig()
+        {
+            if (_isDiggable)
+                _isActive = false;
+        }
+
+        /// <summary>
+        /// Enables / Disables the collider. Shouldn't be used.
+        /// </summary>
+        /// <param name="state"></param>
+        public void SetActive(bool state) { _isActive = state; }
 
         # endregion
     }

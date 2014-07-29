@@ -28,12 +28,30 @@ namespace AffectiveGame.Actors
         /// </summary>
         protected bool updateFrame;
 
+        /// <summary>
+        /// Bonus you get when you howl at the moon
+        /// </summary>
+        protected bool howlBonus;
+
+        /// <summary>
+        /// Duration of the bonus you get for howling at the moon
+        /// </summary>
+        protected readonly TimeSpan howlBonusDuration;
+
+        /// <summary>
+        /// Timer to control the howl bonus
+        /// </summary>
+        protected TimeSpan howlBonusTimer;
+
+        protected bool howlBonusEnded;
+
         public Actor(Screens.Level.LevelScreen levelScreen)
         {
             this.levelScreen = levelScreen;
 
             frameInterval = TimeSpan.FromMilliseconds(150);
             frameTimer = TimeSpan.Zero;
+            howlBonusDuration = TimeSpan.FromMilliseconds(5000);
         }
 
         public virtual void LoadContent(ContentManager content) { }
@@ -41,6 +59,18 @@ namespace AffectiveGame.Actors
         public virtual void Update(GameTime gameTime)
         {
             frameTimer = frameTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+
+            if (howlBonus)
+            {
+                howlBonusTimer = howlBonusTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+
+                if (howlBonusTimer.TotalMilliseconds > howlBonusDuration.TotalMilliseconds)
+                {
+                    howlBonusTimer = TimeSpan.Zero;
+                    howlBonus = false;
+                    howlBonusEnded = true;
+                }
+            }
 
             if (frameTimer.TotalMilliseconds > frameInterval.TotalMilliseconds)
             {
@@ -54,5 +84,14 @@ namespace AffectiveGame.Actors
         public virtual void HandleInput(InputHandler input) { }
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime) { }
+
+        protected void StartHowlBonus()
+        {
+            if (howlBonus) return;
+
+            howlBonus = true;
+            howlBonusTimer = TimeSpan.Zero;
+            howlBonusEnded = false;
+        }
     }
 }

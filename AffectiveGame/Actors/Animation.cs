@@ -114,10 +114,16 @@ namespace AffectiveGame.Actors
         /// </summary>
         public void UpdateFrame()
         {
+            if (isFinished)
+                return;
+
             currentFrameIndex++;
 
             if (!isLoop && currentFrameIndex >= frames.Count - 1)
+            {
                 isFinished = true;
+                currentFrameIndex = frames.Count - 1;
+            }
             else if (isLoop && currentFrameIndex == frames.Count)
                 currentFrameIndex = 0;
         }
