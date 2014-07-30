@@ -23,9 +23,9 @@ namespace AffectiveGame.Screens.Level
             base.LoadContent(content);
 
             environmentColliders = new List<Collider>();
-            environmentColliders.Add(new Collider(-500, viewport.Height - 80, viewport.Width + 1000, 80)); // ground
-            environmentColliders.Add(new Collider(-500, viewport.Height - 800, 510, 800));
-            environmentColliders.Add(new Collider(viewport.Width - 10, viewport.Height - 800, 300, 800));
+            environmentColliders.Add(new Collider(-500, 1080 - 80, 1920 + 1000, 80)); // ground
+            environmentColliders.Add(new Collider(-500, 1080 - 800, 510, 800));
+            environmentColliders.Add(new Collider(1920 - 10, 1080 - 800, 300, 800));
             environmentColliders.Add(new Collider(150, 850, 500, 20, false, true, false, 0.9f));
         }
 
