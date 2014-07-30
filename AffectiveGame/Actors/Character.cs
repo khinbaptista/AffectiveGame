@@ -280,6 +280,7 @@ namespace AffectiveGame.Actors
                 spriteBatch.DrawString(font, "Action: " + action.ToString(), new Vector2(50, 50), Color.White);
                 spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
                 spriteBatch.DrawString(font, "Howl bonus: " + howlBonus.ToString(), new Vector2(50, 110), Color.White);
+                spriteBatch.DrawString(font, "Camera zoom: " + levelScreen.camera.zoom, new Vector2(50, 130), Color.White);
 
                 if (lastSafeCollider != null)
                     spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
