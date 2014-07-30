@@ -60,6 +60,8 @@ namespace AffectiveGame
         public void HandleInput(InputHandler input)
         {
             _zoom -= input.getValues().YaxisRight / 10;
+
+            _zoom = MathHelper.Clamp(_zoom, 0, 3);
         }
 
         public void Update()
