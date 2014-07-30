@@ -38,6 +38,7 @@
     <Compile Include="Actors\Actor.cs" />
     <Compile Include="Actors\Animation.cs" />
     <Compile Include="Actors\Character.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="GameMain.cs" />
     <Compile Include="Menus\Menu.cs" />
     <Compile Include="Menus\MenuEntry.cs" />

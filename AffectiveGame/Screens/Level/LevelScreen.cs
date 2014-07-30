@@ -13,6 +13,7 @@ namespace AffectiveGame.Screens.Level
         protected readonly Vector2 gravitySpeed;
         protected Actors.Character Edon;
         protected List<Collider> environmentColliders;
+        public Camera camera;
         
         public bool fullMoon { get; protected set; }
         
@@ -31,6 +32,7 @@ namespace AffectiveGame.Screens.Level
             base.LoadContent(content);
 
             background = content.Load<Texture2D>("Sky");
+            camera = new Camera(viewport);
         }
 
         public override void Update(GameTime gameTime)
@@ -38,12 +40,16 @@ namespace AffectiveGame.Screens.Level
             base.Update(gameTime);
 
             Edon.Update(gameTime);
+
+            camera.position = Edon.GetPosition() - new Vector2(0, viewport.Height / 4);
+            camera.Update();
         }
 
         public override void HandleInput(GameTime gameTime)
         {
             base.HandleInput(gameTime);
 
+            camera.HandleInput(input);
             Edon.HandleInput(input);
 
             if (input.getStatus().Contains(Input.LeftBumper))
@@ -59,7 +65,8 @@ namespace AffectiveGame.Screens.Level
             
             if (screenState == ScreenState.Hidden)
                 return;
-            
+
+            //spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.transform);
             spriteBatch.Begin();
             spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
             spriteBatch.End();

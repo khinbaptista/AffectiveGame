@@ -42,11 +42,13 @@ namespace AffectiveGame.Actors
         private Vector2 movement;
         private Vector2 inertia;
         private const int movementSpeed = 10;
+        private const int howlBonusSpeed = 5;
+
         private float jumpSpeed = 0;
         private const float jumpSpeedStep = 15;
         private const float maxJumpSpeed = 180;
         private const float jumpHowlBoost = 50;
-        private const int collisionThreshold = movementSpeed + 2;
+
         private const int maxSpeed = 15;
 
         # endregion
@@ -139,7 +141,11 @@ namespace AffectiveGame.Actors
                 case Action.Drink:
                     {
                         dont_move = true;
-
+                        if (animations[(int)action].isFinished)
+                        {
+                            // drink
+                            ChangeAction(Action.Idle);
+                        }
                     } break;
                 default:
                     break;
@@ -213,7 +219,7 @@ namespace AffectiveGame.Actors
             if (updateFrame)
                 animations[(int)action].UpdateFrame();
 
-            float bonusSpeed = howlBonus ? 5 : 0;
+            float bonusSpeed = howlBonus ? howlBonusSpeed : 0;
 
             movement += levelScreen.GetGravity(); // apply gravity
 
@@ -263,18 +269,23 @@ namespace AffectiveGame.Actors
         {
             base.Draw(spriteBatch, gameTime);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, levelScreen.camera.transform);
             spriteBatch.Draw(spriteSheet, position, animations[(int)action].GetFrame(), Color.White, 0, Vector2.Zero, isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            spriteBatch.End();
+
             if (debug)
             {
+                spriteBatch.Begin();
+
                 spriteBatch.DrawString(font, "Action: " + action.ToString(), new Vector2(50, 50), Color.White);
                 spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
                 spriteBatch.DrawString(font, "Howl bonus: " + howlBonus.ToString(), new Vector2(50, 110), Color.White);
 
                 if (lastSafeCollider != null)
                     spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
+
+                spriteBatch.End();
             }
-            spriteBatch.End();
         }
 
         # endregion
@@ -365,5 +376,7 @@ namespace AffectiveGame.Actors
             else
                 inertia = Vector2.Zero;
         }
+
+        public Vector2 GetPosition() { return new Vector2(position.Center.X, position.Center.Y); }
     }
 }

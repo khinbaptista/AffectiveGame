@@ -43,7 +43,7 @@ namespace AffectiveGame.Screens.Level
         {
             base.Draw(gameTime, spriteBatch);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.transform);
 
             for (int i = 0; i < environmentColliders.Count; i++)
                 if (environmentColliders[i].isActive)
