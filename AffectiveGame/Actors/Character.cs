@@ -92,12 +92,17 @@ namespace AffectiveGame.Actors
             animations[(int)Action.Howl].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
             animations[(int)Action.Dig].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
 
-            animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(19, 43, 74, 56)); // 94, 216, 370, 280 / 5
-            animations[(int)Action.Walk].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
+            //animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(19, 43, 74, 56)); // 94, 216, 370, 280 / 5
+            //animations[(int)Action.Walk].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
+            animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(17, 79, 86, 54)); // 85, 394, 432, 271 / 5
+            animations[(int)Action.Walk].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
+
             animations[(int)Action.Jump].InsertFrameCollider(new Rectangle(36, 13, 50, 122)); // 751 / 5 - 570 / 5, 65, 249, 609 / 5
             animations[(int)Action.Fall].InsertFrameCollider(new Rectangle(36, 13, 50, 122));
-            animations[(int)Action.Howl].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
-            animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
+            //animations[(int)Action.Howl].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
+            //animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
+            animations[(int)Action.Howl].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
+            animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
         }
 
         public override void HandleInput(InputHandler input)
@@ -310,13 +315,14 @@ namespace AffectiveGame.Actors
                     if (col.isHarmful)
                     {
                         // check damage and everything
-                        return;
+                        //return;
                     }
 
                     // test every possible collision
                     if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top//)
                     && characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
                     {
+                        // The flickering when jumping is due to the imperfections in the spritesheet, which means it will (hopefully) work just fine when we change the assets
                         this.position = new Rectangle(position.X, position.Y - (characterColliderPositioned.Bottom - rect.Top), position.Width, position.Height);
                         Collide(Vector2.UnitY);
                         lastSafeCollider = col;
