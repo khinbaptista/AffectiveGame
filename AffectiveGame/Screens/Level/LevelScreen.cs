@@ -41,7 +41,8 @@ namespace AffectiveGame.Screens.Level
 
             Edon.Update(gameTime);
 
-            camera.position = Edon.GetPosition() - new Vector2(0, viewport.Height / 4);
+            Vector2 edonPosition = Edon.GetPosition();
+            camera.SmoothMove(new Vector2(edonPosition.X, Edon.grounded ? edonPosition.Y - viewport.Height / 4 : camera.position.Y));
             camera.Update();
         }
 
@@ -66,7 +67,6 @@ namespace AffectiveGame.Screens.Level
             if (screenState == ScreenState.Hidden)
                 return;
 
-            //spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.transform);
             spriteBatch.Begin();
             spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
             spriteBatch.End();

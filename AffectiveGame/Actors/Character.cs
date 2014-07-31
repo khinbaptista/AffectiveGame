@@ -36,7 +36,7 @@ namespace AffectiveGame.Actors
         private const int positionHeight = 138; // 690 / 5
         
         private bool isFacingLeft;
-        private bool grounded;
+        public bool grounded { get; private set; }
         private Screens.Level.Collider lastSafeCollider;
 
         private Vector2 movement;
