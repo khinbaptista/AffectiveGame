@@ -28,28 +28,50 @@ namespace AffectiveGame.Actors
         bool debug = true;
         SpriteFont font;
 
-        public Action action { get; private set; }
-        private Texture2D spriteSheet;
+        private Action _action;
 
-        Rectangle position;
+        // Position
         private const int positionWidth = 114; // 570 / 5
         private const int positionHeight = 138; // 690 / 5
-        
         private bool isFacingLeft;
-        public bool grounded { get; private set; }
         private Screens.Level.Collider lastSafeCollider;
 
-        private Vector2 movement;
-        private Vector2 inertia;
-        private const int movementSpeed = 10;
-        private const int howlBonusSpeed = 5;
-
-        private float jumpSpeed = 0;
+        // Constants
+        private const int movementSpeed = 3;
         private const float jumpSpeedStep = 15;
         private const float maxJumpSpeed = 180;
         private const float jumpHowlBoost = 50;
-
         private const int maxSpeed = 15;
+
+        // Howl bonus
+
+        /// <summary>
+        /// Bonus you get when you howl at the moon
+        /// </summary>
+        private bool howlBonus;
+
+        /// <summary>
+        /// Duration of the bonus you get for howling at the moon
+        /// </summary>
+        private readonly TimeSpan howlBonusDuration;
+
+        /// <summary>
+        /// Timer to control the howl bonus
+        /// </summary>
+        private TimeSpan howlBonusTimer;
+
+        private const int howlBonusSpeed = 5;
+
+        private bool howlBonusEnded;
+
+        # endregion
+
+        # region Properties
+
+        public Action action
+        {
+            get { return _action; }
+        }
 
         # endregion
 
@@ -60,9 +82,12 @@ namespace AffectiveGame.Actors
         {
             LoadContent(levelScreen.GetContentRef());
 
-            action = Action.Fall;
-            position = new Rectangle(100, 200, positionWidth, positionHeight);
+            _action = Action.Fall;
+            _position = new Rectangle(100, 500, positionWidth, positionHeight);
+            howlBonusDuration = TimeSpan.FromMilliseconds(5000);
         }
+
+        # region Override
 
         public override void LoadContent(ContentManager content)
         {
@@ -85,6 +110,7 @@ namespace AffectiveGame.Actors
             animations.Add(new Animation(false)); // dig
             //animations.Add(new Animation(false)); // drink
 
+            // TO-DO: add frames and colliders via text file (inside Animation)
             animations[(int)Action.Idle].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half of image
             animations[(int)Action.Walk].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
             animations[(int)Action.Jump].InsertFrame(new Rectangle(570, 0, 570, 690)); // 2nd half
@@ -92,15 +118,15 @@ namespace AffectiveGame.Actors
             animations[(int)Action.Howl].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
             animations[(int)Action.Dig].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
 
+            // OMG this works!
+            //Console.WriteLine((int)Enum.Parse(typeof(Action), "Dig"));
+
             //animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(19, 43, 74, 56)); // 94, 216, 370, 280 / 5
-            //animations[(int)Action.Walk].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
             animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(17, 79, 86, 54)); // 85, 394, 432, 271 / 5
             animations[(int)Action.Walk].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
 
             animations[(int)Action.Jump].InsertFrameCollider(new Rectangle(36, 13, 50, 122)); // 751 / 5 - 570 / 5, 65, 249, 609 / 5
             animations[(int)Action.Fall].InsertFrameCollider(new Rectangle(36, 13, 50, 122));
-            //animations[(int)Action.Howl].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
-            //animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(19, 43, 74, 56));
             animations[(int)Action.Howl].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
             animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
         }
@@ -114,6 +140,70 @@ namespace AffectiveGame.Actors
             AnimationControl(input);
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (updateFrame)
+                animations[(int)_action].UpdateFrame();
+
+            if (howlBonus)
+            {
+                howlBonusTimer = howlBonusTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+
+                if (howlBonusTimer.TotalMilliseconds > howlBonusDuration.TotalMilliseconds)
+                {
+                    howlBonusTimer = TimeSpan.Zero;
+                    howlBonus = false;
+                    howlBonusEnded = true;
+                }
+            }
+
+            float bonusSpeed = howlBonus ? howlBonusSpeed : 0;
+
+            movement += levelScreen.GetGravity(); // apply gravity
+
+            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - bonusSpeed, maxSpeed + bonusSpeed);
+            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
+
+            //float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
+
+            CheckCollisions();
+
+            inertia = movement;
+
+
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            base.Draw(spriteBatch, gameTime);
+
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, levelScreen.camera.transform);
+            spriteBatch.Draw(spriteSheet, _position, animations[(int)_action].GetFrame(), Color.White, 0, Vector2.Zero, isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+            spriteBatch.End();
+
+            if (debug)
+            {
+                spriteBatch.Begin();
+
+                spriteBatch.DrawString(font, "Action: " + _action.ToString(), new Vector2(50, 50), Color.White);
+                spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
+                spriteBatch.DrawString(font, "Howl bonus: " + howlBonus.ToString(), new Vector2(50, 110), Color.White);
+                spriteBatch.DrawString(font, "Camera zoom: " + levelScreen.camera.zoom, new Vector2(50, 130), Color.White);
+
+                if (lastSafeCollider != null)
+                    spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
+
+                spriteBatch.End();
+            }
+        }
+
+        # endregion
+
+        
+
         /// <summary>
         /// Controls everything about the animation and the physics associated
         /// </summary>
@@ -122,12 +212,12 @@ namespace AffectiveGame.Actors
         {
             bool dont_move = false;
 
-            switch (action)
+            switch (_action)
             {
                 case Action.Howl:
                     {
                         dont_move = true;
-                        if (animations[(int)action].isFinished)
+                        if (animations[(int)_action].isFinished)
                         {
                             if (levelScreen.fullMoon || debug)
                                 StartHowlBonus();
@@ -137,7 +227,7 @@ namespace AffectiveGame.Actors
                 case Action.Dig:
                     {
                         dont_move = true;
-                        if (animations[(int)action].isFinished)
+                        if (animations[(int)_action].isFinished)
                         {
                             lastSafeCollider.Dig();
                             ChangeAction(Action.Idle);
@@ -146,7 +236,7 @@ namespace AffectiveGame.Actors
                 case Action.Drink:
                     {
                         dont_move = true;
-                        if (animations[(int)action].isFinished)
+                        if (animations[(int)_action].isFinished)
                         {
                             // drink
                             ChangeAction(Action.Idle);
@@ -161,13 +251,13 @@ namespace AffectiveGame.Actors
 
             bool moved = Move(input);
 
-            switch (action)
+            switch (_action)
             {
                 case Action.Idle:
                     {
                         if (moved)
                             ChangeAction(Action.Walk);
-                        if (input.WasPressed(Input.A) && grounded && CanJump())
+                        if (input.WasPressed(Input.A) && CanJump())
                             ChangeAction(Action.Jump);
                         else if (input.WasPressed(Input.Y))
                             ChangeAction(Action.Dig);
@@ -181,7 +271,7 @@ namespace AffectiveGame.Actors
                     {
                         if (!moved)
                             ChangeAction(Action.Idle);
-                        if (input.WasPressed(Input.A) && grounded && CanJump())
+                        if (input.WasPressed(Input.A) && CanJump())
                             ChangeAction(Action.Jump);
                     } break;
 
@@ -217,94 +307,15 @@ namespace AffectiveGame.Actors
             
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            if (updateFrame)
-                animations[(int)action].UpdateFrame();
-
-            float bonusSpeed = howlBonus ? howlBonusSpeed : 0;
-
-            movement += levelScreen.GetGravity(); // apply gravity
-
-            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - bonusSpeed, maxSpeed + bonusSpeed);
-            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
-
-            position = new Rectangle(position.X + (int)movement.X, position.Y + (int)movement.Y, position.Width, position.Height);
-
-            CheckCollisions();
-
-            inertia = movement;
-        }
-
-        private bool Move(InputHandler input)
-        {
-            bool hasMoved = false;
-
-            if (input.Contains(Input.Left))
-            {
-                hasMoved = true;
-
-                if (isFacingLeft)
-                    movement += new Vector2(-movementSpeed, 0);
-                else
-                    isFacingLeft = true;
-            }
-            else if (input.Contains(Input.Right))
-            {
-                hasMoved = true;
-
-                if (!isFacingLeft)
-                    movement += new Vector2(movementSpeed, 0);
-                else
-                    isFacingLeft = false;
-            }
-
-            return hasMoved;
-        }
-
-        private void ChangeAction(Action newAction)
-        {
-            action = newAction;
-            animations[(int)action].Start();
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            base.Draw(spriteBatch, gameTime);
-
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, levelScreen.camera.transform);
-            spriteBatch.Draw(spriteSheet, position, animations[(int)action].GetFrame(), Color.White, 0, Vector2.Zero, isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
-            spriteBatch.End();
-
-            if (debug)
-            {
-                spriteBatch.Begin();
-
-                spriteBatch.DrawString(font, "Action: " + action.ToString(), new Vector2(50, 50), Color.White);
-                spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
-                spriteBatch.DrawString(font, "Howl bonus: " + howlBonus.ToString(), new Vector2(50, 110), Color.White);
-                spriteBatch.DrawString(font, "Camera zoom: " + levelScreen.camera.zoom, new Vector2(50, 130), Color.White);
-
-                if (lastSafeCollider != null)
-                    spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
-
-                spriteBatch.End();
-            }
-        }
-
-        # endregion
-
         /// <summary>
-        /// Checks for collision between the current frame and the rectangles of the level this character is in
+        /// Checks for collision between the current frame and the rectangles of the level this character is in (needs adjustments)
         /// </summary>
         private void CheckCollisions()
         {
-            Rectangle characterCollider = animations[(int)action].GetCollider();
-            Rectangle characterColliderPositioned = new Rectangle(position.X + characterCollider.X, position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
+            Rectangle characterCollider = animations[(int)_action].GetCollider();
+            Rectangle characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
 
-            grounded = false;
+            _grounded = false;
 
             foreach (Screens.Level.Collider col in levelScreen.GetColliders())
             {
@@ -322,35 +333,80 @@ namespace AffectiveGame.Actors
                     if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top//)
                     && characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
                     {
-                        // The flickering when jumping is due to the imperfections in the spritesheet, which means it will (hopefully) work just fine when we change the assets
-                        this.position = new Rectangle(position.X, position.Y - (characterColliderPositioned.Bottom - rect.Top), position.Width, position.Height);
+                        // The flickering when jumping against a wall is due to the imperfections in the spritesheet, which means it will work just fine when we change the assets
+                        this._position = new Rectangle(_position.X, _position.Y - (characterColliderPositioned.Bottom - rect.Top), _position.Width, _position.Height);
                         Collide(Vector2.UnitY);
                         lastSafeCollider = col;
-                        grounded = true;
+                        _grounded = true;
                     }
-                    else if (characterColliderPositioned.Top < rect.Bottom && characterColliderPositioned.Bottom > rect.Bottom)
-                    //&& characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
+                    else if (characterColliderPositioned.Top < rect.Bottom && characterColliderPositioned.Bottom > rect.Bottom//)
+                    && characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
                     {
-                        this.position = new Rectangle(position.X, position.Y + (rect.Bottom - characterColliderPositioned.Top), position.Width, position.Height);
+                        this._position = new Rectangle(_position.X, _position.Y + (rect.Bottom - characterColliderPositioned.Top), _position.Width, _position.Height);
                         Collide(Vector2.UnitY);
                         ChangeAction(Action.Fall);
                     }
                     else if (characterColliderPositioned.Right > rect.Left && characterColliderPositioned.Left < rect.Left)
                     //&&
                     {
-                        this.position = new Rectangle(position.X - (characterColliderPositioned.Right - rect.Left), position.Y, position.Width, position.Height);
+                        this._position = new Rectangle(_position.X - (characterColliderPositioned.Right - rect.Left), _position.Y, _position.Width, _position.Height);
                         Collide(Vector2.UnitX);
                     }
                     else if (characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Right)
                     {
-                        this.position = new Rectangle(position.X + (rect.Right - characterColliderPositioned.Left), position.Y, position.Width, position.Height);
+                        this._position = new Rectangle(_position.X + (rect.Right - characterColliderPositioned.Left), _position.Y, _position.Width, _position.Height);
                         Collide(Vector2.UnitX);
                     }
 
-                    characterColliderPositioned = new Rectangle(position.X + characterCollider.X, position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
+                    characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
                 }
             }
         }
+
+        private bool Move(InputHandler input)
+        {
+            bool hasMoved = false;
+
+            if (input.Contains(Input.Left))
+            {
+                hasMoved = true;
+
+                if (isFacingLeft)
+                    movement += new Vector2(movementSpeed * input.getValues().XaxisLeft, 0);
+                else
+                    isFacingLeft = true;
+            }
+            else if (input.Contains(Input.Right))
+            {
+                hasMoved = true;
+
+                if (!isFacingLeft)
+                    movement += new Vector2(movementSpeed * input.getValues().XaxisLeft, 0);
+                else
+                    isFacingLeft = false;
+            }
+
+            return hasMoved;
+        }
+
+        private void ChangeAction(Action newAction)
+        {
+            _action = newAction;
+            animations[(int)_action].Start();
+        }
+
+        private void StartHowlBonus()
+        {
+            if (howlBonus) return;
+
+            howlBonus = true;
+            howlBonusTimer = TimeSpan.Zero;
+            howlBonusEnded = false;
+        }
+
+        # endregion
+
+        # region Auxiliar Methods
 
         /// <summary>
         /// Checks whether or not there is room above Edon for him to perform a jump
@@ -359,31 +415,17 @@ namespace AffectiveGame.Actors
         {
             bool canJump = true;
 
-            Rectangle characterCollider = animations[(int)action].GetCollider();
-            Rectangle characterColliderPositioned = new Rectangle(position.X + characterCollider.X,
-                position.Y + characterCollider.Y - characterCollider.Height, characterCollider.Width, characterCollider.Height);
+            Rectangle characterCollider = animations[(int)_action].GetCollider();
+            Rectangle characterColliderPositioned = new Rectangle(_position.X + characterCollider.X,
+                _position.Y + characterCollider.Y - characterCollider.Height, characterCollider.Width, characterCollider.Height);
 
             foreach (Screens.Level.Collider collider in levelScreen.GetColliders())
                 if (collider.GetBox().Intersects(characterColliderPositioned))
                     canJump = false;
 
-            return canJump;
+            return canJump && _grounded;
         }
 
-        /// <summary>
-        /// Cancel inertia in the direction specified
-        /// </summary>
-        /// <param name="axis">Unit vector in the axis to be canceled (TIP: use Vector2.UnitX / Vector2.UnitY)</param>
-        private void Collide(Vector2 axis)
-        {
-            if (axis == Vector2.UnitX)
-                inertia.X = 0;
-            else if (axis == Vector2.UnitY)
-                inertia.Y = 0;
-            else
-                inertia = Vector2.Zero;
-        }
-
-        public Vector2 GetPosition() { return new Vector2(position.Center.X, position.Center.Y); }
+        # endregion
     }
 }

@@ -53,7 +53,7 @@ namespace AffectiveGame
         private List<Input> currentStatus;
         private TriggerValues currentValues;
 
-        private const float buttonThreshold = 0.5f;
+        private const float buttonThreshold = 0.1f;
 
         private TimeSpan activationTime;
         private TimeSpan timer;

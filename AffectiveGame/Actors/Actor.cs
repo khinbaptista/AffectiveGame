@@ -10,8 +10,23 @@ namespace AffectiveGame.Actors
 {
     abstract class Actor
     {
+        # region Attributes
+
         protected Screens.Level.LevelScreen levelScreen;
+
         protected List<Animation> animations;
+
+        protected Texture2D spriteSheet;
+
+        protected Rectangle _position;
+
+        protected bool _grounded;
+
+        protected Vector2 movement;
+
+        protected Vector2 inertia;
+
+        protected float jumpSpeed = 0;
 
         /// <summary>
         /// Time it takes to move to the next frame in the animation
@@ -28,22 +43,25 @@ namespace AffectiveGame.Actors
         /// </summary>
         protected bool updateFrame;
 
-        /// <summary>
-        /// Bonus you get when you howl at the moon
-        /// </summary>
-        protected bool howlBonus;
+        
 
-        /// <summary>
-        /// Duration of the bonus you get for howling at the moon
-        /// </summary>
-        protected readonly TimeSpan howlBonusDuration;
+        # endregion
 
-        /// <summary>
-        /// Timer to control the howl bonus
-        /// </summary>
-        protected TimeSpan howlBonusTimer;
+        # region Properties
 
-        protected bool howlBonusEnded;
+        public bool grounded
+        {
+            get { return _grounded; }
+        }
+
+        public Vector2 position
+        {
+            get { return new Vector2(_position.Center.X, _position.Center.Y); }
+        }
+
+        # endregion
+
+        # region Methods
 
         public Actor(Screens.Level.LevelScreen levelScreen)
         {
@@ -51,7 +69,6 @@ namespace AffectiveGame.Actors
 
             frameInterval = TimeSpan.FromMilliseconds(150);
             frameTimer = TimeSpan.Zero;
-            howlBonusDuration = TimeSpan.FromMilliseconds(5000);
         }
 
         public virtual void LoadContent(ContentManager content) { }
@@ -59,18 +76,6 @@ namespace AffectiveGame.Actors
         public virtual void Update(GameTime gameTime)
         {
             frameTimer = frameTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
-
-            if (howlBonus)
-            {
-                howlBonusTimer = howlBonusTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
-
-                if (howlBonusTimer.TotalMilliseconds > howlBonusDuration.TotalMilliseconds)
-                {
-                    howlBonusTimer = TimeSpan.Zero;
-                    howlBonus = false;
-                    howlBonusEnded = true;
-                }
-            }
 
             if (frameTimer.TotalMilliseconds > frameInterval.TotalMilliseconds)
             {
@@ -85,13 +90,26 @@ namespace AffectiveGame.Actors
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime) { }
 
-        protected void StartHowlBonus()
-        {
-            if (howlBonus) return;
+        # endregion
 
-            howlBonus = true;
-            howlBonusTimer = TimeSpan.Zero;
-            howlBonusEnded = false;
+        # region Auxiliar Methods
+
+        
+
+        /// <summary>
+        /// Cancel inertia in the direction specified
+        /// </summary>
+        /// <param name="axis">Unit vector in the axis to be canceled (TIP: use Vector2.UnitX / Vector2.UnitY)</param>
+        protected void Collide(Vector2 axis)
+        {
+            if (axis == Vector2.UnitX)
+                inertia.X = 0;
+            else if (axis == Vector2.UnitY)
+                inertia.Y = 0;
+            else
+                inertia = Vector2.Zero;
         }
+
+        # endregion
     }
 }

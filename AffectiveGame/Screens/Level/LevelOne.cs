@@ -23,10 +23,12 @@ namespace AffectiveGame.Screens.Level
             base.LoadContent(content);
 
             environmentColliders = new List<Collider>();
+            LevelFromFile(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\levelOne.txt");
+            /*
             environmentColliders.Add(new Collider(-500, 1080 - 80, 1920 + 1000, 80)); // ground
             environmentColliders.Add(new Collider(-500, 1080 - 800, 510, 800));
             environmentColliders.Add(new Collider(1920 - 10, 1080 - 800, 300, 800));
-            environmentColliders.Add(new Collider(150, 850, 500, 20, false, true, false, 0.9f));
+            environmentColliders.Add(new Collider(150, 850, 500, 20, false, true, false, 0.5f));*/
         }
 
         public override void HandleInput(GameTime gameTime)
