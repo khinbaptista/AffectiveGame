@@ -36,12 +36,12 @@ namespace AffectiveGame.Actors
         private bool isFacingLeft;
         private Screens.Level.Collider lastSafeCollider;
 
-        // Constants
-        private const int movementSpeed = 3;
-        private const float jumpSpeedStep = 15;
-        private const float maxJumpSpeed = 180;
-        private const float jumpHowlBoost = 50;
-        private const int maxSpeed = 15;
+        // Movement constants (must be updated to real time)
+        private const float movementSpeed = 600;
+        private const float jumpSpeedStep = 450;
+        private const float maxJumpSpeed = 3000;
+        private const int maxSpeed = 4000;
+
 
         // Howl bonus
 
@@ -62,9 +62,23 @@ namespace AffectiveGame.Actors
 
         private const int howlBonusSpeed = 5;
 
+        private const float jumpHowlBoost = 50;
+
         private bool howlBonusEnded;
 
+
+        // Fear onus
+
+        private float _fear;
+        private bool _afraid;
+        private const float fearThreshold = 128;
+        private const float _fearRegenerationRate = 32;
+        private const int fearOnusSpeed = 5;
+        
+
         # endregion
+
+
 
         # region Properties
 
@@ -75,15 +89,17 @@ namespace AffectiveGame.Actors
 
         # endregion
 
+
+
         # region Methods
 
-        public Character(Screens.Level.LevelScreen levelScreen)
-            : base (levelScreen)
+        public Character(GameMain game, Screens.Level.LevelScreen levelScreen, Vector2 position)   // 100 500
+            : base (game, levelScreen)
         {
-            LoadContent(levelScreen.GetContentRef());
+            LoadContent(game.Content);
 
             _action = Action.Fall;
-            _position = new Rectangle(100, 500, positionWidth, positionHeight);
+            _position = new Rectangle((int)position.X, (int)position.Y, positionWidth, positionHeight);
             howlBonusDuration = TimeSpan.FromMilliseconds(5000);
         }
 
@@ -149,9 +165,9 @@ namespace AffectiveGame.Actors
 
             if (howlBonus)
             {
-                howlBonusTimer = howlBonusTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+                howlBonusTimer = howlBonusTimer + gameTime.ElapsedGameTime;
 
-                if (howlBonusTimer.TotalMilliseconds > howlBonusDuration.TotalMilliseconds)
+                if (howlBonusTimer > howlBonusDuration)
                 {
                     howlBonusTimer = TimeSpan.Zero;
                     howlBonus = false;
@@ -163,10 +179,9 @@ namespace AffectiveGame.Actors
 
             movement += levelScreen.GetGravity(); // apply gravity
 
-            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - bonusSpeed, maxSpeed + bonusSpeed);
-            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
+            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - bonusSpeed, maxSpeed + bonusSpeed) * game.deltaTime;
+            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed) * game.deltaTime;
 
-            //float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
 
             CheckCollisions();
@@ -188,10 +203,13 @@ namespace AffectiveGame.Actors
             {
                 spriteBatch.Begin();
 
+                spriteBatch.DrawString(font, "Position: " + _position.X + ", " + _position.Y, new Vector2(50, 30), Color.White);
                 spriteBatch.DrawString(font, "Action: " + _action.ToString(), new Vector2(50, 50), Color.White);
                 spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
                 spriteBatch.DrawString(font, "Howl bonus: " + howlBonus.ToString(), new Vector2(50, 110), Color.White);
-                spriteBatch.DrawString(font, "Camera zoom: " + levelScreen.camera.zoom, new Vector2(50, 130), Color.White);
+                spriteBatch.DrawString(font, "Fear gear: " + _fear, new Vector2(50, 130), Color.White);
+                spriteBatch.DrawString(font, "Movement: " + movement, new Vector2(50, 150), Color.White);
+                spriteBatch.DrawString(font, "Inertia: " + inertia, new Vector2(50, 170), Color.White);
 
                 if (lastSafeCollider != null)
                     spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
@@ -251,6 +269,9 @@ namespace AffectiveGame.Actors
 
             bool moved = Move(input);
 
+            if (_action != Action.Jump && !_grounded)
+                ChangeAction(Action.Fall);
+
             switch (_action)
             {
                 case Action.Idle:
@@ -281,7 +302,7 @@ namespace AffectiveGame.Actors
                         {
                             jumpSpeed += jumpSpeedStep;
 
-                            if (jumpSpeed >= maxJumpSpeed + (howlBonus ? jumpHowlBoost : 0))
+                            if (jumpSpeed >= maxJumpSpeed + (howlBonus ? jumpHowlBoost : 0))// - (_afraid ? ))
                             {
                                 jumpSpeed = 0;
                                 ChangeAction(Action.Fall);

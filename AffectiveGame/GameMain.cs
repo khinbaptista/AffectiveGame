@@ -31,7 +31,11 @@ namespace AffectiveGame
         /// </summary>
         List<Screens.GameScreen> screens;
 
+        public float deltaTime { get; private set; }
+
         #endregion
+
+
 
         #region Methods
 
@@ -91,7 +95,7 @@ namespace AffectiveGame
             if (Keyboard.GetState().IsKeyDown(Keys.Escape) || screens.Count == 0)
                 Exit();
 
-            //input.Update();
+            deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             int i = 0;
             while (i < screens.Count)
@@ -127,6 +131,8 @@ namespace AffectiveGame
         }
 
         #endregion
+
+
 
         #region Auxiliar methods
 

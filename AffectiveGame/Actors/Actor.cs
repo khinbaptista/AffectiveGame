@@ -12,6 +12,8 @@ namespace AffectiveGame.Actors
     {
         # region Attributes
 
+        protected GameMain game;
+
         protected Screens.Level.LevelScreen levelScreen;
 
         protected List<Animation> animations;
@@ -47,6 +49,8 @@ namespace AffectiveGame.Actors
 
         # endregion
 
+
+
         # region Properties
 
         public bool grounded
@@ -61,12 +65,15 @@ namespace AffectiveGame.Actors
 
         # endregion
 
+
+
         # region Methods
 
-        public Actor(Screens.Level.LevelScreen levelScreen)
+        public Actor(GameMain game, Screens.Level.LevelScreen levelScreen)
         {
             this.levelScreen = levelScreen;
 
+            this.game = game;
             frameInterval = TimeSpan.FromMilliseconds(150);
             frameTimer = TimeSpan.Zero;
         }
@@ -92,9 +99,9 @@ namespace AffectiveGame.Actors
 
         # endregion
 
-        # region Auxiliar Methods
 
-        
+
+        # region Auxiliar Methods
 
         /// <summary>
         /// Cancel inertia in the direction specified

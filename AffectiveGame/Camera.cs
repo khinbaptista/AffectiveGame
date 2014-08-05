@@ -18,9 +18,11 @@ namespace AffectiveGame
         protected float _zoom;
 
         protected float characterYpos;
-        protected const float smoothSpeed = 10;
+        protected const float smoothSpeed = 512;
 
         #endregion
+
+
 
         # region Properties
 
@@ -49,27 +51,29 @@ namespace AffectiveGame
 
         # endregion
 
+
+
         # region Methods
 
-        public Camera(Viewport viewport)
+        public Camera(Viewport viewport, Vector2 position)
         {
             _viewport = viewport;
             _transform = Matrix.Identity;
             _inverseTransform = Matrix.Identity;
-            _position = Vector2.Zero;
+            _position = position;
             _zoom = 1.0f;
         }
 
         public void HandleInput(InputHandler input)
         {
-            _zoom -= input.getValues().YaxisRight / 10;
+            //_zoom -= input.getValues().YaxisRight / 10;
 
-            _zoom = MathHelper.Clamp(_zoom, 0, 3);
+            //_zoom = MathHelper.Clamp(_zoom, 0, 3);
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            SmoothUpdate();
+            SmoothUpdate(gameTime);
 
             Vector2 origin = new Vector2(_viewport.Width / 2, _viewport.Height / 2);
 
@@ -88,17 +92,19 @@ namespace AffectiveGame
             _position.X = newPosition.X;
         }
 
-        private void SmoothUpdate()
+        private void SmoothUpdate(GameTime gameTime)
         {
             if (characterYpos == _position.Y)
                 return;
 
-            if (Math.Abs(_position.Y - characterYpos) <= smoothSpeed)
+            float finalSpeed = (float)(smoothSpeed * gameTime.ElapsedGameTime.TotalSeconds);
+
+            if (Math.Abs(_position.Y - characterYpos) <= finalSpeed)
                 _position.Y = characterYpos;
             else if (_position.Y > characterYpos)
-                _position.Y -= smoothSpeed;
+                _position.Y -= finalSpeed;
             else if (_position.Y < characterYpos)
-                _position.Y += smoothSpeed;
+                _position.Y += finalSpeed;
         }
 
         # endregion

@@ -10,12 +10,12 @@ namespace AffectiveGame.Screens.Level
 {
     class LevelOne : LevelScreen
     {
-        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 5, ScreenState state = ScreenState.TransitionOn)
+        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 400, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, gravitySpeed, state)
         {
+            startPosition = new Vector2(100, 400);
+            Edon = new Actors.Character(game, this, startPosition);
             LoadContent(game.Content);
-
-            Edon = new Actors.Character(this);
         }
 
         public override void LoadContent(ContentManager content)
