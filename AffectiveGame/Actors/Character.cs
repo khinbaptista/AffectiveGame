@@ -45,8 +45,8 @@ namespace AffectiveGame.Actors
         
         private const float movementSpeed = 600;
         private const float jumpSpeedStep = 450;
-        private const float maxJumpSpeed = 3000;
-        private const int maxSpeed = 4000;
+        private const float maxJumpSpeed = 4500;
+        private const int maxSpeed = 20000;
 
         # endregion
 
@@ -67,9 +67,9 @@ namespace AffectiveGame.Actors
         /// </summary>
         private TimeSpan howlBonusTimer;
 
-        private const int howlBonusSpeed = 5;
+        private const int howlBonusSpeed = 50;
 
-        private const float jumpHowlBoost = 50;
+        private const float jumpHowlBoost = 500;
 
         private bool howlBonusEnded;
 
@@ -81,7 +81,8 @@ namespace AffectiveGame.Actors
         private bool _afraid;
         private const float fearThreshold = 128;
         private const float _fearRegenerationRate = 32;
-        private const int fearOnusSpeed = 5;
+        private const int fearOnusSpeed = 1000;
+        private const int fearOnusJump = 1000;
 
         # endregion
 
@@ -182,18 +183,21 @@ namespace AffectiveGame.Actors
                 }
             }
 
-            float bonusSpeed = howlBonus ? howlBonusSpeed : 0;
-                    bonusSpeed -= _afraid ? fearOnusSpeed : 0;
+            float speedModifier = howlBonus ? howlBonusSpeed : 0;
+                    speedModifier -= _afraid ? fearOnusSpeed : 0;
 
             
             movement += levelScreen.GetGravity();
 
-            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - bonusSpeed, maxSpeed + bonusSpeed) * game.deltaTime;
-            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed) * game.deltaTime;
+            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - speedModifier, maxSpeed + speedModifier);// *game.deltaTime;
+            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);// *game.deltaTime;
+
+            movement *= game.deltaTime;
 
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
 
             CheckCollisions();
+            UpdateFear();
 
             inertia = movement;
 
@@ -216,8 +220,8 @@ namespace AffectiveGame.Actors
                 spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
                 spriteBatch.DrawString(font, "Howl bonus: " + howlBonus.ToString(), new Vector2(50, 110), Color.White);
                 spriteBatch.DrawString(font, "Fear gear: " + _fear, new Vector2(50, 130), Color.White);
-                spriteBatch.DrawString(font, "Movement: " + movement, new Vector2(50, 150), Color.White);
-                spriteBatch.DrawString(font, "Inertia: " + inertia, new Vector2(50, 170), Color.White);
+                spriteBatch.DrawString(font, "Afraid: " + _afraid, new Vector2(50, 150), Color.White);
+                spriteBatch.DrawString(font, "Movement: " + movement, new Vector2(50, 170), Color.White);
 
                 if (lastSafeCollider != null)
                     spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
@@ -310,7 +314,7 @@ namespace AffectiveGame.Actors
                         {
                             jumpSpeed += jumpSpeedStep;
 
-                            if (jumpSpeed >= maxJumpSpeed + (howlBonus ? jumpHowlBoost : 0))// - (_afraid ? ))
+                            if (jumpSpeed >= maxJumpSpeed + (howlBonus ? jumpHowlBoost : 0) - (_afraid ? fearOnusJump : 0))
                             {
                                 jumpSpeed = 0;
                                 ChangeAction(Action.Fall);
@@ -394,7 +398,36 @@ namespace AffectiveGame.Actors
 
         private void UpdateFear()
         {
+            Rectangle characterCollider = animations[(int)_action].GetCollider();
+            Rectangle characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
 
+            int i = 0;
+            List<Rectangle> fearZones = levelScreen.GetFearAreas();
+
+            while (i < fearZones.Count)
+            {
+                if (characterColliderPositioned.Intersects(fearZones[i]))
+                    _fear += 3 * _fearRegenerationRate * game.deltaTime;
+
+                if (_fear >= fearThreshold)
+                    _afraid = true;
+
+                if (_fear > 255)
+                    _fear = 255;
+
+                i++;
+            }
+
+            if (howlBonus)
+                _fear = 0;
+            else
+                _fear -= _fearRegenerationRate * game.deltaTime;
+
+            if (_fear < fearThreshold)
+                _afraid = false;
+
+            if (_fear < 0)
+                _fear = 0;
         }
 
         private bool Move(InputHandler input)
@@ -439,6 +472,7 @@ namespace AffectiveGame.Actors
         }
 
         # endregion
+
 
         # region Auxiliar Methods
 

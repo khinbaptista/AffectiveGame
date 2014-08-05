@@ -10,7 +10,7 @@ namespace AffectiveGame.Screens.Level
 {
     class LevelOne : LevelScreen
     {
-        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 400, ScreenState state = ScreenState.TransitionOn)
+        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 800, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, gravitySpeed, state)
         {
             startPosition = new Vector2(100, 400);
@@ -52,6 +52,10 @@ namespace AffectiveGame.Screens.Level
             for (int i = 0; i < environmentColliders.Count; i++)
                 if (environmentColliders[i].isActive)
                     spriteBatch.Draw(blank, environmentColliders[i].GetBox(), new Color(0.6f, 0.5f, 0.2f, 0.0f));
+
+            // debug
+            foreach (Rectangle fearZone in fearArea)
+                spriteBatch.Draw(blank, fearZone, new Color(0.3f, 0, 0, 0.5f));
             
             spriteBatch.End();
         }
