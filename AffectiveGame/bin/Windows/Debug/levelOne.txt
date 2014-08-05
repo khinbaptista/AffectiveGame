@@ -1,0 +1,23 @@
+# Loads colliders by default
+# Use the keywords 'fear' to change input to fear zones and
+# 'collider' to go back to loading colliders
+
+# x y width height
+# x y width height isHarmful isDiggable isWater friction
+
+-500 1000 2920 80
+-500 280 510 800
+1910 280 300 800
+150 850 500 20 false true false 0.4
+800 750 500 100 false false false 1
+1400 850 300 20 false false false 0.7
+
+# start loading fear zones (simple rectangles)
+fear
+-800 -800 100 100
+# could go on as long as required
+
+
+# go back to loading colliders
+collider
+500 0 800 50

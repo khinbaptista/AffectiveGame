@@ -23,7 +23,9 @@ namespace AffectiveGame.Screens.Level
             base.LoadContent(content);
 
             environmentColliders = new List<Collider>();
-            LevelFromFile(Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\levelOne.txt");
+            fearArea = new List<Rectangle>();
+            LevelFromFile(Environment.CurrentDirectory + @"\levelOne.txt");
+
             /*
             environmentColliders.Add(new Collider(-500, 1080 - 80, 1920 + 1000, 80)); // ground
             environmentColliders.Add(new Collider(-500, 1080 - 800, 510, 800));

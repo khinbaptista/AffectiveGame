@@ -11,8 +11,6 @@ namespace AffectiveGame.Actors
 {
     class Character : Actor
     {
-        # region Attributes
-
         public enum Action
         {
             Idle = 0,
@@ -24,26 +22,35 @@ namespace AffectiveGame.Actors
             Drink
         }
 
+        # region Attributes
+
         // debug
         bool debug = true;
         SpriteFont font;
 
         private Action _action;
 
-        // Position
+        # region Position
+
         private const int positionWidth = 114; // 570 / 5
         private const int positionHeight = 138; // 690 / 5
         private bool isFacingLeft;
         private Screens.Level.Collider lastSafeCollider;
 
+        # endregion
+
         // Movement constants (must be updated to real time)
+        // (making them realtime ruined the whole friction thing - regardless of the surface, gravity will always stop the movement)
+        # region Movement constants
+        
         private const float movementSpeed = 600;
         private const float jumpSpeedStep = 450;
         private const float maxJumpSpeed = 3000;
         private const int maxSpeed = 4000;
 
+        # endregion
 
-        // Howl bonus
+        # region Howl bonus
 
         /// <summary>
         /// Bonus you get when you howl at the moon
@@ -66,18 +73,19 @@ namespace AffectiveGame.Actors
 
         private bool howlBonusEnded;
 
+        # endregion
 
-        // Fear onus
+        # region Fear onus
 
         private float _fear;
         private bool _afraid;
         private const float fearThreshold = 128;
         private const float _fearRegenerationRate = 32;
         private const int fearOnusSpeed = 5;
-        
 
         # endregion
 
+        # endregion
 
 
         # region Properties
@@ -88,7 +96,6 @@ namespace AffectiveGame.Actors
         }
 
         # endregion
-
 
 
         # region Methods
@@ -176,8 +183,10 @@ namespace AffectiveGame.Actors
             }
 
             float bonusSpeed = howlBonus ? howlBonusSpeed : 0;
+                    bonusSpeed -= _afraid ? fearOnusSpeed : 0;
 
-            movement += levelScreen.GetGravity(); // apply gravity
+            
+            movement += levelScreen.GetGravity();
 
             movement.X = MathHelper.Clamp(movement.X, -maxSpeed - bonusSpeed, maxSpeed + bonusSpeed) * game.deltaTime;
             movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed) * game.deltaTime;
@@ -187,7 +196,6 @@ namespace AffectiveGame.Actors
             CheckCollisions();
 
             inertia = movement;
-
 
         }
 
@@ -382,6 +390,11 @@ namespace AffectiveGame.Actors
                     characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
                 }
             }
+        }
+
+        private void UpdateFear()
+        {
+
         }
 
         private bool Move(InputHandler input)

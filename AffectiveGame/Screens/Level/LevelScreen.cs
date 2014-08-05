@@ -14,6 +14,7 @@ namespace AffectiveGame.Screens.Level
         protected readonly Vector2 gravitySpeed;
         protected Actors.Character Edon;
         protected List<Collider> environmentColliders;
+        protected List<Rectangle> fearArea;
         protected Vector2 startPosition;
         public Camera camera;
         
@@ -80,6 +81,8 @@ namespace AffectiveGame.Screens.Level
 
         public List<Collider> GetColliders() { return environmentColliders; }
 
+        public List<Rectangle> GetFearAreas() { return fearArea; }
+
         public Vector2 GetGravity() { return gravitySpeed; }
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace AffectiveGame.Screens.Level
         /// The 8-argument constructor is: the 4 values of the rectangle, booleans isHarmful, isDiggable, isWater, float friction
         /// </summary>
         /// <param name="filePath"></param>
-        protected void LevelFromFile(string filePath)
+        /*protected void LevelFromFile(string filePath)
         {
             StreamReader textFile = new StreamReader(filePath);
             string text;
@@ -100,6 +103,7 @@ namespace AffectiveGame.Screens.Level
 
                 if (text.StartsWith("#") || text == "")
                     continue;
+
                 //values = new string[8];
                 values = text.Split(new char[] { ' ' });
 
@@ -117,6 +121,56 @@ namespace AffectiveGame.Screens.Level
             }
 
             textFile.Close();
+        }*/
+
+        public void LevelFromFile(string path)
+        {
+            StreamReader file = new StreamReader(path);
+            string text;
+            string[] values;
+
+            bool readingColliders = true;
+            bool readingFearZones = false;
+
+            while (!file.EndOfStream)
+            {
+                text = file.ReadLine();
+
+                if (text.StartsWith("#"))
+                    continue;
+
+                if (text.StartsWith("fear"))
+                {
+                    readingColliders = false;
+                    readingFearZones = true;
+                    continue;
+                }
+                else if (text.StartsWith("collider"))
+                {
+                    readingFearZones = false;
+                    readingColliders = true;
+
+                }
+
+                values = text.Split(new char[] { ' ' });
+
+                if (readingColliders)
+                {
+                    if (values.Length == 4)
+                        environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
+                    else if (values.Length == 8)
+                        environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]),
+                                                    bool.Parse(values[4]), bool.Parse(values[5]), bool.Parse(values[6]), float.Parse(values[7])));
+                }
+                else if (readingFearZones)
+                {
+                    if (values.Length == 4)
+                        fearArea.Add(new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
+                }
+
+            }
+
+            file.Close();
         }
     }
 }
