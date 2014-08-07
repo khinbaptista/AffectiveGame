@@ -22,13 +22,13 @@ namespace AffectiveGame.Screens
         // VideoPlayer vPlayer;     // NOPE!: it should be in Microsoft.Xna.Framework.Media
         bool playVideo = false;
 
-        public TestScreen(GameMain game, GameScreen father, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
-            : base(game, father, viewport, state)
+        public TestScreen(GameMain game, GameScreen father, ScreenState state = ScreenState.TransitionOn)
+            : base(game, father, state)
         {
             transitionOnTime = TimeSpan.FromSeconds(0.5);
             transitionOffTime = TimeSpan.FromSeconds(0.1);
 
-            testMenu = new Menus.Menu(viewport.Width / 4, (viewport.Height / 4) * 3, false, true, 1, 30);
+            testMenu = new Menus.Menu(game.viewport.Width / 4, (game.viewport.Height / 4) * 3, false, true, 1, 30);
             LoadContent(game.Content);
         }
 
@@ -83,7 +83,7 @@ namespace AffectiveGame.Screens
                 playVideo = true;
             }
             else if (testMenu.selectedEntry == 1)
-                CreatePopup("This is a pop up", new Rectangle(viewport.Width / 2 - 400, viewport.Height / 2 - 300, 800, 600));
+                CreatePopup("This is a pop up", new Rectangle(game.viewport.Width / 2 - 400, game.viewport.Height / 2 - 300, 800, 600));
             else if (testMenu.selectedEntry == 0)
                 CreatePauseScreen();
         }

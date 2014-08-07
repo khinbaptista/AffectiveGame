@@ -22,7 +22,7 @@ namespace AffectiveGame.Screens
         Hidden
     }
 
-    abstract public class GameScreen
+    abstract public class GameScreen// : IGameComponent
     {
         #region Attributes
 
@@ -77,11 +77,6 @@ namespace AffectiveGame.Screens
         public bool delete { get { return (isExiting && transitionState == 1); } }
 
         /// <summary>
-        /// The viewport where to draw this screen
-        /// </summary>
-        protected Viewport viewport;
-
-        /// <summary>
         /// The return value of the pop up created
         /// </summary>
         public PopupWindow.PopupReturn popupValue;
@@ -103,11 +98,10 @@ namespace AffectiveGame.Screens
         /// <param name="game">The game to which this screen belongs</param>
         /// <param name="viewport">The viewport where to draw this screen</param>
         /// <param name="state">The state this screen must be initialized with</param>
-        public GameScreen(GameMain game, GameScreen father, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
+        public GameScreen(GameMain game, GameScreen father, ScreenState state = ScreenState.TransitionOn)
         {
             this.game = game;
             this.father = father;
-            this.viewport = viewport;
             this.screenState = state;
 
             input = new InputHandler();
@@ -177,7 +171,7 @@ namespace AffectiveGame.Screens
                 return;
 
             spriteBatch.Begin();
-            spriteBatch.Draw(blank, new Rectangle(0, 0, viewport.Width, viewport.Height), new Color(0, 0, 0, transitionAlpha));
+            spriteBatch.Draw(blank, new Rectangle(0, 0, game.viewport.Width, game.viewport.Height), new Color(0, 0, 0, transitionAlpha));
             spriteBatch.End();
         }
 
@@ -247,7 +241,7 @@ namespace AffectiveGame.Screens
         protected void CreatePauseScreen()
         {
             this.Hide();
-            game.AddScreen(new PauseScreen(game, this, viewport));
+            game.AddScreen(new PauseScreen(game, this));
         }
 
         /// <summary>
@@ -256,7 +250,7 @@ namespace AffectiveGame.Screens
         /// <param name="newPopupScreen"></param>
         protected void CreatePopup(string text, Rectangle position)
         {
-            game.AddScreen(new PopupWindow(game, this, viewport, position, text));
+            game.AddScreen(new PopupWindow(game, this, position, text));
             this.ToggleUnderneath();
         }
 

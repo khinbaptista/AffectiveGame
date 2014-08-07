@@ -36,8 +36,8 @@ namespace AffectiveGame.Screens
 
         #region Methods
 
-        public PopupWindow(GameMain game, GameScreen father, Viewport viewport, Rectangle position, string message)
-            : base(game, father, viewport, ScreenState.Active)
+        public PopupWindow(GameMain game, GameScreen father, Rectangle position, string message)
+            : base(game, father, ScreenState.Active)
         {
             transitionOnTime = TimeSpan.Zero;
             transitionOffTime = TimeSpan.Zero;

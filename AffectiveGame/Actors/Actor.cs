@@ -45,8 +45,6 @@ namespace AffectiveGame.Actors
         /// </summary>
         protected bool updateFrame;
 
-        
-
         # endregion
 
 
@@ -107,7 +105,8 @@ namespace AffectiveGame.Actors
         /// <summary>
         /// Cancel inertia in the direction specified
         /// </summary>
-        /// <param name="axis">Unit vector in the axis to be canceled (TIP: use Vector2.UnitX / Vector2.UnitY)</param>
+        /// <param name="axis">Unit vector in the axis to be canceled (TIP: use Vector2.UnitX / Vector2.UnitY)
+        /// Use Vector2.Zero to cancel movement in both directions</param>
         protected void Collide(Vector2 axis)
         {
             if (axis == Vector2.UnitX)

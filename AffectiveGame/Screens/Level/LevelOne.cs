@@ -10,8 +10,8 @@ namespace AffectiveGame.Screens.Level
 {
     class LevelOne : LevelScreen
     {
-        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
-            : base(game, father, viewport, gravitySpeed, state)
+        public LevelOne(GameMain game, GameScreen father, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
+            : base(game, father, gravitySpeed, state)
         {
             startPosition = new Vector2(100, 400);
             Edon = new Actors.Character(game, this, startPosition);
@@ -24,7 +24,7 @@ namespace AffectiveGame.Screens.Level
 
             environmentColliders = new List<Collider>();
             fearArea = new List<Rectangle>();
-            LevelFromFile(Environment.CurrentDirectory + @"\levelOne.txt");
+            LevelFromFile(Environment.CurrentDirectory + @"\level2.txt");
 
             /*
             environmentColliders.Add(new Collider(-500, 1080 - 80, 1920 + 1000, 80)); // ground

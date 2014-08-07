@@ -18,13 +18,13 @@ namespace AffectiveGame.Screens
 
         #region Methods
 
-        public MainMenuScreen(GameMain game, GameScreen father, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
-            : base(game, father, viewport, state)
+        public MainMenuScreen(GameMain game, GameScreen father, ScreenState state = ScreenState.TransitionOn)
+            : base(game, father, state)
         {
             this.transitionOnTime = TimeSpan.FromSeconds(0.5);
             this.transitionOffTime = TimeSpan.FromSeconds(0.1);
 
-            mainMenu = new Menus.Menu(viewport.Width / 2, viewport.Height / 2 + 150, true, false, 1, 30);
+            mainMenu = new Menus.Menu(game.viewport.Width / 2, game.viewport.Height / 2 + 150, true, false, 1, 30);
             LoadContent(game.Content);
         }
 
@@ -62,13 +62,13 @@ namespace AffectiveGame.Screens
         {
             if (mainMenu.selectedEntry == 0)
             {
-                game.AddScreen(new Level.LevelOne(game, null, viewport));
+                game.AddScreen(new Level.LevelOne(game, null));
                 this.ExitScreen();
             }
             else if (mainMenu.selectedEntry == 1)
             {
                 this.Hide();
-                game.AddScreen(new TestScreen(game, this, viewport));
+                game.AddScreen(new TestScreen(game, this));
             }
             else if (mainMenu.selectedEntry == 2)
                 this.ExitScreen();

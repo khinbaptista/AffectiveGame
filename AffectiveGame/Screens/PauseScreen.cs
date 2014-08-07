@@ -18,8 +18,8 @@ namespace AffectiveGame.Screens
 
         #region Methods
 
-        public PauseScreen(GameMain game, GameScreen father, Viewport viewport, ScreenState state = ScreenState.TransitionOn)
-            : base(game, father, viewport, state)
+        public PauseScreen(GameMain game, GameScreen father, ScreenState state = ScreenState.TransitionOn)
+            : base(game, father, state)
         {
             transitionOnTime = TimeSpan.FromSeconds(0.5);
             transitionOffTime = TimeSpan.FromSeconds(0.1);

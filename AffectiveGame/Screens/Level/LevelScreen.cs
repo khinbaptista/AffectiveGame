@@ -22,8 +22,8 @@ namespace AffectiveGame.Screens.Level
         
         protected Texture2D background;
 
-        public LevelScreen(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed, ScreenState state = ScreenState.TransitionOn)
-            : base(game, father, viewport, state)
+        public LevelScreen(GameMain game, GameScreen father, float gravitySpeed, ScreenState state = ScreenState.TransitionOn)
+            : base(game, father, state)
         {
             this.gravitySpeed = new Vector2(0, gravitySpeed);
 
@@ -35,7 +35,7 @@ namespace AffectiveGame.Screens.Level
             base.LoadContent(content);
 
             background = content.Load<Texture2D>("Sky");
-            camera = new Camera(viewport, startPosition);
+            camera = new Camera(game.viewport, startPosition);
         }
 
         public override void Update(GameTime gameTime)
@@ -45,7 +45,7 @@ namespace AffectiveGame.Screens.Level
             Edon.Update(gameTime);
 
             Vector2 edonPosition = Edon.position;
-            camera.SmoothMove(new Vector2(edonPosition.X, Edon.grounded ? edonPosition.Y - viewport.Height / 4 : camera.position.Y));
+            camera.SmoothMove(new Vector2(edonPosition.X, Edon.grounded ? edonPosition.Y - game.viewport.Height / 4 : camera.position.Y));
             camera.Update(gameTime);
         }
 
@@ -58,7 +58,7 @@ namespace AffectiveGame.Screens.Level
 
             if (input.getStatus().Contains(Input.LeftBumper))
             {
-                game.AddScreen(new MainMenuScreen(game, null, viewport));
+                game.AddScreen(new MainMenuScreen(game, null));
                 this.ExitScreen();
             }
         }
@@ -71,7 +71,7 @@ namespace AffectiveGame.Screens.Level
                 return;
 
             spriteBatch.Begin();
-            spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.White);
+            spriteBatch.Draw(background, new Rectangle(0, 0, game.viewport.Width, game.viewport.Height), Color.White);
             spriteBatch.End();
 
             Edon.Draw(spriteBatch, gameTime);
@@ -91,38 +91,6 @@ namespace AffectiveGame.Screens.Level
         /// The 8-argument constructor is: the 4 values of the rectangle, booleans isHarmful, isDiggable, isWater, float friction
         /// </summary>
         /// <param name="filePath"></param>
-        /*protected void LevelFromFile(string filePath)
-        {
-            StreamReader textFile = new StreamReader(filePath);
-            string text;
-            string[] values;
-
-            while (!textFile.EndOfStream)
-            {
-                text = textFile.ReadLine();
-
-                if (text.StartsWith("#") || text == "")
-                    continue;
-
-                //values = new string[8];
-                values = text.Split(new char[] { ' ' });
-
-                if (values.Length == 4)
-                {
-                    environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
-                }
-                else if (values.Length == 8)
-                {
-                    environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]),
-                                                bool.Parse(values[4]), bool.Parse(values[5]), bool.Parse(values[6]), float.Parse(values[7])));
-                }
-                else
-                    Console.WriteLine("Something wrong with the file format. Probably.");
-            }
-
-            textFile.Close();
-        }*/
-
         public void LevelFromFile(string path)
         {
             StreamReader file = new StreamReader(path);

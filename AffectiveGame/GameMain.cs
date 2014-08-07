@@ -1,4 +1,117 @@
-﻿#region Using Statements
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Storage;
+using Microsoft.Xna.Framework.GamerServices;
+
+namespace AffectiveGame
+{
+	public class GameMain : Game
+	{
+		#region Private Attributes
+		
+		private GraphicsDeviceManager graphics;
+		private SpriteBatch _spriteBatch;
+		private List<Screens.GameScreen> screens;
+		
+		#endregion
+		
+		
+		#region Accesible Attributes
+		
+		public float deltaTime { get; private set; }
+		public Viewport viewport { get; private set; }
+		
+		public SpriteBatch spriteBatch { get { return _spriteBatch; } }
+		
+		#endregion
+		
+		
+		#region Methods
+		
+		public GameMain()
+			: base()
+		{
+			graphics = new GraphicsDeviceManager(this);
+			Content.RootDirectory = "Content";
+			
+			graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            Window.IsBorderless = true;
+		}
+		
+		protected override void Initialize()
+		{
+			screens = new List<Screens.GameScreen>();
+			
+			base.Initialize();
+		}
+		
+		protected override void LoadContent()
+		{
+			_spriteBatch = new SpriteBatch(GraphicsDevice);
+			viewport = GraphicsDevice.Viewport;
+			
+			screens.Add(new Screens.MainMenuScreen(this, null));
+		}
+		
+		protected override void UnloadContent() { }
+		
+		protected override void Update(GameTime gameTime)
+		{
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape) || screens.Count == 0)
+				Exit();
+				
+			deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+			
+			int i = 0;
+			while(i < screens.Count)
+			{
+				if (screens[i].delete)
+				{
+					screens.RemoveAt(i);
+					continue;
+				}
+				
+				screens[i].HandleInput(gameTime);
+				screens[i].Update(gameTime);
+				i++;
+			}
+			
+			base.Update(gameTime);
+		}
+		
+		protected override void Draw(GameTime gameTime)
+		{
+			GraphicsDevice.Clear(new Color(240, 240, 240));
+			
+			foreach (Screens.GameScreen screen in screens)
+				screen.Draw(gameTime, spriteBatch);
+				
+			base.Draw(gameTime);
+		}
+		
+		#endregion
+		
+		
+		#region Helper Methods
+		
+		public void AddScreen(Screens.GameScreen newScreen)
+		{
+			screens.Add(newScreen);
+		}
+		
+		#endregion
+	}
+
+}
+
+
+/*
+#region Using Statements
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -120,7 +233,7 @@ namespace AffectiveGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.WhiteSmoke);
+            //GraphicsDevice.Clear(Color.WhiteSmoke);
             //GraphicsDevice.Clear(Color.SeaShell);
             GraphicsDevice.Clear(new Color(240, 240, 240));
 
@@ -142,3 +255,4 @@ namespace AffectiveGame
 
     }
 }
+*/

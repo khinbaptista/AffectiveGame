@@ -359,7 +359,9 @@ namespace AffectiveGame.Actors
                     if (col.isHarmful)
                     {
                         // check damage and everything
-                        //return;
+                        BackToLastSafeCollider();
+
+                        return;
                     }
 
                     // test every possible collision
@@ -394,6 +396,16 @@ namespace AffectiveGame.Actors
                     characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
                 }
             }
+        }
+
+        private void BackToLastSafeCollider()
+        {
+            Rectangle last = lastSafeCollider.GetBox();
+
+            _position.X = last.Center.X;
+            _position.Y = last.Top - positionHeight;
+
+            Collide(Vector2.Zero);
         }
 
         private void UpdateFear()
