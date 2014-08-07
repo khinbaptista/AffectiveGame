@@ -117,11 +117,10 @@ namespace AffectiveGame.Screens
         /// </summary>
         protected void FinishPopup()
         {
-            if (father == null)
-                return;
+            if (father != null)
+                father.ToggleUnderneath();
 
             this.KillScreen();
-            father.ToggleUnderneath();
         }
 
         #endregion

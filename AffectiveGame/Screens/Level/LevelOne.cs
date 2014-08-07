@@ -10,7 +10,7 @@ namespace AffectiveGame.Screens.Level
 {
     class LevelOne : LevelScreen
     {
-        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 800, ScreenState state = ScreenState.TransitionOn)
+        public LevelOne(GameMain game, GameScreen father, Viewport viewport, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, viewport, gravitySpeed, state)
         {
             startPosition = new Vector2(100, 400);

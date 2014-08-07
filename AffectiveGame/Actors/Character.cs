@@ -39,14 +39,13 @@ namespace AffectiveGame.Actors
 
         # endregion
 
-        // Movement constants (must be updated to real time)
-        // (making them realtime ruined the whole friction thing - regardless of the surface, gravity will always stop the movement)
+        // Movement constants (must be updated to real time) [ friction fixed ]
         # region Movement constants
         
-        private const float movementSpeed = 600;
-        private const float jumpSpeedStep = 450;
-        private const float maxJumpSpeed = 4500;
-        private const int maxSpeed = 20000;
+        private const float movementSpeed = 100;
+        private const float jumpSpeedStep = 150;
+        private const float maxJumpSpeed = 2000;
+        private const int maxSpeed = 700;
 
         # endregion
 
@@ -81,8 +80,8 @@ namespace AffectiveGame.Actors
         private bool _afraid;
         private const float fearThreshold = 128;
         private const float _fearRegenerationRate = 32;
-        private const int fearOnusSpeed = 1000;
-        private const int fearOnusJump = 1000;
+        private const int fearOnusSpeed = 100;
+        private const int fearOnusJump = 300;
 
         # endregion
 
@@ -189,9 +188,10 @@ namespace AffectiveGame.Actors
             
             movement += levelScreen.GetGravity();
 
-            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - speedModifier, maxSpeed + speedModifier);// *game.deltaTime;
-            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);// *game.deltaTime;
+            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - speedModifier, maxSpeed + speedModifier);
+            movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
 
+            inertia = movement; //
             movement *= game.deltaTime;
 
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
@@ -199,7 +199,7 @@ namespace AffectiveGame.Actors
             CheckCollisions();
             UpdateFear();
 
-            inertia = movement;
+            //inertia = movement;
 
         }
 
@@ -219,7 +219,7 @@ namespace AffectiveGame.Actors
                 spriteBatch.DrawString(font, "Action: " + _action.ToString(), new Vector2(50, 50), Color.White);
                 spriteBatch.DrawString(font, "Grounded: " + grounded.ToString(), new Vector2(50, 70), Color.White);
                 spriteBatch.DrawString(font, "Howl bonus: " + howlBonus.ToString(), new Vector2(50, 110), Color.White);
-                spriteBatch.DrawString(font, "Fear gear: " + _fear, new Vector2(50, 130), Color.White);
+                spriteBatch.DrawString(font, "Fear gauge: " + _fear, new Vector2(50, 130), Color.White);
                 spriteBatch.DrawString(font, "Afraid: " + _afraid, new Vector2(50, 150), Color.White);
                 spriteBatch.DrawString(font, "Movement: " + movement, new Vector2(50, 170), Color.White);
 

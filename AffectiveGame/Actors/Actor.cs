@@ -82,7 +82,8 @@ namespace AffectiveGame.Actors
 
         public virtual void Update(GameTime gameTime)
         {
-            frameTimer = frameTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+            //frameTimer = frameTimer.Add(TimeSpan.FromMilliseconds(gameTime.ElapsedGameTime.TotalMilliseconds));
+            frameTimer += gameTime.ElapsedGameTime;
 
             if (frameTimer.TotalMilliseconds > frameInterval.TotalMilliseconds)
             {
@@ -113,7 +114,7 @@ namespace AffectiveGame.Actors
                 inertia.X = 0;
             else if (axis == Vector2.UnitY)
                 inertia.Y = 0;
-            else
+            else if (axis == Vector2.Zero)
                 inertia = Vector2.Zero;
         }
 
