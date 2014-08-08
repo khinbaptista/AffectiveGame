@@ -59,6 +59,7 @@ namespace AffectiveGame.Actors
         public Vector2 position
         {
             get { return new Vector2(_position.Center.X, _position.Center.Y); }
+            set { _position = new Rectangle((int)value.X, (int)value.Y, _position.Width, _position.Height); }
         }
 
         # endregion
@@ -107,7 +108,7 @@ namespace AffectiveGame.Actors
         /// </summary>
         /// <param name="axis">Unit vector in the axis to be canceled (TIP: use Vector2.UnitX / Vector2.UnitY)
         /// Use Vector2.Zero to cancel movement in both directions</param>
-        protected void Collide(Vector2 axis)
+        public void Collide(Vector2 axis)
         {
             if (axis == Vector2.UnitX)
                 inertia.X = 0;

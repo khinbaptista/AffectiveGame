@@ -35,7 +35,7 @@ namespace AffectiveGame.Actors
         private const int positionWidth = 114; // 570 / 5
         private const int positionHeight = 138; // 690 / 5
         private bool isFacingLeft;
-        private Screens.Level.Collider lastSafeCollider;
+        private Screens.Level.Collider _lastSafeCollider;
 
         # endregion
 
@@ -93,6 +93,12 @@ namespace AffectiveGame.Actors
         public Action action
         {
             get { return _action; }
+        }
+
+        public Screens.Level.Collider lastSafeCollider
+        {
+            get { return _lastSafeCollider; }
+            set { _lastSafeCollider = value; }
         }
 
         # endregion
@@ -197,6 +203,8 @@ namespace AffectiveGame.Actors
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
 
             CheckCollisions();
+            //Rectangle characterCollider = animations[(int)_action].GetCollider();
+            //_grounded = levelScreen.CheckCollision(new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height), characterCollider);
             UpdateFear();
         }
 
@@ -337,6 +345,7 @@ namespace AffectiveGame.Actors
             
         }
 
+        
         /// <summary>
         /// Checks for collision between the current frame and the rectangles of the level this character is in (needs adjustments)
         /// </summary>
@@ -401,7 +410,7 @@ namespace AffectiveGame.Actors
         {
             Rectangle last = lastSafeCollider.GetBox();
 
-            _position.X = last.Center.X;
+            _position.X = last.Center.X - _position.Width / 2;
             _position.Y = last.Top - positionHeight;
 
             Collide(Vector2.Zero);
@@ -467,7 +476,7 @@ namespace AffectiveGame.Actors
             return hasMoved;
         }
 
-        private void ChangeAction(Action newAction)
+        public void ChangeAction(Action newAction)
         {
             _action = newAction;
             animations[(int)_action].Start();

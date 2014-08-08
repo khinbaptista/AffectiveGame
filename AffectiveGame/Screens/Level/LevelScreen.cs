@@ -6,6 +6,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using AffectiveGame.Actors;
 
 namespace AffectiveGame.Screens.Level
 {
@@ -139,6 +140,63 @@ namespace AffectiveGame.Screens.Level
             }
 
             file.Close();
+        }
+
+        /// <summary>
+        /// Checks collision and updates position
+        /// </summary>
+        /// <param name="character">Current character collider</param>
+        /// <returns>New grounded value</returns>
+        public bool CheckCollision(Rectangle character, Rectangle characterCollider)
+        {
+            Rectangle colliderBox;
+            bool grounded = false;
+
+            foreach (Collider collider in environmentColliders)
+            {
+                colliderBox = collider.GetBox();
+
+                if (collider.isActive && character.Intersects(colliderBox))
+                {
+                    if (collider.isHarmful)
+                    {
+                        // damage and teleport
+
+                    }
+
+                    if (character.Bottom > colliderBox.Top && character.Top < colliderBox.Top
+                        && character.Center.Y < colliderBox.Top)
+                    {
+                        Edon.position = new Vector2(Edon.position.X, Edon.position.Y - (character.Bottom - colliderBox.Top));
+                        Edon.Collide(Vector2.UnitY);
+                        Edon.lastSafeCollider = collider;
+                        grounded = true;
+                    }
+                    else if (character.Top < colliderBox.Bottom && character.Bottom > colliderBox.Bottom
+                        && character.Center.Y > colliderBox.Bottom)
+                    {
+                        Edon.position = new Vector2(Edon.position.X, Edon.position.Y + (colliderBox.Bottom - character.Top));
+                        Edon.Collide(Vector2.UnitY);
+                        Edon.ChangeAction(Character.Action.Fall);
+                    }
+                    else if (character.Right > colliderBox.Left && character.Left < colliderBox.Left
+                        && character.Center.X < colliderBox.Left)
+                    {
+                        Edon.position = new Vector2(Edon.position.X - (character.Right - colliderBox.Left));
+                        Edon.Collide(Vector2.UnitX);
+                    }
+                    else if (character.Left < colliderBox.Right && character.Right > colliderBox.Right
+                        && character.Center.X > colliderBox.Right)
+                    {
+                        Edon.position = new Vector2(Edon.position.X + (colliderBox.Right - character.Left));
+                        Edon.Collide(Vector2.UnitX);
+                    }
+                }
+
+                character = new Rectangle((int)Edon.position.X + characterCollider.X, (int)Edon.position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
+            }
+
+            return grounded;
         }
     }
 }
