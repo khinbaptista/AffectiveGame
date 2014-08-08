@@ -191,16 +191,13 @@ namespace AffectiveGame.Actors
             movement.X = MathHelper.Clamp(movement.X, -maxSpeed - speedModifier, maxSpeed + speedModifier);
             movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
 
-            inertia = movement; //
+            inertia = movement;
             movement *= game.deltaTime;
 
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
 
             CheckCollisions();
             UpdateFear();
-
-            //inertia = movement;
-
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -365,8 +362,8 @@ namespace AffectiveGame.Actors
                     }
 
                     // test every possible collision
-                    if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top//)
-                    && characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
+                    if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top
+                        && characterColliderPositioned.Center.Y < rect.Top)
                     {
                         // The flickering when jumping against a wall is due to the imperfections in the spritesheet, which means it will work just fine when we change the assets
                         this._position = new Rectangle(_position.X, _position.Y - (characterColliderPositioned.Bottom - rect.Top), _position.Width, _position.Height);
@@ -374,20 +371,22 @@ namespace AffectiveGame.Actors
                         lastSafeCollider = col;
                         _grounded = true;
                     }
-                    else if (characterColliderPositioned.Top < rect.Bottom && characterColliderPositioned.Bottom > rect.Bottom//)
-                    && characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
+                    else if (characterColliderPositioned.Top < rect.Bottom && characterColliderPositioned.Bottom > rect.Bottom
+                        && characterColliderPositioned.Center.Y > rect.Bottom)
+                        //&& characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
                     {
                         this._position = new Rectangle(_position.X, _position.Y + (rect.Bottom - characterColliderPositioned.Top), _position.Width, _position.Height);
                         Collide(Vector2.UnitY);
                         ChangeAction(Action.Fall);
                     }
-                    else if (characterColliderPositioned.Right > rect.Left && characterColliderPositioned.Left < rect.Left)
-                    //&&
+                    else if (characterColliderPositioned.Right > rect.Left && characterColliderPositioned.Left < rect.Left
+                        && characterColliderPositioned.Center.X < rect.Left)
                     {
                         this._position = new Rectangle(_position.X - (characterColliderPositioned.Right - rect.Left), _position.Y, _position.Width, _position.Height);
                         Collide(Vector2.UnitX);
                     }
-                    else if (characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Right)
+                    else if (characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Right
+                        && characterColliderPositioned.Center.X > rect.Right)
                     {
                         this._position = new Rectangle(_position.X + (rect.Right - characterColliderPositioned.Left), _position.Y, _position.Width, _position.Height);
                         Collide(Vector2.UnitX);
