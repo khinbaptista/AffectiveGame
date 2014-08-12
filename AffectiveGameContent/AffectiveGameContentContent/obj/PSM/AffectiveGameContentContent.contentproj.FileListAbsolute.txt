@@ -1,1 +1,2 @@
 C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContentContent\obj\PSM\AffectiveGameContentContent.contentprojResolveAssemblyReference.cache
+C:\Users\msvas\Documents\AffectiveGame\AffectiveGameContent\AffectiveGameContentContent\obj\PSM\AffectiveGameContentContent.contentprojResolveAssemblyReference.cache
