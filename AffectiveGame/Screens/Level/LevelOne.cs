@@ -24,7 +24,7 @@ namespace AffectiveGame.Screens.Level
 
             environmentColliders = new List<Collider>();
             fearArea = new List<Rectangle>();
-            LevelFromFile(Environment.CurrentDirectory + @"\levelOne.txt");
+            LevelFromFile(Environment.CurrentDirectory + @"\level2.txt");
         }
 
         public override void HandleInput(GameTime gameTime)
