@@ -1,0 +1,39 @@
+# animation <animation name>
+# frame / collider
+# x y width height
+
+animation Idle
+frame
+0 0 570 690
+collider
+17 79 86 54
+
+animation Walk
+frame
+0 0 570 690
+collider
+17 79 86 54
+
+animation Jump
+frame
+570 0 570 690
+collider
+36 13 50 122
+
+animation Fall
+frame
+570 0 570 690
+collider
+36 13 50 122
+
+animation Howl
+frame
+0 0 570 690
+collider
+17 79 86 54
+
+animation Dig
+frame
+0 0 570 690
+collider
+17 79 86 54

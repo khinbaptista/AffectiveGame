@@ -140,6 +140,9 @@ namespace AffectiveGame.Actors
             animations.Add(new Animation(false)); // dig
             //animations.Add(new Animation(false)); // drink
 
+            LoadAnimationsFromFile(Environment.CurrentDirectory + @"\EdonAnim.txt");
+
+            /*
             // TO-DO: add frames and colliders via text file (inside Animation)
             animations[(int)Action.Idle].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half of image
             animations[(int)Action.Walk].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
@@ -148,9 +151,6 @@ namespace AffectiveGame.Actors
             animations[(int)Action.Howl].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
             animations[(int)Action.Dig].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
 
-            // OMG this works!
-            //Console.WriteLine((int)Enum.Parse(typeof(Action), "Dig"));
-
             //animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(19, 43, 74, 56)); // 94, 216, 370, 280 / 5
             animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(17, 79, 86, 54)); // 85, 394, 432, 271 / 5
             animations[(int)Action.Walk].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
@@ -158,7 +158,7 @@ namespace AffectiveGame.Actors
             animations[(int)Action.Jump].InsertFrameCollider(new Rectangle(36, 13, 50, 122)); // 751 / 5 - 570 / 5, 65, 249, 609 / 5
             animations[(int)Action.Fall].InsertFrameCollider(new Rectangle(36, 13, 50, 122));
             animations[(int)Action.Howl].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
-            animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
+            animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(17, 79, 86, 54));*/
         }
 
         public override void HandleInput(InputHandler input)
@@ -516,7 +516,7 @@ namespace AffectiveGame.Actors
             {
                 line = file.ReadLine();
 
-                if (line.StartsWith("#"))
+                if (line.StartsWith("#") || line == "")
                     continue;
 
                 if (line.StartsWith("animation "))
