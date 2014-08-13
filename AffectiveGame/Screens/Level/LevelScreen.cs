@@ -151,8 +151,17 @@ namespace AffectiveGame.Screens.Level
             soundControl.stopProcessing();
 
             base.ExitScreen();
-        }        public bool getComparisonValue()        {
-            return soundControl.getActionValue();        }
+        }
+
+        public bool getComparisonValue()
+        {
+            return soundControl.getActionValue();
+        }
+
+        public double getValue()
+        {
+            return soundControl.getValue();
+        }
 
         /// <summary>
         /// Checks collision and updates position

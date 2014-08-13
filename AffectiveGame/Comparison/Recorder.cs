@@ -13,7 +13,7 @@ namespace AffectiveGame.Comparison
         public static double[] rightAudio;
         public static double[] leftCompared;
         public static double[] rightCompared;
-        private static string soundName = @"stroking\snap.wav";
+        private static string soundName = @"stroking\howl.wav";
         static Program program = new Program();
         static Correlation crossCorr;
         public static int offset;
@@ -22,6 +22,12 @@ namespace AffectiveGame.Comparison
         //private static Stopwatch stopwatchRecord = new Stopwatch();
         private static Stopwatch stopwatchTotal = new Stopwatch();
         private static bool actionValue = false;
+        private static double value;
+
+        public double Value
+        {
+            get { return value; }
+        }
 
         private static Timer recordWindow = new System.Timers.Timer(500);
 
@@ -65,7 +71,6 @@ namespace AffectiveGame.Comparison
 
             recorder.disposeStream();
 
-            double value;
             double[] result;
             alglib.corrr1d(leftAudio, leftAudio.Length, leftCompared, leftCompared.Length, out result);
 

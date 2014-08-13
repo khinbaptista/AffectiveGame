@@ -37,5 +37,10 @@ namespace AffectiveGame.Comparison
         {
             return recorder.getAction();
         }
+
+        public double getValue()
+        {
+            return recorder.Value;
+        }
     }
 }
