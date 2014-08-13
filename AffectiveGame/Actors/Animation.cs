@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using Microsoft.Xna.Framework;
 
 namespace AffectiveGame.Actors
@@ -126,6 +127,50 @@ namespace AffectiveGame.Actors
             }
             else if (isLoop && currentFrameIndex == frames.Count)
                 currentFrameIndex = 0;
+        }
+
+        public void LoadAnimationFromFile(string path)
+        {
+            StreamReader file = new StreamReader(path);
+            string line;
+            string[] values;
+            bool readingFrame = true;
+            bool readingCollider = false;
+            Rectangle rectangle;
+
+            while (!file.EndOfStream)
+            {
+                line = file.ReadLine();
+
+                if (line.StartsWith("#"))
+                    continue;
+
+                if (line.StartsWith("frame"))
+                {
+                    readingFrame = true;
+                    readingCollider = false;
+                    continue;
+                }
+
+                if (line.StartsWith("collider"))
+                {
+                    readingFrame = false;
+                    readingCollider = true;
+                    continue;
+                }
+
+                values = line.Split(new char[] { ' ' });
+
+                if (values.Length != 4)     // Ignore wrong number of parameters
+                    continue;
+
+                rectangle = new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]));
+
+                if (readingFrame)
+                    frames.Add(rectangle);
+                else if (readingCollider)
+                    framesColliders.Add(rectangle);
+            }
         }
 
         # endregion
