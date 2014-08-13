@@ -17,22 +17,23 @@ namespace AffectiveGame.Comparison
         static Program program = new Program();
         static Correlation crossCorr;
         public static int offset;
-        private static RealTime recorder = new RealTime();
+        private static RealTime recorder;
         private static Stopwatch stopwatchProcess = new Stopwatch();
         //private static Stopwatch stopwatchRecord = new Stopwatch();
         private static Stopwatch stopwatchTotal = new Stopwatch();
         private static bool actionValue = false;
         private static double value;
+        private static Timer recordWindow;
 
         public double Value
         {
             get { return value; }
         }
 
-        private static Timer recordWindow = new System.Timers.Timer(500);
-
         public Recorder()
         {
+            recorder = new RealTime();
+            recordWindow = new System.Timers.Timer(500);
             if (recorder.checkMic())
             {
                 program.openWav(soundName, null, out leftAudio, out rightAudio);
@@ -52,6 +53,7 @@ namespace AffectiveGame.Comparison
         {
             stopwatchTotal.Stop();
             recordWindow.Enabled = false;
+
         }
 
         public bool getAction()

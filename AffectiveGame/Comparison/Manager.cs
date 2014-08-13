@@ -30,17 +30,27 @@ namespace AffectiveGame.Comparison
             {
                 recorder.stopComparison();
                 started = false;
+
+                recorder = null;
             }
         }
 
         public bool getActionValue()
         {
-            return recorder.getAction();
+            if (started)
+                return recorder.getAction();
+            else
+                return false;
         }
 
         public double getValue()
         {
-            return recorder.Value;
+            if(started)
+                return recorder.Value;
+            else
+            {
+                return 0;
+            }
         }
     }
 }
