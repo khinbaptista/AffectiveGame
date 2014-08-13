@@ -17,6 +17,7 @@ namespace AffectiveGame.Screens.Level
         protected List<Collider> environmentColliders;
         protected List<Rectangle> fearArea;
         protected Vector2 startPosition;
+        protected Comparison.Manager soundControl;
         public Camera camera;
         
         public bool fullMoon { get; protected set; }
@@ -37,6 +38,9 @@ namespace AffectiveGame.Screens.Level
 
             background = content.Load<Texture2D>("Sky");
             camera = new Camera(game.viewport, startPosition);
+
+            soundControl = new Comparison.Manager();
+            soundControl.startProcessing();
         }
 
         public override void Update(GameTime gameTime)
@@ -141,6 +145,13 @@ namespace AffectiveGame.Screens.Level
 
             file.Close();
         }
+
+        public override void ExitScreen()
+        {
+            soundControl.stopProcessing();
+
+            base.ExitScreen();
+        }
 
         /// <summary>
         /// Checks collision and updates position

@@ -178,7 +178,7 @@ namespace AffectiveGame.Screens
         /// <summary>
         /// Tells the screen to transition off and delete itself
         /// </summary>
-        public void ExitScreen()
+        public virtual void ExitScreen()
         {
             screenState = ScreenState.TransitionOff;
             isExiting = true;

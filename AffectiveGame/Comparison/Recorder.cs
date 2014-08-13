@@ -21,6 +21,7 @@ namespace AffectiveGame.Comparison
         private static Stopwatch stopwatchProcess = new Stopwatch();
         //private static Stopwatch stopwatchRecord = new Stopwatch();
         private static Stopwatch stopwatchTotal = new Stopwatch();
+        private static bool actionValue = false;
 
         private static Timer recordWindow = new System.Timers.Timer(500);
 
@@ -30,17 +31,26 @@ namespace AffectiveGame.Comparison
             {
                 program.openWav(soundName, null, out leftAudio, out rightAudio);
                 stopwatchTotal.Start();
-                Console.WriteLine("Recording...");
+                //Console.WriteLine("Recording...");
                 //stopwatchRecord.Start();
                 recorder.startRecording();
 
                 recordWindow.Elapsed += OnTimedEvent;
                 recordWindow.Enabled = true;
 
-                Console.ReadKey();
-                stopwatchTotal.Stop();
-                recordWindow.Enabled = false;
+                //Console.ReadKey();
             }
+        }
+
+        public void stopComparison()
+        {
+            stopwatchTotal.Stop();
+            recordWindow.Enabled = false;
+        }
+
+        public bool getAction()
+        {
+            return actionValue;
         }
 
         private static void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -48,7 +58,7 @@ namespace AffectiveGame.Comparison
             recorder.stopRecording();
             //stopwatchRecord.Stop();
 
-            Console.WriteLine("Sound recorded. Processing...");
+            //Console.WriteLine("Sound recorded. Processing...");
 
             stopwatchProcess.Start();
             program.openWav(null, recorder.wavMem(), out leftCompared, out rightCompared);
@@ -63,20 +73,27 @@ namespace AffectiveGame.Comparison
 
             stopwatchProcess.Stop();
 
-            Console.WriteLine("Value: " + value);
+            //Console.WriteLine("Value: " + value);
 
             if (value > 0.4)
-                Console.WriteLine("Action: True");
+            {
+                //Console.WriteLine("Action: True");
+                actionValue = true;
+            }
             else
-                Console.WriteLine("Action: False");
-            Console.WriteLine("Time elapsed recording: " + recorder.getStopWatchRecord() + " ms");
-            Console.WriteLine("Time elapsed processing: " + stopwatchProcess.ElapsedMilliseconds + " ms");
-            Console.WriteLine("Total time elapsed: " + stopwatchTotal.ElapsedMilliseconds + " ms\r\n");
+            {
+                //Console.WriteLine("Action: False");
+                actionValue = false;
+            }
+
+            //Console.WriteLine("Time elapsed recording: " + recorder.getStopWatchRecord() + " ms");
+            //Console.WriteLine("Time elapsed processing: " + stopwatchProcess.ElapsedMilliseconds + " ms");
+            //Console.WriteLine("Total time elapsed: " + stopwatchTotal.ElapsedMilliseconds + " ms\r\n");
 
             recorder.resetSWRecord();
             stopwatchProcess.Reset();
 
-            Console.WriteLine("Recording...");
+            //Console.WriteLine("Recording...");
             recorder.startRecording();
             //stopwatchRecord.Start();
         }
