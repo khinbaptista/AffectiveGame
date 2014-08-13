@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -499,6 +500,61 @@ namespace AffectiveGame.Actors
             howlBonus = true;
             howlBonusTimer = TimeSpan.Zero;
             howlBonusEnded = false;
+        }
+
+        private void LoadAnimationsFromFile(string path)
+        {
+            StreamReader file = new StreamReader(path);
+            string line;
+            string[] values;
+            bool readingFrame = true;
+            bool readingCollider = false;
+            Rectangle rectangle;
+            Action addingAnimation = Action.Idle;
+
+            while (!file.EndOfStream)
+            {
+                line = file.ReadLine();
+
+                if (line.StartsWith("#"))
+                    continue;
+
+                if (line.StartsWith("animation "))
+                {
+                    values = line.Split(new char[] { ' ' });
+
+                    if (values.Length < 2)
+                        continue;
+
+                    addingAnimation = (Action)Enum.Parse(typeof(Action), values[1]);
+                }
+
+                if (line.StartsWith("frame"))
+                {
+                    readingFrame = true;
+                    readingCollider = false;
+                    continue;
+                }
+
+                if (line.StartsWith("collider"))
+                {
+                    readingFrame = false;
+                    readingCollider = true;
+                    continue;
+                }
+
+                values = line.Split(new char[] { ' ' });
+
+                if (values.Length < 4)     // Ignore extra parameters, as long as there is the minimum
+                    continue;
+
+                rectangle = new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]));
+
+                if (readingFrame)
+                    animations[(int)addingAnimation].InsertFrame(rectangle);
+                else if (readingCollider)
+                    animations[(int)addingAnimation].InsertFrameCollider(rectangle);
+            }
         }
 
         # endregion
