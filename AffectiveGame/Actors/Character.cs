@@ -203,8 +203,7 @@ namespace AffectiveGame.Actors
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
 
             CheckCollisions();
-            //Rectangle characterCollider = animations[(int)_action].GetCollider();
-            //_grounded = levelScreen.CheckCollision(new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height), characterCollider);
+            
             UpdateFear();
         }
 
@@ -404,6 +403,16 @@ namespace AffectiveGame.Actors
 
                     characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
                 }
+            }
+
+            if (!_grounded && _action != Action.Fall && _action != Action.Jump)
+            {
+                characterColliderPositioned = new Rectangle(_position.X + characterCollider.X,
+                    _position.Y + characterCollider.Y + characterCollider.Height / 2, characterCollider.Width, characterCollider.Height);
+
+                foreach (Screens.Level.Collider collider in levelScreen.GetColliders())
+                    if (collider.GetBox().Intersects(characterColliderPositioned))
+                        _grounded = true;
             }
         }
 
