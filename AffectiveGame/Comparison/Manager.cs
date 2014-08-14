@@ -8,6 +8,7 @@ namespace AffectiveGame.Comparison
     class Manager
     {
         private static Recorder recorder;
+        private bool working = true;
         private bool started;
 
         public Manager()
@@ -17,7 +18,7 @@ namespace AffectiveGame.Comparison
 
         public void startProcessing()
         {
-            if (!started)
+            if (!started && working)
             {
                 recorder = new Recorder();
                 started = true;
@@ -26,7 +27,7 @@ namespace AffectiveGame.Comparison
 
         public void stopProcessing()
         {
-            if (started)
+            if (started && working)
             {
                 recorder.stopComparison();
                 started = false;
@@ -37,7 +38,7 @@ namespace AffectiveGame.Comparison
 
         public bool getActionValue()
         {
-            if (started)
+            if (started && working)
                 return recorder.getAction();
             else
                 return false;
@@ -45,7 +46,7 @@ namespace AffectiveGame.Comparison
 
         public double getValue()
         {
-            if(started)
+            if(started && working)
                 return recorder.Value;
             else
             {
