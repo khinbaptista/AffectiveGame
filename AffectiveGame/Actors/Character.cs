@@ -372,8 +372,7 @@ namespace AffectiveGame.Actors
                     }
 
                     // test every possible collision
-                    if (characterColliderPositioned.Bottom > rect.Top && characterColliderPositioned.Top < rect.Top
-                        && characterColliderPositioned.Center.Y < rect.Top)
+                    if (CollisionDetectionFromAbove(characterColliderPositioned, rect))
                     {
                         // The flickering when jumping against a wall is due to the imperfections in the spritesheet, which means it will work just fine when we change the assets
                         this._position = new Rectangle(_position.X, _position.Y - (characterColliderPositioned.Bottom - rect.Top), _position.Width, _position.Height);
@@ -381,25 +380,21 @@ namespace AffectiveGame.Actors
                         lastSafeCollider = col;
                         _grounded = true;
                     }
-                    else if (characterColliderPositioned.Top < rect.Bottom && characterColliderPositioned.Bottom > rect.Bottom
-                        && characterColliderPositioned.Center.Y > rect.Bottom)
-                        //&& characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Left)
+                    else if (CollisionDetectionFromUnder(characterColliderPositioned, rect))
                     {
                         this._position = new Rectangle(_position.X, _position.Y + (rect.Bottom - characterColliderPositioned.Top), _position.Width, _position.Height);
                         Collide(Vector2.UnitY);
                         ChangeAction(Action.Fall);
                     }
-                    else if (characterColliderPositioned.Right > rect.Left && characterColliderPositioned.Left < rect.Left
-                        && characterColliderPositioned.Center.X < rect.Left)
+                    else if (CollisionDetectionFromLeft(characterColliderPositioned, rect))
                     {
                         this._position = new Rectangle(_position.X - (characterColliderPositioned.Right - rect.Left), _position.Y, _position.Width, _position.Height);
-                        Collide(Vector2.UnitX);
+                        //Collide(Vector2.UnitX);
                     }
-                    else if (characterColliderPositioned.Left < rect.Right && characterColliderPositioned.Right > rect.Right
-                        && characterColliderPositioned.Center.X > rect.Right)
+                    else if (CollisionDetectionFromRight(characterColliderPositioned, rect))
                     {
                         this._position = new Rectangle(_position.X + (rect.Right - characterColliderPositioned.Left), _position.Y, _position.Width, _position.Height);
-                        Collide(Vector2.UnitX);
+                        //Collide(Vector2.UnitX);
                     }
 
                     characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
@@ -415,6 +410,80 @@ namespace AffectiveGame.Actors
                     if (collider.GetBox().Intersects(characterColliderPositioned))
                         _grounded = true;
             }
+        }
+
+        private bool CollisionDetectionFromAbove(Rectangle character, Rectangle obstacle)
+        {
+            Vector2 centerToTopLeft = new Vector2(obstacle.X - obstacle.Center.X, obstacle.Y - obstacle.Center.Y); // obstacle
+            Vector2 centerToTopRight = new Vector2(obstacle.Right - obstacle.Center.X, obstacle.Y - obstacle.Center.Y); // obstacle
+            Vector2 centerToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y); // obstacle and character
+
+            centerToTopLeft.Normalize();
+            centerToTopRight.Normalize();
+            centerToCenter.Normalize();
+
+            return centerToCenter.X >= centerToTopLeft.X && centerToCenter.Y <= centerToTopLeft.Y
+                && centerToCenter.X <= centerToTopRight.X && centerToCenter.Y <= centerToTopRight.Y;
+
+            
+
+            /*return character.Bottom > obstacle.Top && character.Top < obstacle.Top
+                        && character.Center.Y < obstacle.Top
+                        && character.Right > obstacle.Left && character.Left < obstacle.Right;*/
+        }
+
+        private bool CollisionDetectionFromUnder(Rectangle character, Rectangle obstacle)
+        {
+            Vector2 centerToBottomLeft = new Vector2(obstacle.X - obstacle.Center.X, obstacle.Bottom - obstacle.Center.Y);
+            Vector2 centerToBottomRight = new Vector2(obstacle.Right - obstacle.Center.X, obstacle.Bottom - obstacle.Center.Y);
+            Vector2 centerToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y); // obstacle and character
+
+            centerToBottomLeft.Normalize();
+            centerToBottomRight.Normalize();
+            centerToCenter.Normalize();
+
+            return centerToCenter.X > centerToBottomLeft.X && centerToCenter.Y > centerToBottomLeft.Y
+                && centerToCenter.X < centerToBottomRight.X && centerToCenter.Y > centerToBottomRight.Y;
+
+            /*return character.Top < obstacle.Bottom && character.Bottom > obstacle.Bottom
+                        && character.Center.Y > obstacle.Bottom
+                        && character.Right > obstacle.Left && character.Left < obstacle.Right;*/
+        }
+
+        private bool CollisionDetectionFromLeft(Rectangle character, Rectangle obstacle)
+        {
+            Vector2 centerToTopLeft = new Vector2(obstacle.X - obstacle.Center.X, obstacle.Y - obstacle.Center.Y);
+            Vector2 centerToBottomLeft = new Vector2(obstacle.X - obstacle.Center.X, obstacle.Bottom - obstacle.Center.Y);
+            Vector2 centerToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y); // obstacle and character
+
+            centerToTopLeft.Normalize();
+            centerToBottomLeft.Normalize();
+            centerToCenter.Normalize();
+
+            return centerToCenter.X < centerToTopLeft.X && centerToCenter.Y > centerToTopLeft.Y
+                && centerToCenter.X <= centerToBottomLeft.X && centerToCenter.Y < centerToBottomLeft.Y;
+
+            /*return character.Right > obstacle.Left && character.Left < obstacle.Left
+                        && character.Center.X < obstacle.Left
+                        && character.Bottom > obstacle.Top && character.Top < obstacle.Bottom;*/
+        }
+
+        private bool CollisionDetectionFromRight(Rectangle character, Rectangle obstacle)
+        {
+            Vector2 centerToTopRight = new Vector2(obstacle.Right - obstacle.Center.X, obstacle.Y - obstacle.Center.Y);
+            Vector2 centerToBottomRight = new Vector2(obstacle.Right - obstacle.Center.X, obstacle.Bottom - obstacle.Center.Y);
+            Vector2 centerToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y); // obstacle and character
+
+            centerToTopRight.Normalize();
+            centerToBottomRight.Normalize();
+            centerToCenter.Normalize();
+
+            return centerToCenter.X > centerToTopRight.X && centerToCenter.Y > centerToTopRight.Y
+                && centerToCenter.X >= centerToBottomRight.X && centerToCenter.Y <= centerToBottomRight.Y;
+
+            /*return character.Left < obstacle.Right && character.Right > obstacle.Right
+                        && character.Center.X > obstacle.Right
+                        && character.Bottom > obstacle.Top && character.Top < obstacle.Bottom;*/
         }
 
         private void BackToLastSafeCollider()
