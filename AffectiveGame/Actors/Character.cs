@@ -265,7 +265,7 @@ namespace AffectiveGame.Actors
                         dont_move = true;
                         if (animations[(int)_action].isFinished)
                         {
-                            lastSafeCollider.Dig();
+                            levelScreen.Dig(lastSafeCollider);
                             ChangeAction(Action.Idle);
                         }
                     } break;
@@ -644,7 +644,8 @@ namespace AffectiveGame.Actors
 
             foreach (Screens.Level.Collider collider in levelScreen.GetColliders())
                 if (collider.GetBox().Intersects(characterColliderPositioned))
-                    canJump = false;
+                    if (collider.isActive)
+                        canJump = false;
 
             return canJump && _grounded;
         }

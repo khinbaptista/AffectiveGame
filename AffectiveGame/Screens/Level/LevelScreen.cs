@@ -12,16 +12,40 @@ namespace AffectiveGame.Screens.Level
 {
     abstract class LevelScreen : GameScreen
     {
+        protected struct Tunnel
+        {
+            public int entranceIndex { get; private set; }
+            public List<int> coverIndexes { get; private set; }
+
+            public Tunnel(int entrance)
+            {
+                this = new Tunnel();
+                entranceIndex = entrance;
+                coverIndexes = new List<int>();
+            }
+
+            public void AddCover(int coverIndex)
+            {
+                coverIndexes.Add(coverIndex);
+            }
+
+            public void AddCoverRange(IEnumerable<int> coverIndexes)
+            {
+                this.coverIndexes.AddRange(coverIndexes);
+            }
+        }
+
         protected readonly Vector2 gravitySpeed;
         protected Actors.Character Edon;
         protected List<Collider> environmentColliders;
         protected List<Rectangle> fearArea;
         protected Vector2 startPosition;
+
+        protected List<Tunnel> tunnels;
+
         protected Comparison.Manager soundControl;
         public Camera camera;
-        
         public bool fullMoon { get; protected set; }
-        
         protected Texture2D background;
 
         public LevelScreen(GameMain game, GameScreen father, float gravitySpeed, ScreenState state = ScreenState.TransitionOn)
@@ -29,6 +53,9 @@ namespace AffectiveGame.Screens.Level
         {
             this.gravitySpeed = new Vector2(0, gravitySpeed);
 
+            environmentColliders = new List<Collider>();
+            fearArea = new List<Rectangle>();
+            tunnels = new List<Tunnel>();
             //LoadContent(game.Content);
         }
 
@@ -82,13 +109,28 @@ namespace AffectiveGame.Screens.Level
             Edon.Draw(spriteBatch, gameTime);
         }
 
-        public ContentManager GetContentRef() { return game.Content; }
-
         public List<Collider> GetColliders() { return environmentColliders; }
 
         public List<Rectangle> GetFearAreas() { return fearArea; }
 
         public Vector2 GetGravity() { return gravitySpeed; }
+
+        public void Dig(Collider collider)
+        {
+            if (!collider.isDiggable)
+                return;
+
+            int index = environmentColliders.IndexOf(collider);
+            environmentColliders[index].Dig();
+
+            foreach (Tunnel tunnel in tunnels)
+                if (tunnel.entranceIndex == index)
+                {
+                    foreach (int cover in tunnel.coverIndexes)
+                        environmentColliders[cover].Deactivate();
+                }
+
+        }
 
         /// <summary>
         /// Reads a file to load the colliders. Assumes the file contains one collider per line, values separated by ' ' (space).
@@ -104,6 +146,7 @@ namespace AffectiveGame.Screens.Level
 
             bool readingColliders = true;
             bool readingFearZones = false;
+            bool readingTunnel = false;
 
             while (!file.EndOfStream)
             {
@@ -116,13 +159,22 @@ namespace AffectiveGame.Screens.Level
                 {
                     readingColliders = false;
                     readingFearZones = true;
+                    readingTunnel = false;
                     continue;
                 }
                 else if (text.StartsWith("collider"))
                 {
                     readingFearZones = false;
                     readingColliders = true;
-
+                    readingTunnel = false;
+                    continue;
+                }
+                else if (text.StartsWith("tunnel"))
+                {
+                    readingTunnel = true;
+                    readingColliders = false;
+                    readingFearZones = false;
+                    continue;
                 }
 
                 values = text.Split(new char[] { ' ' });
@@ -139,6 +191,15 @@ namespace AffectiveGame.Screens.Level
                 {
                     if (values.Length == 4)
                         fearArea.Add(new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
+                }
+                else if (readingTunnel)
+                {
+                    Tunnel newTunnel = new Tunnel(int.Parse(values[0]));
+                    
+                    for (int i = 1; i < values.Length; i++)
+                        newTunnel.AddCover(int.Parse(values[i]));
+
+                    tunnels.Add(newTunnel);
                 }
 
             }

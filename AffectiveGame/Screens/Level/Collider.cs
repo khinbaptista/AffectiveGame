@@ -97,8 +97,16 @@ namespace AffectiveGame.Screens.Level
         /// </summary>
         public void Dig()
         {
-            if (_isDiggable)
-                _isActive = false;
+            if (!_isDiggable)
+                return;
+
+            _isActive = false;
+
+        }
+
+        public void Deactivate()
+        {
+            _isActive = false;
         }
 
         /// <summary>
