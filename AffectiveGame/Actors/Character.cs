@@ -255,7 +255,8 @@ namespace AffectiveGame.Actors
                         dont_move = true;
                         if (animations[(int)_action].isFinished)
                         {
-                            if (levelScreen.fullMoon || debug)
+                            //if (levelScreen.fullMoon || debug)
+                            if (debug)
                                 StartHowlBonus();
                             ChangeAction(Action.Idle);
                         }

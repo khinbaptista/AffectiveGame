@@ -45,7 +45,7 @@ namespace AffectiveGame.Screens.Level
 
         protected Comparison.Manager soundControl;
         public Camera camera;
-        public bool fullMoon { get; protected set; }
+        public Actors.Moon moon;
         protected Texture2D background;
 
         public LevelScreen(GameMain game, GameScreen father, float gravitySpeed, ScreenState state = ScreenState.TransitionOn)
@@ -66,6 +66,9 @@ namespace AffectiveGame.Screens.Level
             background = content.Load<Texture2D>("Sky");
             camera = new Camera(game.viewport, startPosition);
 
+            moon = new Moon(game, this);
+            moon.LoadContent(content);
+
             soundControl = new Comparison.Manager();
             soundControl.startProcessing();
         }
@@ -75,6 +78,8 @@ namespace AffectiveGame.Screens.Level
             base.Update(gameTime);
 
             Edon.Update(gameTime);
+
+            moon.Update(gameTime);
 
             Vector2 edonPosition = Edon.position;
             camera.SmoothMove(new Vector2(edonPosition.X, Edon.grounded ? edonPosition.Y - game.viewport.Height / 4 : camera.position.Y));
@@ -106,6 +111,7 @@ namespace AffectiveGame.Screens.Level
             spriteBatch.Draw(background, new Rectangle(0, 0, game.viewport.Width, game.viewport.Height), Color.White);
             spriteBatch.End();
 
+            moon.Draw(gameTime, spriteBatch);
             Edon.Draw(spriteBatch, gameTime);
         }
 
