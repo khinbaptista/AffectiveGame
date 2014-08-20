@@ -84,18 +84,23 @@ namespace AffectiveGame.Comparison
 
             double[] result;
 
-            if (lastHowl)
+            if (leftCompared.Length != 0)
             {
-                alglib.corrr1d(leftStroke, leftStroke.Length, leftCompared, leftCompared.Length, out result);
-                crossCorr = new Correlation(result, leftStroke, leftCompared, out offset, out strokeResult);
-                lastHowl = false;
+                if (lastHowl)
+                {
+                    alglib.corrr1d(leftStroke, leftStroke.Length, leftCompared, leftCompared.Length, out result);
+                    crossCorr = new Correlation(result, leftStroke, leftCompared, out offset, out strokeResult);
+                    lastHowl = false;
+                }
+                else
+                {
+                    alglib.corrr1d(leftHowl, leftHowl.Length, leftCompared, leftCompared.Length, out result);
+                    crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
+                    lastHowl = true;
+                }
             }
             else
-            {
-                alglib.corrr1d(leftHowl, leftHowl.Length, leftCompared, leftCompared.Length, out result);
-                crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
-                lastHowl = true;
-            }
+                Console.WriteLine();
 
             if ((strokeResult < 0.4) && (howlResult < 0.4))
             {
