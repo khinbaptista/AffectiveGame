@@ -23,7 +23,7 @@ namespace AffectiveGame.Actors
         protected Vector2 rCloudPos;
         protected TimeSpan frameTimer;
         protected readonly TimeSpan durationTimer;
-        protected float moonSpeed = 10;
+        protected float moonSpeed = 15;
         protected bool moonAnimation = false;
         protected bool fullMoon = false;
         
@@ -32,15 +32,15 @@ namespace AffectiveGame.Actors
             this.levelScreen = levelScreen;
             this.game = game;
 
-            durationTimer = TimeSpan.FromMilliseconds(8000);
+            durationTimer = TimeSpan.FromSeconds(10);
 
-            moonPos = new Vector2(500, 100);
-            lCloudPos = new Vector2(430, 80);
-            rCloudPos = new Vector2(540, 120);
+            moonPos = new Vector2(700, 100);
+            lCloudPos = new Vector2(600, 80);
+            rCloudPos = new Vector2(750, 120);
 
-            _moon = new Rectangle((int)moonPos.X, (int)moonPos.Y, 100, 100);
-            leftCloud = new Rectangle((int)lCloudPos.X, (int)lCloudPos.Y, 122, 78);
-            rightCloud = new Rectangle((int)rCloudPos.X, (int)rCloudPos.Y, 122, 78);
+            _moon = new Rectangle((int)moonPos.X, (int)moonPos.Y, 200, 200);
+            leftCloud = new Rectangle((int)lCloudPos.X, (int)lCloudPos.Y, 244, 156);
+            rightCloud = new Rectangle((int)rCloudPos.X, (int)rCloudPos.Y, 244, 156);
         }
 
         public void LoadContent(ContentManager content)

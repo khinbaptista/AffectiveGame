@@ -65,7 +65,7 @@ namespace AffectiveGame.Screens.Level
         {
             base.LoadContent(content);
 
-            background = content.Load<Texture2D>("Sky");
+            background = content.Load<Texture2D>("Sky2");
             camera = new Camera(game.viewport, startPosition);
 
             moon = new Moon(game, this);

@@ -6,7 +6,6 @@ C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameC
 C:\Users\Khin\Documents\Visual Studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\blank.xnb
 C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\popupBackground.xnb
 C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\controllerButtons.xnb
-C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\Sky.xnb
 C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\EdonSpriteSheet.xnb
 C:\Users\msvas\Documents\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\tempFont.xnb
 C:\Users\msvas\Documents\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\blank.xnb
@@ -18,3 +17,4 @@ C:\Users\msvas\Documents\AffectiveGame\AffectiveGameContent\AffectiveGameContent
 C:\Users\msvas\Documents\AffectiveGame\AffectiveGameContent\AffectiveGameContent\obj\PSM\AffectiveGameContent.csprojResolveAssemblyReference.cache
 C:\Users\msvas\Documents\AffectiveGame\AffectiveGameContent\AffectiveGameContent\obj\PSM\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\msvas\Documents\AffectiveGame\AffectiveGameContent\AffectiveGameContent\obj\PSM\IgnoreMe.dll
+C:\Users\Khin\documents\visual studio 2010\Projects\AffectiveGame\AffectiveGameContent\AffectiveGameContent\bin\PSM\Content\Sky2.xnb

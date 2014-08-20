@@ -76,15 +76,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sky.png">
-      <Name>Sky</Name>
+    <Compile Include="EdonSpriteSheet.png">
+      <Name>EdonSpriteSheet</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EdonSpriteSheet.png">
-      <Name>EdonSpriteSheet</Name>
+    <Compile Include="Sky.png">
+      <Name>Sky2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

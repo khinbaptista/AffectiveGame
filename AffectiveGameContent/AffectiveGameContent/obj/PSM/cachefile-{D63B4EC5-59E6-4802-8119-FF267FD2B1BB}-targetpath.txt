@@ -2,5 +2,5 @@ Content\tempFont.xnb
 Content\blank.xnb
 Content\popupBackground.xnb
 Content\controllerButtons.xnb
-Content\Sky.xnb
 Content\EdonSpriteSheet.xnb
+Content\Sky2.xnb
