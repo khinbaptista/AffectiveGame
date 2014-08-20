@@ -27,6 +27,7 @@ namespace AffectiveGame.Comparison
         private static double howlResult;
         private static double strokeResult;
         private static Timer recordWindow;
+        private static bool lastHowl = false;
 
         public double Value
         {
@@ -82,10 +83,19 @@ namespace AffectiveGame.Comparison
             recorder.disposeStream();
 
             double[] result;
-            alglib.corrr1d(leftHowl, leftHowl.Length, leftCompared, leftCompared.Length, out result);
 
-            crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
-            crossCorr = new Correlation(result, leftStroke, leftCompared, out offset, out strokeResult);
+            if (lastHowl)
+            {
+                alglib.corrr1d(leftStroke, leftStroke.Length, leftCompared, leftCompared.Length, out result);
+                crossCorr = new Correlation(result, leftStroke, leftCompared, out offset, out strokeResult);
+                lastHowl = false;
+            }
+            else
+            {
+                alglib.corrr1d(leftHowl, leftHowl.Length, leftCompared, leftCompared.Length, out result);
+                crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
+                lastHowl = true;
+            }
 
             if ((strokeResult < 0.4) && (howlResult < 0.4))
             {
@@ -103,8 +113,6 @@ namespace AffectiveGame.Comparison
             stopwatchProcess.Stop();
 
             //Console.WriteLine("Value: " + value);
-
-            
 
             //Console.WriteLine("Time elapsed recording: " + recorder.getStopWatchRecord() + " ms");
             //Console.WriteLine("Time elapsed processing: " + stopwatchProcess.ElapsedMilliseconds + " ms");
