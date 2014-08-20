@@ -80,6 +80,7 @@ namespace AffectiveGame.Actors
         private float _fear;
         private bool _afraid;
         private const float fearThreshold = 128;
+        private const float fearMaxValue = 300;
         private const float _fearRegenerationRate = 32;
         private const int fearOnusSpeed = 100;
         private const int fearOnusJump = 300;
@@ -260,8 +261,7 @@ namespace AffectiveGame.Actors
                         dont_move = true;
                         if (animations[(int)_action].isFinished)
                         {
-                            if (levelScreen.moonValue())// || debug)
-                                StartHowlBonus();
+                            StartHowlBonus();
                             ChangeAction(Action.Idle);
                         }
                     } break;
@@ -306,7 +306,8 @@ namespace AffectiveGame.Actors
                         else if (input.WasPressed(Input.Y))
                             ChangeAction(Action.Dig);
                         else if (input.WasPressed(Input.B))
-                            ChangeAction(Action.Howl);
+                            if (levelScreen.moonValue())
+                                ChangeAction(Action.Howl);
                         else if (!moved)
                             movement.X = movement.X * lastSafeCollider.friction;
                     } break;
@@ -514,8 +515,8 @@ namespace AffectiveGame.Actors
                 if (_fear >= fearThreshold)
                     _afraid = true;
 
-                if (_fear > 255)
-                    _fear = 255;
+                if (_fear > fearMaxValue)
+                    _fear = fearMaxValue;
 
                 i++;
             }
