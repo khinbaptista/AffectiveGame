@@ -305,7 +305,7 @@ namespace AffectiveGame.Actors
                             ChangeAction(Action.Jump);
                         else if (input.WasPressed(Input.Y))
                             ChangeAction(Action.Dig);
-                        else if (input.WasPressed(Input.B))
+                        else if (levelScreen.getComparisonValue() == soundState.HOWLING)
                             if (levelScreen.moonValue())
                                 ChangeAction(Action.Howl);
                         else if (!moved)
