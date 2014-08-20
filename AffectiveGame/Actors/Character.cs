@@ -227,7 +227,8 @@ namespace AffectiveGame.Actors
                 spriteBatch.DrawString(font, "Fear gauge: " + _fear, new Vector2(50, 130), Color.White);
                 spriteBatch.DrawString(font, "Afraid: " + _afraid, new Vector2(50, 150), Color.White);
                 spriteBatch.DrawString(font, "Movement: " + movement, new Vector2(50, 170), Color.White);
-                spriteBatch.DrawString(font, "Action: " + levelScreen.getComparisonValue() + " (" + levelScreen.getValue() + ")", new Vector2(50, 190), Color.White);
+                spriteBatch.DrawString(font, "Full moon: " + levelScreen.moonValue(), new Vector2(50, 190), Color.White);
+                spriteBatch.DrawString(font, "Action: " + levelScreen.getComparisonValue() + " (" + levelScreen.getValue() + ")", new Vector2(50, 210), Color.White);
 
                 if (lastSafeCollider != null)
                     spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
@@ -255,8 +256,8 @@ namespace AffectiveGame.Actors
                         dont_move = true;
                         if (animations[(int)_action].isFinished)
                         {
-                            //if (levelScreen.fullMoon || debug)
-                            if (debug)
+                            //if (levelScreen.moonValue() || debug)
+                            if(debug)
                                 StartHowlBonus();
                             ChangeAction(Action.Idle);
                         }

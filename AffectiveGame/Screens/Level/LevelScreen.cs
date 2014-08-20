@@ -138,6 +138,11 @@ namespace AffectiveGame.Screens.Level
 
         }
 
+        public bool moonValue()
+        {
+            return moon.getMoonValue();
+        }
+
         /// <summary>
         /// Reads a file to load the colliders. Assumes the file contains one collider per line, values separated by ' ' (space).
         /// Both constructors are available: 4 values to describe the rectangle | 8 values, where "true" and "false" should be used.

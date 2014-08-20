@@ -21,11 +21,9 @@ namespace AffectiveGame.Actors
         protected Vector2 moonPos;
         protected Vector2 lCloudPos;
         protected Vector2 rCloudPos;
-        protected int moonWidth;
-        protected int moonHeight;
         protected TimeSpan frameTimer;
         protected readonly TimeSpan durationTimer;
-        protected float moonSpeed = 20;
+        protected float moonSpeed = 10;
         protected bool moonAnimation = false;
         protected bool fullMoon = false;
         
@@ -34,7 +32,7 @@ namespace AffectiveGame.Actors
             this.levelScreen = levelScreen;
             this.game = game;
 
-            durationTimer = TimeSpan.FromMilliseconds(5000);
+            durationTimer = TimeSpan.FromMilliseconds(8000);
 
             moonPos = new Vector2(500, 100);
             lCloudPos = new Vector2(430, 80);
@@ -80,9 +78,9 @@ namespace AffectiveGame.Actors
                 }
 
                 if (!((_moon.Intersects(leftCloud)) && (_moon.Intersects(rightCloud))))
-                    fullMoon = false;
-                else
                     fullMoon = true;
+                else
+                    fullMoon = false;
             }
         }
 
