@@ -52,11 +52,11 @@ namespace AffectiveGame.Actors
 
         public void Update(GameTime gameTime)
         {
-            frameTimer += gameTime.ElapsedGameTime;
             float finalSpeed = (float)(moonSpeed * gameTime.ElapsedGameTime.TotalSeconds);
 
             if (moonAnimation)
             {
+                frameTimer += gameTime.ElapsedGameTime;
                 if (frameTimer.TotalMilliseconds < durationTimer.TotalMilliseconds)
                 {
                     lCloudPos.X -= finalSpeed;
