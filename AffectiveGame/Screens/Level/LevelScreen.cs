@@ -39,6 +39,7 @@ namespace AffectiveGame.Screens.Level
         protected Actors.Character Edon;
         protected List<Collider> environmentColliders;
         protected List<Rectangle> fearArea;
+        protected List<Rectangle> moonTriggers;
         protected Vector2 startPosition;
 
         protected List<Tunnel> tunnels;
@@ -56,6 +57,7 @@ namespace AffectiveGame.Screens.Level
             environmentColliders = new List<Collider>();
             fearArea = new List<Rectangle>();
             tunnels = new List<Tunnel>();
+            moonTriggers = new List<Rectangle>();
             //LoadContent(game.Content);
         }
 
@@ -119,6 +121,8 @@ namespace AffectiveGame.Screens.Level
 
         public List<Rectangle> GetFearAreas() { return fearArea; }
 
+        public List<Rectangle> GetMoonTriggers() { return moonTriggers; }
+
         public Vector2 GetGravity() { return gravitySpeed; }
 
         public void Dig(Collider collider)
@@ -143,6 +147,12 @@ namespace AffectiveGame.Screens.Level
             return moon.getMoonValue();
         }
 
+        public void TriggerMoon(int index)
+        {
+            moon.startFullMoon();
+            moonTriggers.RemoveAt(index);
+        }
+
         /// <summary>
         /// Reads a file to load the colliders. Assumes the file contains one collider per line, values separated by ' ' (space).
         /// Both constructors are available: 4 values to describe the rectangle | 8 values, where "true" and "false" should be used.
@@ -158,12 +168,13 @@ namespace AffectiveGame.Screens.Level
             bool readingColliders = true;
             bool readingFearZones = false;
             bool readingTunnel = false;
+            bool readingMoonTrigger = false;
 
             while (!file.EndOfStream)
             {
                 text = file.ReadLine();
 
-                if (text.StartsWith("#"))
+                if (text.StartsWith("#") || text == "")
                     continue;
 
                 if (text.StartsWith("fear"))
@@ -171,6 +182,7 @@ namespace AffectiveGame.Screens.Level
                     readingColliders = false;
                     readingFearZones = true;
                     readingTunnel = false;
+                    readingMoonTrigger = false;
                     continue;
                 }
                 else if (text.StartsWith("collider"))
@@ -178,6 +190,7 @@ namespace AffectiveGame.Screens.Level
                     readingFearZones = false;
                     readingColliders = true;
                     readingTunnel = false;
+                    readingMoonTrigger = false;
                     continue;
                 }
                 else if (text.StartsWith("tunnel"))
@@ -185,6 +198,15 @@ namespace AffectiveGame.Screens.Level
                     readingTunnel = true;
                     readingColliders = false;
                     readingFearZones = false;
+                    readingMoonTrigger = false;
+                    continue;
+                }
+                else if (text.StartsWith("moon"))
+                {
+                    readingMoonTrigger = true;
+                    readingColliders = false;
+                    readingFearZones = false;
+                    readingTunnel = false;
                     continue;
                 }
 
@@ -211,6 +233,11 @@ namespace AffectiveGame.Screens.Level
                         newTunnel.AddCover(int.Parse(values[i]));
 
                     tunnels.Add(newTunnel);
+                }
+                else if (readingMoonTrigger)
+                {
+                    if (values.Length == 4)
+                        moonTriggers.Add(new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
                 }
 
             }

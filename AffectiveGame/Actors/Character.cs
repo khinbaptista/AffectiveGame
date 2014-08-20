@@ -204,8 +204,12 @@ namespace AffectiveGame.Actors
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
 
             CheckCollisions();
-            
-            UpdateFear();
+
+            Rectangle characterCollider = animations[(int)_action].GetCollider();
+            Rectangle characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
+
+            UpdateFear(characterColliderPositioned);
+            UpdateMoonTrigger(characterColliderPositioned);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -256,8 +260,7 @@ namespace AffectiveGame.Actors
                         dont_move = true;
                         if (animations[(int)_action].isFinished)
                         {
-                            //if (levelScreen.moonValue() || debug)
-                            if(debug)
+                            if (levelScreen.moonValue())// || debug)
                                 StartHowlBonus();
                             ChangeAction(Action.Idle);
                         }
@@ -498,17 +501,14 @@ namespace AffectiveGame.Actors
             Collide(Vector2.Zero);
         }
 
-        private void UpdateFear()
+        private void UpdateFear(Rectangle character)
         {
-            Rectangle characterCollider = animations[(int)_action].GetCollider();
-            Rectangle characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
-
             int i = 0;
             List<Rectangle> fearZones = levelScreen.GetFearAreas();
 
             while (i < fearZones.Count)
             {
-                if (characterColliderPositioned.Intersects(fearZones[i]))
+                if (character.Intersects(fearZones[i]))
                     _fear += 3 * _fearRegenerationRate * game.deltaTime;
 
                 if (_fear >= fearThreshold)
@@ -530,6 +530,27 @@ namespace AffectiveGame.Actors
 
             if (_fear < 0)
                 _fear = 0;
+        }
+
+        private void UpdateMoonTrigger(Rectangle character)
+        {
+            if (howlBonus)
+                return;
+
+            List<Rectangle> moonTriggers = levelScreen.GetMoonTriggers();
+            bool moonActivated = false;
+
+            int i = 0;
+            while (!moonActivated && i < moonTriggers.Count)
+            {
+                if (character.Intersects(moonTriggers[i]))
+                {
+                    moonActivated = true;
+                    levelScreen.TriggerMoon(i);
+                }
+
+                i++;
+            }
         }
 
         private bool Move(InputHandler input)

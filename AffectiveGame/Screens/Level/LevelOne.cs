@@ -50,6 +50,9 @@ namespace AffectiveGame.Screens.Level
             // debug
             foreach (Rectangle fearZone in fearArea)
                 spriteBatch.Draw(blank, fearZone, new Color(0.3f, 0, 0, 0.5f));
+
+            foreach (Rectangle moonTrigger in moonTriggers)
+                spriteBatch.Draw(blank, moonTrigger, new Color(1, 1, 0.5f, 0.5f));
             
             spriteBatch.End();
         }
