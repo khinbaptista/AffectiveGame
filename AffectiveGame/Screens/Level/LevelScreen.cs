@@ -252,7 +252,7 @@ namespace AffectiveGame.Screens.Level
             base.ExitScreen();
         }
 
-        public bool getComparisonValue()
+        public soundState getComparisonValue()
         {
             return soundControl.getActionValue();
         }
@@ -260,6 +260,11 @@ namespace AffectiveGame.Screens.Level
         public double getValue()
         {
             return soundControl.getValue();
+        }
+
+        public double strokeValue()
+        {
+            return soundControl.strokeValue();
         }
 
         /// <summary>

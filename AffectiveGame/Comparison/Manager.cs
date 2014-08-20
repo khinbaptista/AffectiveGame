@@ -36,18 +36,28 @@ namespace AffectiveGame.Comparison
             }
         }
 
-        public bool getActionValue()
+        public soundState getActionValue()
         {
             if (started && working)
                 return recorder.getAction();
             else
-                return false;
+                return soundState.NONE;
         }
 
         public double getValue()
         {
             if(started && working)
                 return recorder.Value;
+            else
+            {
+                return 0;
+            }
+        }
+
+        public double strokeValue()
+        {
+            if (started && working)
+                return recorder.strokeValue;
             else
             {
                 return 0;

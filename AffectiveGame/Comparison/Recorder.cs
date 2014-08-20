@@ -9,11 +9,13 @@ namespace AffectiveGame.Comparison
 {
     public class Recorder
     {
-        public static double[] leftAudio;
+        public static double[] leftHowl;
         public static double[] rightAudio;
         public static double[] leftCompared;
         public static double[] rightCompared;
-        private static string soundName = @"stroking\howl.wav";
+        public static double[] leftStroke;
+        private static string howlFile = @"stroking\howl.wav";
+        private static string strokeFile = @"stroking\011.wav";
         static Program program = new Program();
         static Correlation crossCorr;
         public static int offset;
@@ -21,13 +23,19 @@ namespace AffectiveGame.Comparison
         private static Stopwatch stopwatchProcess = new Stopwatch();
         //private static Stopwatch stopwatchRecord = new Stopwatch();
         private static Stopwatch stopwatchTotal = new Stopwatch();
-        private static bool actionValue = false;
-        private static double value;
+        private static soundState comparisonState = soundState.NONE;
+        private static double howlResult;
+        private static double strokeResult;
         private static Timer recordWindow;
 
         public double Value
         {
-            get { return value; }
+            get { return howlResult; }
+        }
+
+        public double strokeValue
+        {
+            get { return strokeResult; }
         }
 
         public Recorder()
@@ -36,7 +44,8 @@ namespace AffectiveGame.Comparison
             recordWindow = new System.Timers.Timer(500);
             if (recorder.checkMic())
             {
-                program.openWav(soundName, null, out leftAudio, out rightAudio);
+                program.openWav(howlFile, null, out leftHowl, out rightAudio);
+                program.openWav(strokeFile, null, out leftStroke, out rightAudio);
                 stopwatchTotal.Start();
                 //Console.WriteLine("Recording...");
                 //stopwatchRecord.Start();
@@ -53,12 +62,11 @@ namespace AffectiveGame.Comparison
         {
             stopwatchTotal.Stop();
             recordWindow.Enabled = false;
-
         }
 
-        public bool getAction()
+        public soundState getAction()
         {
-            return actionValue;
+            return comparisonState;
         }
 
         private static void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -74,24 +82,29 @@ namespace AffectiveGame.Comparison
             recorder.disposeStream();
 
             double[] result;
-            alglib.corrr1d(leftAudio, leftAudio.Length, leftCompared, leftCompared.Length, out result);
+            alglib.corrr1d(leftHowl, leftHowl.Length, leftCompared, leftCompared.Length, out result);
 
-            crossCorr = new Correlation(result, leftAudio, leftCompared, out offset, out value);
+            crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
+            crossCorr = new Correlation(result, leftStroke, leftCompared, out offset, out strokeResult);
+
+            if ((strokeResult < 0.4) && (howlResult < 0.4))
+            {
+                comparisonState = soundState.NONE;
+            }
+            else if (strokeResult > howlResult)
+            {
+                comparisonState = soundState.STROKING;
+            }
+            else
+            {
+                comparisonState = soundState.HOWLING;
+            }
 
             stopwatchProcess.Stop();
 
             //Console.WriteLine("Value: " + value);
 
-            if (value > 0.4)
-            {
-                //Console.WriteLine("Action: True");
-                actionValue = true;
-            }
-            else
-            {
-                //Console.WriteLine("Action: False");
-                actionValue = false;
-            }
+            
 
             //Console.WriteLine("Time elapsed recording: " + recorder.getStopWatchRecord() + " ms");
             //Console.WriteLine("Time elapsed processing: " + stopwatchProcess.ElapsedMilliseconds + " ms");

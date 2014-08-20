@@ -9,6 +9,13 @@ using Microsoft.Xna.Framework.GamerServices;
 
 namespace AffectiveGame
 {
+    public enum soundState
+    {
+        NONE,
+        HOWLING,
+        STROKING
+    };
+
 	public class GameMain : Game
 	{
 		#region Private Attributes
