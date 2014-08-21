@@ -77,7 +77,7 @@ namespace AffectiveGame.Comparison
 
             //Console.WriteLine("Sound recorded. Processing...");
 
-            /*stopwatchProcess.Start();
+            stopwatchProcess.Start();
             program.openWav(null, recorder.wavMem(), out leftCompared, out rightCompared);
 
             recorder.disposeStream();
@@ -100,9 +100,9 @@ namespace AffectiveGame.Comparison
                 }
             }
             else
-                Console.WriteLine();*/
+                Console.WriteLine();
 
-            stopwatchProcess.Start();
+            /*stopwatchProcess.Start();
             program.openWav(null, recorder.wavMem(), out leftCompared, out rightCompared);
 
             recorder.disposeStream();
@@ -120,7 +120,7 @@ namespace AffectiveGame.Comparison
                     crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
             }
             else
-                Console.WriteLine();
+                Console.WriteLine();*/
 
             if ((strokeResult < 0.4) && (howlResult < 0.4))
             {
