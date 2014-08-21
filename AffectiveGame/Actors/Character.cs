@@ -140,27 +140,9 @@ namespace AffectiveGame.Actors
             animations.Add(new Animation(true)); // fall
             animations.Add(new Animation(false)); // howl
             animations.Add(new Animation(false)); // dig
-            //animations.Add(new Animation(false)); // drink
+            animations.Add(new Animation(false)); // drink
 
             LoadAnimationsFromFile(Environment.CurrentDirectory + @"\EdonAnim.txt");
-
-            /*
-            // TO-DO: add frames and colliders via text file (inside Animation)
-            animations[(int)Action.Idle].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half of image
-            animations[(int)Action.Walk].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
-            animations[(int)Action.Jump].InsertFrame(new Rectangle(570, 0, 570, 690)); // 2nd half
-            animations[(int)Action.Fall].InsertFrame(new Rectangle(570, 0, 570, 690)); // 2nd half
-            animations[(int)Action.Howl].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
-            animations[(int)Action.Dig].InsertFrame(new Rectangle(0, 0, 570, 690)); // 1st half
-
-            //animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(19, 43, 74, 56)); // 94, 216, 370, 280 / 5
-            animations[(int)Action.Idle].InsertFrameCollider(new Rectangle(17, 79, 86, 54)); // 85, 394, 432, 271 / 5
-            animations[(int)Action.Walk].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
-
-            animations[(int)Action.Jump].InsertFrameCollider(new Rectangle(36, 13, 50, 122)); // 751 / 5 - 570 / 5, 65, 249, 609 / 5
-            animations[(int)Action.Fall].InsertFrameCollider(new Rectangle(36, 13, 50, 122));
-            animations[(int)Action.Howl].InsertFrameCollider(new Rectangle(17, 79, 86, 54));
-            animations[(int)Action.Dig].InsertFrameCollider(new Rectangle(17, 79, 86, 54));*/
         }
 
         public override void HandleInput(InputHandler input)
@@ -255,9 +237,6 @@ namespace AffectiveGame.Actors
         {
             bool dont_move = false;
 
-            //if (input.getStatus().Count == 0)
-              //  Console.WriteLine();
-
             switch (_action)
             {
                 case Action.Howl:
@@ -283,8 +262,7 @@ namespace AffectiveGame.Actors
                         dont_move = true;
                         if (animations[(int)_action].isFinished)
                         {
-                            if (lastSafeCollider.isWater)
-                                _fear -= drinkReduceFear;
+                            _fear -= drinkReduceFear;
                             ChangeAction(Action.Idle);
                         }
                     } break;
@@ -308,8 +286,10 @@ namespace AffectiveGame.Actors
                             ChangeAction(Action.Walk);
                         if (input.WasPressed(Input.A) && CanJump())
                             ChangeAction(Action.Jump);
-                        else if (input.WasPressed(Input.Y))
+                        else if (input.WasPressed(Input.X))
                             ChangeAction(Action.Dig);
+                        else if (input.WasPressed(Input.Y) && lastSafeCollider.isWater)
+                            ChangeAction(Action.Drink);
                         else if (levelScreen.getComparisonValue() == soundState.HOWLING)
                         {
                             if (levelScreen.moonValue())
