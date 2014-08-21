@@ -14,7 +14,7 @@ namespace AffectiveGame.Comparison
         public static double[] leftCompared;
         public static double[] rightCompared;
         public static double[] leftStroke;
-        private static string howlFile = @"stroking\howl.wav";
+        private static string howlFile = @"howling\002.wav";
         private static string strokeFile = @"stroking\011.wav";
         static Program program = new Program();
         static Correlation crossCorr;
@@ -77,7 +77,7 @@ namespace AffectiveGame.Comparison
 
             //Console.WriteLine("Sound recorded. Processing...");
 
-            stopwatchProcess.Start();
+            /*stopwatchProcess.Start();
             program.openWav(null, recorder.wavMem(), out leftCompared, out rightCompared);
 
             recorder.disposeStream();
@@ -98,6 +98,26 @@ namespace AffectiveGame.Comparison
                     crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
                     lastHowl = true;
                 }
+            }
+            else
+                Console.WriteLine();*/
+
+            stopwatchProcess.Start();
+            program.openWav(null, recorder.wavMem(), out leftCompared, out rightCompared);
+
+            recorder.disposeStream();
+
+            double[] result;
+
+            if (leftCompared.Length != 0)
+            {
+                    alglib.corrr1d(leftStroke, leftStroke.Length, leftCompared, leftCompared.Length, out result);
+                    crossCorr = new Correlation(result, leftStroke, leftCompared, out offset, out strokeResult);
+
+                    result = null;
+
+                    alglib.corrr1d(leftHowl, leftHowl.Length, leftCompared, leftCompared.Length, out result);
+                    crossCorr = new Correlation(result, leftHowl, leftCompared, out offset, out howlResult);
             }
             else
                 Console.WriteLine();

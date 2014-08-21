@@ -15,11 +15,13 @@ namespace AffectiveGame.Comparison
         public WaveInEvent waveSource = null;
         public WaveFileWriter waveFile = null;
         public MemoryStream audioStream;
-        Microphone  mic = Microphone.Default;
+        Microphone mic = Microphone.Default;
         private bool hasStopped = false;
         private static Stopwatch stopwatchRecord = new Stopwatch();
 
         private static object syncLock = new object();
+        private static object writeLock = new object();
+        private static object soundLock = new object();
 
         public bool checkMic()
         {
@@ -50,12 +52,14 @@ namespace AffectiveGame.Comparison
 
         public bool stopRecording()
         {
+            Monitor.Enter(soundLock);
             if (waveSource != null)
             {
                 waveSource.StopRecording();
                 //Monitor.Exit(syncLock);
                 stopwatchRecord.Stop();
             }
+            Monitor.Exit(soundLock);
             Monitor.Enter(syncLock);
             
             return true;
@@ -68,10 +72,12 @@ namespace AffectiveGame.Comparison
 
         void waveSource_DataAvailable(object sender, WaveInEventArgs e)
         {
+            Monitor.Enter(writeLock);
             if (waveFile != null)
             {
                 waveFile.Write(e.Buffer, 0, e.BytesRecorded);
             }
+            Monitor.Exit(writeLock);
         }
 
         public void disposeStream()
