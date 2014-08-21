@@ -37,3 +37,9 @@ frame
 0 0 570 690
 collider
 17 79 86 54
+
+animation Drink
+frame
+0 0 570 690
+collider
+17 79 86 54
