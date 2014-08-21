@@ -84,6 +84,7 @@ namespace AffectiveGame.Actors
         private const float _fearRegenerationRate = 32;
         private const int fearOnusSpeed = 100;
         private const int fearOnusJump = 300;
+        private const int drinkReduceFear = 75;
 
         # endregion
 
@@ -254,6 +255,9 @@ namespace AffectiveGame.Actors
         {
             bool dont_move = false;
 
+            //if (input.getStatus().Count == 0)
+              //  Console.WriteLine();
+
             switch (_action)
             {
                 case Action.Howl:
@@ -279,7 +283,8 @@ namespace AffectiveGame.Actors
                         dont_move = true;
                         if (animations[(int)_action].isFinished)
                         {
-                            // drink
+                            if (lastSafeCollider.isWater)
+                                _fear -= drinkReduceFear;
                             ChangeAction(Action.Idle);
                         }
                     } break;
@@ -306,8 +311,10 @@ namespace AffectiveGame.Actors
                         else if (input.WasPressed(Input.Y))
                             ChangeAction(Action.Dig);
                         else if (levelScreen.getComparisonValue() == soundState.HOWLING)
+                        {
                             if (levelScreen.moonValue())
                                 ChangeAction(Action.Howl);
+                        }
                         else if (!moved)
                             movement.X = movement.X * lastSafeCollider.friction;
                     } break;
