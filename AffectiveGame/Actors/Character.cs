@@ -290,7 +290,7 @@ namespace AffectiveGame.Actors
                             ChangeAction(Action.Dig);
                         else if (input.WasPressed(Input.Y) && lastSafeCollider.isWater)
                             ChangeAction(Action.Drink);
-                        else if (levelScreen.getComparisonValue() == soundState.HOWLING)
+                        else if (levelScreen.getComparisonValue() == soundState.HOWLING || input.WasPressed(Input.B))
                         {
                             if (levelScreen.moonValue())
                                 ChangeAction(Action.Howl);
@@ -365,7 +365,17 @@ namespace AffectiveGame.Actors
                     }
 
                     // test every possible collision
-                    if (CollisionFromAbove(characterColliderPositioned, rect))
+                    if (CollisionFromLeft(characterColliderPositioned, rect))
+                    {
+                        this._position = new Rectangle(_position.X - (characterColliderPositioned.Right - rect.Left), _position.Y, _position.Width, _position.Height);
+                        //Collide(Vector2.UnitX);
+                    }
+                    else if (CollisionFromRight(characterColliderPositioned, rect))
+                    {
+                        this._position = new Rectangle(_position.X + (rect.Right - characterColliderPositioned.Left), _position.Y, _position.Width, _position.Height);
+                        //Collide(Vector2.UnitX);
+                    }
+                    else if (CollisionFromAbove(characterColliderPositioned, rect))
                     {
                         // The flickering when jumping against a wall is due to the imperfections in the spritesheet, which means it will work just fine when we change the assets
                         this._position = new Rectangle(_position.X, _position.Y - (characterColliderPositioned.Bottom - rect.Top), _position.Width, _position.Height);
@@ -379,17 +389,6 @@ namespace AffectiveGame.Actors
                         Collide(Vector2.UnitY);
                         ChangeAction(Action.Fall);
                     }
-                    else if (CollisionFromLeft(characterColliderPositioned, rect))
-                    {
-                        this._position = new Rectangle(_position.X - (characterColliderPositioned.Right - rect.Left), _position.Y, _position.Width, _position.Height);
-                        //Collide(Vector2.UnitX);
-                    }
-                    else if (CollisionFromRight(characterColliderPositioned, rect))
-                    {
-                        this._position = new Rectangle(_position.X + (rect.Right - characterColliderPositioned.Left), _position.Y, _position.Width, _position.Height);
-                        //Collide(Vector2.UnitX);
-                    }
-
                     characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
                 }
             }
@@ -490,7 +489,7 @@ namespace AffectiveGame.Actors
 
             Vector2 outCenterToBottomLeft = new Vector2(character.X - obstacle.Center.X, character.Bottom - obstacle.Center.Y);
             Vector2 outCenterToBottomRight = new Vector2(character.Right - obstacle.Center.X, outCenterToBottomLeft.Y);
-            Vector2 outCenterToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y);
+            Vector2 outCenterToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Bottom - obstacle.Center.Y);
 
             inCenterToTopLeft.Normalize();
             inCenterToTopRight.Normalize();
@@ -523,7 +522,7 @@ namespace AffectiveGame.Actors
 
             Vector2 outCenterToTopLeft = new Vector2(character.X - obstacle.Center.X, character.Y - obstacle.Center.Y);
             Vector2 outCenterToTopRight = new Vector2(character.Right - obstacle.Center.X, outCenterToTopLeft.Y);
-            Vector2 outCenterToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y);
+            Vector2 outCenterToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Top - obstacle.Center.Y);
 
             inCenterToBottomLeft.Normalize();
             inCenterToBottomRight.Normalize();
@@ -556,7 +555,7 @@ namespace AffectiveGame.Actors
 
             Vector2 outCenterToTopRight = new Vector2(character.Right - obstacle.Center.X, character.Y - obstacle.Center.Y);
             Vector2 outCenterToBottomRight = new Vector2(outCenterToTopRight.X, character.Bottom - obstacle.Center.Y);
-            Vector2 outCenterToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y);
+            Vector2 outCenterToCenter = new Vector2(character.Right - obstacle.Center.X, character.Center.Y - obstacle.Center.Y);
 
             inCenterToTopLeft.Normalize();
             inCenterToBottomLeft.Normalize();
@@ -589,7 +588,7 @@ namespace AffectiveGame.Actors
 
             Vector2 outCenterToTopLeft = new Vector2(character.X - obstacle.Center.X, character.Y - obstacle.Center.Y);
             Vector2 outCenterToBottomLeft = new Vector2(outCenterToTopLeft.X, character.Bottom - obstacle.Center.Y);
-            Vector2 outCenterToCenter = new Vector2(character.Center.X - obstacle.Center.X, character.Center.Y - obstacle.Center.Y);
+            Vector2 outCenterToCenter = new Vector2(character.Left - obstacle.Center.X, character.Center.Y - obstacle.Center.Y);
 
             inCenterToTopRight.Normalize();
             inCenterToBottomRight.Normalize();

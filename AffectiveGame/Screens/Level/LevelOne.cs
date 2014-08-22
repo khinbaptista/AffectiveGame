@@ -24,7 +24,7 @@ namespace AffectiveGame.Screens.Level
 
             //environmentColliders = new List<Collider>();
             //fearArea = new List<Rectangle>();
-            LevelFromFile(Environment.CurrentDirectory + @"\gapsize.txt");
+            LevelFromFile(Environment.CurrentDirectory + @"\testCollision.txt");
         }
 
         public override void HandleInput(GameTime gameTime)
