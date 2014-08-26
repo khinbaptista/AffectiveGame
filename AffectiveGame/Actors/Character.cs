@@ -181,8 +181,8 @@ namespace AffectiveGame.Actors
             float speedModifier = howlBonus ? howlBonusSpeed : 0;
                 speedModifier -= _afraid ? fearOnusSpeed * _fear / fearMaxValue : 0;
 
-            float minMovement = (-maxSpeed - speedModifier) * (-inputXaxis);
-            float maxMovement = (maxSpeed + speedModifier) * (inputXaxis);
+            float minMovement = (-maxSpeed - speedModifier) * (lastSafeCollider != null? (-inputXaxis) : 1);
+            float maxMovement = (maxSpeed + speedModifier) * (lastSafeCollider != null? (inputXaxis) : 1);
             
             movement += levelScreen.GetGravity();
 
