@@ -40,6 +40,8 @@ namespace AffectiveGame.Screens.Level
         protected List<Collider> environmentColliders;
         protected List<Rectangle> fearArea;
         protected List<Rectangle> moonTriggers;
+        protected Rectangle endZone;
+        protected Rectangle startZone;
         protected Vector2 startPosition;
 
         protected List<Tunnel> tunnels;
@@ -125,6 +127,8 @@ namespace AffectiveGame.Screens.Level
 
         public Vector2 GetGravity() { return gravitySpeed; }
 
+        public Vector2 GetStartPos() { return startPosition; }
+
         public void Dig(Collider collider)
         {
             if (!collider.isDiggable)
@@ -169,6 +173,8 @@ namespace AffectiveGame.Screens.Level
             bool readingFearZones = false;
             bool readingTunnel = false;
             bool readingMoonTrigger = false;
+            bool readingStartZone = false;
+            bool readingEndZone = false;
 
             while (!file.EndOfStream)
             {
@@ -183,6 +189,8 @@ namespace AffectiveGame.Screens.Level
                     readingFearZones = true;
                     readingTunnel = false;
                     readingMoonTrigger = false;
+                    readingStartZone = false;
+                    readingEndZone = false;
                     continue;
                 }
                 else if (text.StartsWith("collider"))
@@ -191,6 +199,8 @@ namespace AffectiveGame.Screens.Level
                     readingColliders = true;
                     readingTunnel = false;
                     readingMoonTrigger = false;
+                    readingStartZone = false;
+                    readingEndZone = false;
                     continue;
                 }
                 else if (text.StartsWith("tunnel"))
@@ -199,6 +209,8 @@ namespace AffectiveGame.Screens.Level
                     readingColliders = false;
                     readingFearZones = false;
                     readingMoonTrigger = false;
+                    readingStartZone = false;
+                    readingEndZone = false;
                     continue;
                 }
                 else if (text.StartsWith("moon"))
@@ -207,6 +219,28 @@ namespace AffectiveGame.Screens.Level
                     readingColliders = false;
                     readingFearZones = false;
                     readingTunnel = false;
+                    readingStartZone = false;
+                    readingEndZone = false;
+                    continue;
+                }
+                else if (text.StartsWith("start"))
+                {
+                    readingMoonTrigger = false;
+                    readingColliders = false;
+                    readingFearZones = false;
+                    readingTunnel = false;
+                    readingStartZone = true;
+                    readingEndZone = false;
+                    continue;
+                }
+                else if (text.StartsWith("end"))
+                {
+                    readingMoonTrigger = false;
+                    readingColliders = false;
+                    readingFearZones = false;
+                    readingTunnel = false;
+                    readingStartZone = false;
+                    readingEndZone = true;
                     continue;
                 }
 
@@ -239,7 +273,16 @@ namespace AffectiveGame.Screens.Level
                     if (values.Length == 4)
                         moonTriggers.Add(new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
                 }
-
+                else if (readingStartZone)
+                {
+                    if (values.Length == 4)
+                        startZone = new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]));
+                }
+                else if (readingEndZone)
+                {
+                    if (values.Length == 4)
+                        endZone = new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]));
+                }
             }
 
             file.Close();

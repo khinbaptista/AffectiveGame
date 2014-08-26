@@ -5,6 +5,13 @@
 # x y width height
 # x y width height isHarmful isDiggable isWater friction
 
+start
+120 0 100 80
+
+end
+400 900 100 80
+
+collider
 0 700 100 100
 0 800 100 100
 0 900 100 100

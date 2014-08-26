@@ -13,8 +13,6 @@ namespace AffectiveGame.Screens.Level
         public LevelOne(GameMain game, GameScreen father, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, gravitySpeed, state)
         {
-            startPosition = new Vector2(100, 400);
-            Edon = new Actors.Character(game, this, startPosition);
             LoadContent(game.Content);
         }
 
@@ -24,7 +22,9 @@ namespace AffectiveGame.Screens.Level
 
             //environmentColliders = new List<Collider>();
             //fearArea = new List<Rectangle>();
-            LevelFromFile(Environment.CurrentDirectory + @"\testCollision.txt");
+            LevelFromFile(Environment.CurrentDirectory + @"\gapsize.txt");
+            startPosition = new Vector2(startZone.X, startZone.Y);
+            Edon = new Actors.Character(game, this, startPosition);
         }
 
         public override void HandleInput(GameTime gameTime)
@@ -53,10 +53,12 @@ namespace AffectiveGame.Screens.Level
 
             foreach (Rectangle moonTrigger in moonTriggers)
                 spriteBatch.Draw(blank, moonTrigger, new Color(1, 1, 0.5f, 0.5f));
+
+            spriteBatch.Draw(blank, startZone, new Color(0, 0.2f, 0.4f, 0.5f));
+            spriteBatch.Draw(blank, endZone, new Color(0.4f, 0.1f, 0, 0.5f));
             
             spriteBatch.End();
         }
-
 
     }
 }

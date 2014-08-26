@@ -28,6 +28,7 @@ namespace AffectiveGame.Actors
         // debug
         bool debug = true;
         SpriteFont font;
+        bool backToStart = true;
 
         private Action _action;
 
@@ -359,7 +360,7 @@ namespace AffectiveGame.Actors
                     if (col.isHarmful)
                     {
                         // check damage and everything
-                        BackToLastSafeCollider();
+                        BackToLastSafeCollider(backToStart);
 
                         return;
                     }
@@ -616,12 +617,20 @@ namespace AffectiveGame.Actors
 
         #endregion
 
-        private void BackToLastSafeCollider()
+        private void BackToLastSafeCollider(bool backToStart)
         {
-            Rectangle last = lastSafeCollider.GetBox();
+            if (backToStart)
+            {
+                _position.X = (int)levelScreen.GetStartPos().X;
+                _position.Y = (int)levelScreen.GetStartPos().Y;
+            }
+            else
+            {
+                Rectangle last = lastSafeCollider.GetBox();
 
-            _position.X = last.Center.X - _position.Width / 2;
-            _position.Y = last.Top - positionHeight;
+                _position.X = last.Center.X - _position.Width / 2;
+                _position.Y = last.Top - positionHeight;
+            }
 
             Collide(Vector2.Zero);
         }
