@@ -38,6 +38,7 @@ namespace AffectiveGame.Actors
         private const int positionHeight = 138; // 690 / 5
         private bool isFacingLeft;
         private Screens.Level.Collider _lastSafeCollider;
+        private float inputXaxis;
 
         # endregion
 
@@ -151,6 +152,7 @@ namespace AffectiveGame.Actors
             base.HandleInput(input);
 
             movement = inertia;
+            inputXaxis = input.getValues().XaxisLeft;
 
             AnimationControl(input);
         }
@@ -177,10 +179,12 @@ namespace AffectiveGame.Actors
             float speedModifier = howlBonus ? howlBonusSpeed : 0;
                     speedModifier -= _afraid ? fearOnusSpeed : 0;
 
+            float minMovement = (-maxSpeed - speedModifier) * (-inputXaxis);
+            float maxMovement = (maxSpeed + speedModifier) * (inputXaxis);
             
             movement += levelScreen.GetGravity();
 
-            movement.X = MathHelper.Clamp(movement.X, -maxSpeed - speedModifier, maxSpeed + speedModifier);
+            movement.X = MathHelper.Clamp(movement.X, minMovement, maxMovement);
             movement.Y = MathHelper.Clamp(movement.Y, -maxSpeed, maxSpeed);
 
             inertia = movement;
@@ -308,7 +312,7 @@ namespace AffectiveGame.Actors
                 case Action.Howl:
                     {
                         dont_move = true;
-                        if (animations[(int)_action].isFinished)
+                        if (animations[(int)_action].isFinished && levelScreen.moonValue())
                         {
                             StartHowlBonus();
                             ChangeAction(Action.Idle);
@@ -360,10 +364,7 @@ namespace AffectiveGame.Actors
                         else if (input.WasPressed(Input.Y) && lastSafeCollider.isWater)
                             ChangeAction(Action.Drink);
                         else if (levelScreen.getComparisonValue() == soundState.HOWLING || input.WasPressed(Input.B))
-                        {
-                            if (levelScreen.moonValue())
-                                ChangeAction(Action.Howl);
-                        }
+                            ChangeAction(Action.Howl);
                         else if (!moved)
                             movement.X = movement.X * lastSafeCollider.friction;
                     } break;
