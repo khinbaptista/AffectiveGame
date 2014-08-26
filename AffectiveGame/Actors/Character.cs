@@ -81,9 +81,9 @@ namespace AffectiveGame.Actors
 
         private float _fear;
         private bool _afraid;
-        private const float fearThreshold = 128;
+        private const float fearThreshold = 20;
         private const float fearMaxValue = 300;
-        private const float _fearRegenerationRate = 32;
+        private const float _fearRegenerationRate = 10;
         private const int fearOnusSpeed = 100;
         private const int fearOnusJump = 300;
         private const int drinkReduceFear = 75;
@@ -179,7 +179,7 @@ namespace AffectiveGame.Actors
             }
 
             float speedModifier = howlBonus ? howlBonusSpeed : 0;
-                    speedModifier -= _afraid ? fearOnusSpeed : 0;
+                speedModifier -= _afraid ? fearOnusSpeed * _fear / fearMaxValue : 0;
 
             float minMovement = (-maxSpeed - speedModifier) * (-inputXaxis);
             float maxMovement = (maxSpeed + speedModifier) * (inputXaxis);
