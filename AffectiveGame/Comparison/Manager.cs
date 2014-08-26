@@ -8,7 +8,7 @@ namespace AffectiveGame.Comparison
     class Manager
     {
         private static Recorder recorder;
-        private bool working = false;
+        private bool working = true;
         private bool started;
 
         public Manager()

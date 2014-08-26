@@ -95,6 +95,8 @@ namespace AffectiveGame.Actors
 
         # region Properties
 
+        private bool reachedEnd = false;
+
         public Action action
         {
             get { return _action; }
@@ -197,6 +199,7 @@ namespace AffectiveGame.Actors
             Rectangle characterCollider = animations[(int)_action].GetCollider();
             Rectangle characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
 
+            UpdateEnd(characterColliderPositioned);
             UpdateFear(characterColliderPositioned);
             UpdateMoonTrigger(characterColliderPositioned);
         }
@@ -221,7 +224,8 @@ namespace AffectiveGame.Actors
                 spriteBatch.DrawString(font, "Afraid: " + _afraid, new Vector2(50, 150), Color.White);
                 spriteBatch.DrawString(font, "Movement: " + movement, new Vector2(50, 170), Color.White);
                 spriteBatch.DrawString(font, "Full moon: " + levelScreen.moonValue(), new Vector2(50, 190), Color.White);
-                spriteBatch.DrawString(font, "Action: " + levelScreen.getComparisonValue() + " (" + levelScreen.getValue() + ")" +  " (" + levelScreen.strokeValue() + ")", new Vector2(50, 210), Color.White);
+                spriteBatch.DrawString(font, "Ended: " + reachedEnd, new Vector2(50, 210), Color.White);
+                spriteBatch.DrawString(font, "Action: " + levelScreen.getComparisonValue() + " (" + levelScreen.getValue() + ")" +  " (" + levelScreen.strokeValue() + ")", new Vector2(50, 230), Color.White);
 
                 if (lastSafeCollider != null)
                     spriteBatch.DrawString(font, "Friction: " + lastSafeCollider.friction, new Vector2(50, 90), Color.White);
@@ -703,6 +707,16 @@ namespace AffectiveGame.Actors
 
             lastSafeCollider = null;
             inertia = Vector2.Zero;
+        }
+
+        private void UpdateEnd(Rectangle character)
+        {
+            Rectangle endZone = levelScreen.GetEndZone();
+
+            if (character.Intersects(endZone))
+            {
+                reachedEnd = true;
+            }
         }
 
         private void UpdateFear(Rectangle character)

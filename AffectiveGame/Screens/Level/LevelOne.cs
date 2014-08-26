@@ -22,7 +22,7 @@ namespace AffectiveGame.Screens.Level
 
             //environmentColliders = new List<Collider>();
             //fearArea = new List<Rectangle>();
-            LevelFromFile(Environment.CurrentDirectory + @"\gapsize.txt");
+            LevelFromFile(Environment.CurrentDirectory + @"\gapsize2.txt");
             startPosition = new Vector2(startZone.X, startZone.Y);
             Edon = new Actors.Character(game, this, startPosition);
         }

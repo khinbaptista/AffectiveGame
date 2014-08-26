@@ -129,6 +129,8 @@ namespace AffectiveGame.Screens.Level
 
         public Vector2 GetStartPos() { return startPosition; }
 
+        public Rectangle GetEndZone() { return endZone; }
+
         public void Dig(Collider collider)
         {
             if (!collider.isDiggable)
