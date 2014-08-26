@@ -188,7 +188,7 @@ namespace AffectiveGame.Actors
 
             _position = new Rectangle(_position.X + (int)(movement.X), _position.Y + (int)(movement.Y), _position.Width, _position.Height);
 
-            CheckCollisions();
+            CheckCollisionSAT();
 
             Rectangle characterCollider = animations[(int)_action].GetCollider();
             Rectangle characterColliderPositioned = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
@@ -228,6 +228,71 @@ namespace AffectiveGame.Actors
 
         # endregion
 
+
+        private Vector2 CollisionSAT(Rectangle a, Rectangle b)
+        {
+            Vector2 projection = new Vector2();
+            Vector2 centerToCenter = new Vector2(a.Center.X - b.Center.X, a.Center.Y - b.Center.Y);
+            float overlapY = a.Height + b.Height + a.Width + b.Width;   // Initialize values with maximum values
+            float overlapX = overlapY;
+
+            if (Math.Abs(centerToCenter.Y) < a.Height / 2 + b.Height / 2)
+                overlapY = (a.Height / 2 + b.Height / 2) - Math.Abs(centerToCenter.Y);
+
+            if (Math.Abs(centerToCenter.X) < a.Width / 2 + b.Width / 2)
+                overlapX = (a.Width / 2 + b.Width / 2) - Math.Abs(centerToCenter.X);
+
+            if (overlapY <= overlapX)
+                projection.Y = overlapY * (centerToCenter.Y < 0 ? -1 : 1);
+            else
+                projection.X = overlapX * (centerToCenter.X < 0 ? -1 : 1);
+
+            return projection;
+        }
+
+        private void CheckCollisionSAT()
+        {
+            Rectangle characterCollider = animations[(int)_action].GetCollider();
+            Rectangle character = new Rectangle(_position.X + characterCollider.X, _position.Y + characterCollider.Y, characterCollider.Width, characterCollider.Height);
+
+            _grounded = false;
+
+            foreach (Screens.Level.Collider col in levelScreen.GetColliders())
+            {
+                Rectangle obstacle = col.GetBox();
+
+                if (col.isActive && character.Intersects(obstacle))   // correct the position in case it collided
+                {
+                    if (col.isHarmful)
+                    {
+                        // check damage and everything
+                        BackToLastSafeCollider(backToStart);
+
+                        return;
+                    }
+
+                    Vector2 counterForce = CollisionSAT(character, obstacle);
+
+                    if (counterForce != Vector2.Zero)
+                    {
+                        character = new Rectangle(character.X + (int)counterForce.X, character.Y + (int)counterForce.Y, characterCollider.Width, characterCollider.Height);
+
+                        if (counterForce.Y < 0)
+                        {
+                            _grounded = true;
+                            lastSafeCollider = col;
+                        }
+
+                        counterForce.X = Math.Abs(counterForce.X); counterForce.Y = Math.Abs(counterForce.Y);
+                        Collide(Vector2.Normalize(counterForce));
+                    }
+                }
+            }
+
+            _position.X = character.X - characterCollider.X;
+            _position.Y = character.Y - characterCollider.Y;
+
+        }
         
 
         /// <summary>
@@ -272,6 +337,9 @@ namespace AffectiveGame.Actors
             }
 
             if (dont_move)
+                return;
+
+            if (action == Action.Fall && lastSafeCollider == null)
                 return;
 
             bool moved = Move(input);

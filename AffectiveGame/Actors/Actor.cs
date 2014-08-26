@@ -111,11 +111,11 @@ namespace AffectiveGame.Actors
         public void Collide(Vector2 axis)
         {
             if (axis == Vector2.UnitX)
-                inertia.X = 0;
+                movement.X = 0;
             else if (axis == Vector2.UnitY)
-                inertia.Y = 0;
+                movement.Y = 0;
             else if (axis == Vector2.Zero)
-                inertia = Vector2.Zero;
+                movement = Vector2.Zero;
         }
 
         # endregion
