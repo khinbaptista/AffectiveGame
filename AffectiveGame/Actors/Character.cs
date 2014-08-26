@@ -46,7 +46,7 @@ namespace AffectiveGame.Actors
         
         private const float movementSpeed = 100;
         private const float jumpSpeedStep = 150;
-        private const float maxJumpSpeed = 2000;
+        private const float maxJumpSpeed = 2300;
         private const int maxSpeed = 700;
 
         # endregion
@@ -700,7 +700,8 @@ namespace AffectiveGame.Actors
                 _position.Y = last.Top - positionHeight;
             }
 
-            Collide(Vector2.Zero);
+            lastSafeCollider = null;
+            inertia = Vector2.Zero;
         }
 
         private void UpdateFear(Rectangle character)
