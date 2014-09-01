@@ -19,6 +19,10 @@ namespace AffectiveGame.Actors
             Animation anim = new Animation();
 
             int frameWidth = spriteSheet.Width / 4;
+            int scale = 5;
+
+            _position = new Rectangle(0, 0, frameWidth * scale, spriteSheet.Height * scale);
+
             anim.InsertFrame(new Rectangle(0, 0, frameWidth, spriteSheet.Height));
             anim.InsertFrame(new Rectangle(frameWidth, 0, frameWidth, spriteSheet.Height));
             anim.InsertFrame(new Rectangle(frameWidth * 2, 0, frameWidth, spriteSheet.Height));
@@ -28,16 +32,19 @@ namespace AffectiveGame.Actors
             animations[0].Start();
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (updateFrame)
+                animations[0].UpdateFrame();
+        }
+
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             base.Draw(spriteBatch, gameTime);
 
-            if (updateFrame)
-            {
-                animations[0].UpdateFrame();
-            }
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, levelScreen.camera.transform);
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, levelScreen.camera.transform);
             spriteBatch.Draw(spriteSheet, _position, animations[0].GetFrame(), Color.White);
             spriteBatch.End();
         }
