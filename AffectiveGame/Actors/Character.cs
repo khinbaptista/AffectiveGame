@@ -87,6 +87,7 @@ namespace AffectiveGame.Actors
         private const int fearOnusSpeed = 100;
         private const int fearOnusJump = 300;
         private const int drinkReduceFear = 75;
+        private const int strokeReduceFear = 50;
 
         # endregion
 
@@ -316,9 +317,10 @@ namespace AffectiveGame.Actors
                 case Action.Howl:
                     {
                         dont_move = true;
-                        if (animations[(int)_action].isFinished && levelScreen.moonValue())
+                        if (animations[(int)_action].isFinished)
                         {
-                            StartHowlBonus();
+                            if (levelScreen.moonValue())
+                                StartHowlBonus();
                             ChangeAction(Action.Idle);
                         }
                     } break;
@@ -736,6 +738,11 @@ namespace AffectiveGame.Actors
                     _fear = fearMaxValue;
 
                 i++;
+            }
+
+            if (levelScreen.getComparisonValue() == soundState.STROKING)
+            {
+                _fear -= strokeReduceFear * game.deltaTime;
             }
 
             if (howlBonus)

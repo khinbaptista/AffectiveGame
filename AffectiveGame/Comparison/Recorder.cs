@@ -15,7 +15,7 @@ namespace AffectiveGame.Comparison
         public static double[] rightCompared;
         public static double[] leftStroke;
         private static string howlFile = @"howling\002.wav";
-        private static string strokeFile = @"stroking\011.wav";
+        private static string strokeFile = @"stroking\012.wav";
         static Program program = new Program();
         static Correlation crossCorr;
         public static int offset;
@@ -122,7 +122,7 @@ namespace AffectiveGame.Comparison
             else
                 Console.WriteLine();*/
 
-            if ((strokeResult < 0.4) && (howlResult < 0.4))
+            if ((strokeResult < 0.6) && (howlResult < 0.4))
             {
                 comparisonState = soundState.NONE;
             }
