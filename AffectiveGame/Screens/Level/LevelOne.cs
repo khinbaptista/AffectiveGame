@@ -10,6 +10,9 @@ namespace AffectiveGame.Screens.Level
 {
     class LevelOne : LevelScreen
     {
+        protected Texture2D ground;
+        protected Actors.Fire flame;
+
         public LevelOne(GameMain game, GameScreen father, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, gravitySpeed, state)
         {
@@ -19,6 +22,10 @@ namespace AffectiveGame.Screens.Level
         public override void LoadContent(ContentManager content)
         {
             base.LoadContent(content);
+
+            ground = content.Load<Texture2D>("stoneGround");
+            flame = new Actors.Fire(game, this);
+            flame.position = new Vector2(300, 600);
 
             //environmentColliders = new List<Collider>();
             //fearArea = new List<Rectangle>();
@@ -35,17 +42,23 @@ namespace AffectiveGame.Screens.Level
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            flame.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             base.Draw(gameTime, spriteBatch);
 
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.transform);
+            flame.Draw(spriteBatch, gameTime);
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, camera.transform);
 
             for (int i = 0; i < environmentColliders.Count; i++)
+            {
                 if (environmentColliders[i].isActive)
-                    spriteBatch.Draw(blank, environmentColliders[i].GetBox(), new Color(0.6f, 0.5f, 0.2f, 0.0f));
+                    spriteBatch.Draw(ground, environmentColliders[i].GetBox(), Color.White);
+                //spriteBatch.Draw(blank, environmentColliders[i].GetBox(), new Color(0.6f, 0.5f, 0.2f, 0.0f));
+            }
 
             // debug
             foreach (Rectangle fearZone in fearArea)
