@@ -694,6 +694,9 @@ namespace AffectiveGame.Actors
 
         private void BackToLastSafeCollider(bool backToStart)
         {
+            //Die();
+            //return;
+
             if (backToStart)
             {
                 _position.X = (int)levelScreen.GetStartPos().X;
@@ -872,6 +875,24 @@ namespace AffectiveGame.Actors
                 else if (readingCollider)
                     animations[(int)addingAnimation].InsertFrameCollider(rectangle);
             }
+        }
+
+        private void Die()
+        {
+            Screens.GameScreen thisScreen;
+
+            if (levelScreen is Screens.Level.LevelOne)
+                thisScreen = new Screens.Level.LevelOne(game, null);
+            else// if (is something else) thisScreen = something else;
+                thisScreen = new Screens.Level.LevelOne(game, null);
+
+            
+            levelScreen.CreateTransitionScreen(thisScreen);
+        }
+
+        private void Success()
+        {
+
         }
 
         # endregion

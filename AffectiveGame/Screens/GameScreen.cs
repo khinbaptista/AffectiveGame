@@ -254,6 +254,12 @@ namespace AffectiveGame.Screens
             this.ToggleUnderneath();
         }
 
+        public void CreateTransitionScreen(GameScreen nextScreen)
+        {
+            this.ExitScreen();
+            game.AddScreen(new TransitionScreen(game, nextScreen));
+        }
+
         #endregion
     }
 }
