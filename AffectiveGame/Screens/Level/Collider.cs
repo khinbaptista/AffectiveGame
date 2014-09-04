@@ -17,6 +17,7 @@ namespace AffectiveGame.Screens.Level
         private float _damage;
         private float _friction;
         private bool _isActive;
+        private int _sprite;
 
         # endregion
 
@@ -66,6 +67,14 @@ namespace AffectiveGame.Screens.Level
             get { return _isActive; }
         }
 
+        /// <summary>
+        /// Gets the sprite used for this collider
+        /// </summary>
+        public int sprite
+        {
+            get { return _sprite; }
+        }
+
         # endregion
 
         # region Methods
@@ -78,9 +87,21 @@ namespace AffectiveGame.Screens.Level
             _isWater = false;
             _friction = 0.85f;
             _isActive = true;
+            _sprite = 1;
         }
 
-        public Collider(int posX, int posY, int posWidth, int posHeight, bool isHarmful, bool isDiggable, bool isWater, float friction)
+        public Collider(int posX, int posY, int posWidth, int posHeight, int sprite)
+        {
+            box = new Rectangle(posX, posY, posWidth, posHeight);
+            _isHarmful = false;
+            _isDiggable = false;
+            _isWater = false;
+            _friction = 0.85f;
+            _isActive = true;
+            _sprite = sprite;
+        }
+
+        public Collider(int posX, int posY, int posWidth, int posHeight, bool isHarmful, bool isDiggable, bool isWater, float friction, int sprite)
         {
             box = new Rectangle(posX, posY, posWidth, posHeight);
             _isHarmful = isHarmful;
@@ -88,6 +109,7 @@ namespace AffectiveGame.Screens.Level
             _isWater = isWater;
             _friction = friction;
             _isActive = true;
+            _sprite = sprite;
         }
 
         public Rectangle GetBox() { return box; }

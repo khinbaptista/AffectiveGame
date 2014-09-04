@@ -19,7 +19,7 @@ namespace AffectiveGame.Actors
             Animation anim = new Animation();
 
             int frameWidth = spriteSheet.Width / 4;
-            int scale = 5;
+            int scale = 3;
 
             _position = new Rectangle(0, 0, frameWidth * scale, spriteSheet.Height * scale);
 

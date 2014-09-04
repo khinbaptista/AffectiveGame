@@ -252,9 +252,11 @@ namespace AffectiveGame.Screens.Level
                 {
                     if (values.Length == 4)
                         environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
-                    else if (values.Length == 8)
+                    else if (values.Length == 5)
+                        environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]), int.Parse(values[4])));
+                    else if (values.Length == 9)
                         environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]),
-                                                    bool.Parse(values[4]), bool.Parse(values[5]), bool.Parse(values[6]), float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture)));
+                                                    bool.Parse(values[4]), bool.Parse(values[5]), bool.Parse(values[6]), float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture), int.Parse(values[8])));
                 }
                 else if (readingFearZones)
                 {
