@@ -14,15 +14,15 @@ namespace AffectiveGame.Comparison
         public static double[] leftCompared;
         public static double[] rightCompared;
         public static double[] leftStroke;
-        private static string howlFile = @"howling\002.wav";
-        private static string strokeFile = @"stroking\012.wav";
-        static Program program = new Program();
+        private static string howlFile;
+        private static string strokeFile;
+        static Program program;
         static Correlation crossCorr;
         public static int offset;
         private static RealTime recorder;
-        private static Stopwatch stopwatchProcess = new Stopwatch();
+        private static Stopwatch stopwatchProcess;
         //private static Stopwatch stopwatchRecord = new Stopwatch();
-        private static Stopwatch stopwatchTotal = new Stopwatch();
+        private static Stopwatch stopwatchTotal;
         private static soundState comparisonState = soundState.NONE;
         private static double howlResult;
         private static double strokeResult;
@@ -42,7 +42,13 @@ namespace AffectiveGame.Comparison
         public Recorder()
         {
             recorder = new RealTime();
+            program = new Program();
+            stopwatchProcess = new Stopwatch();
+            stopwatchTotal = new Stopwatch();
             recordWindow = new System.Timers.Timer(500);
+            howlFile = @"howling\002.wav";
+            strokeFile = @"stroking\012.wav";
+
             if (recorder.checkMic())
             {
                 program.openWav(howlFile, null, out leftHowl, out rightAudio);
@@ -62,6 +68,10 @@ namespace AffectiveGame.Comparison
         public void stopComparison()
         {
             stopwatchTotal.Stop();
+            recorder.stopRecording();
+            program = null;
+            crossCorr = null;
+            recorder = null;
             recordWindow.Enabled = false;
         }
 

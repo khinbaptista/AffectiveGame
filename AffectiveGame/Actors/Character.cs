@@ -694,8 +694,8 @@ namespace AffectiveGame.Actors
 
         private void BackToLastSafeCollider(bool backToStart)
         {
-            //Die();
-            //return;
+            Die();
+            return;
 
             if (backToStart)
             {
@@ -886,7 +886,6 @@ namespace AffectiveGame.Actors
             else// if (is something else) thisScreen = something else;
                 thisScreen = new Screens.Level.LevelOne(game, null);
 
-            
             levelScreen.CreateTransitionScreen(thisScreen);
         }
 

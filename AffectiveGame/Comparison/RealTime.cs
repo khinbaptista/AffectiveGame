@@ -17,11 +17,19 @@ namespace AffectiveGame.Comparison
         public MemoryStream audioStream;
         Microphone mic = Microphone.Default;
         private bool hasStopped = false;
-        private static Stopwatch stopwatchRecord = new Stopwatch();
+        private static Stopwatch stopwatchRecord;
 
-        private static object syncLock = new object();
-        private static object writeLock = new object();
-        private static object soundLock = new object();
+        private static object syncLock;
+        private static object writeLock;
+        private static object soundLock;
+
+        public RealTime()
+        {
+            syncLock = new object();
+            writeLock = new object();
+            soundLock = new object();
+            stopwatchRecord = new Stopwatch();
+        }
 
         public bool checkMic()
         {

@@ -61,6 +61,9 @@ namespace AffectiveGame.Screens.Level
             tunnels = new List<Tunnel>();
             moonTriggers = new List<Rectangle>();
             //LoadContent(game.Content);
+
+            soundControl = new Comparison.Manager();
+            soundControl.startProcessing();
         }
 
         public override void LoadContent(ContentManager content)
@@ -72,9 +75,7 @@ namespace AffectiveGame.Screens.Level
 
             moon = new Moon(game, this);
             moon.LoadContent(content);
-
-            soundControl = new Comparison.Manager();
-            soundControl.startProcessing();
+            
         }
 
         public override void Update(GameTime gameTime)
