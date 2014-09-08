@@ -55,6 +55,7 @@ namespace AffectiveGame.Screens.Level
         protected Texture2D grassGround;
         protected Texture2D stoneGround;
         protected Actors.Fire flame;
+        protected Actors.TreeOnFire fireTree;
         public string filepath { get; protected set; }
 
         public LevelScreen(GameMain game, GameScreen father, string levelFile, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
@@ -88,6 +89,9 @@ namespace AffectiveGame.Screens.Level
             flame = new Actors.Fire(game, this);
             flame.position = new Vector2(300, 700);
 
+            fireTree = new Actors.TreeOnFire(game, this);
+            fireTree.position = new Vector2(800, 700);
+
             LevelFromFile(Environment.CurrentDirectory + @"\gapsize2.txt");
             startPosition = new Vector2(startZone.X, startZone.Y);
             Edon = new Actors.Character(game, this, startPosition);
@@ -103,6 +107,7 @@ namespace AffectiveGame.Screens.Level
             Edon.Update(gameTime);
             moon.Update(gameTime);
             flame.Update(gameTime);
+            fireTree.Update(gameTime);
 
             Vector2 edonPosition = Edon.position;
             camera.SmoothMove(new Vector2(edonPosition.X, Edon.grounded ? edonPosition.Y - game.viewport.Height / 4 : camera.position.Y));
@@ -136,6 +141,7 @@ namespace AffectiveGame.Screens.Level
 
             moon.Draw(gameTime, spriteBatch);
             flame.Draw(spriteBatch, gameTime);
+            fireTree.Draw(spriteBatch, gameTime);
             Edon.Draw(spriteBatch, gameTime);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, camera.transform);

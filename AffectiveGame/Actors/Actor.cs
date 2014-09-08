@@ -33,7 +33,7 @@ namespace AffectiveGame.Actors
         /// <summary>
         /// Time it takes to move to the next frame in the animation
         /// </summary>
-        protected readonly TimeSpan frameInterval;
+        protected TimeSpan frameInterval;
 
         /// <summary>
         /// Controls the time 
