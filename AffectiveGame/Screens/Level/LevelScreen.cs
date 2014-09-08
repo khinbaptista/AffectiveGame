@@ -82,6 +82,9 @@ namespace AffectiveGame.Screens.Level
         {
             base.Update(gameTime);
 
+            if (screenState != ScreenState.Active)
+                return;
+
             Edon.Update(gameTime);
 
             moon.Update(gameTime);
