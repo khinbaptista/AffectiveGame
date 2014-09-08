@@ -53,7 +53,7 @@ namespace AffectiveGame.Comparison
             {
                 program.openWav(howlFile, null, out leftHowl, out rightAudio);
                 program.openWav(strokeFile, null, out leftStroke, out rightAudio);
-                stopwatchTotal.Start();
+                //stopwatchTotal.Start();
                 //Console.WriteLine("Recording...");
                 //stopwatchRecord.Start();
                 recorder.startRecording();
@@ -67,11 +67,8 @@ namespace AffectiveGame.Comparison
 
         public void stopComparison()
         {
-            stopwatchTotal.Stop();
+            //stopwatchTotal.Stop();
             recorder.stopRecording();
-            program = null;
-            crossCorr = null;
-            recorder = null;
             recordWindow.Enabled = false;
         }
 
@@ -87,7 +84,7 @@ namespace AffectiveGame.Comparison
 
             //Console.WriteLine("Sound recorded. Processing...");
 
-            stopwatchProcess.Start();
+            //stopwatchProcess.Start();
             program.openWav(null, recorder.wavMem(), out leftCompared, out rightCompared);
 
             recorder.disposeStream();
@@ -145,7 +142,7 @@ namespace AffectiveGame.Comparison
                 comparisonState = soundState.HOWLING;
             }
 
-            stopwatchProcess.Stop();
+            //stopwatchProcess.Stop();
 
             //Console.WriteLine("Value: " + value);
 
@@ -153,8 +150,8 @@ namespace AffectiveGame.Comparison
             //Console.WriteLine("Time elapsed processing: " + stopwatchProcess.ElapsedMilliseconds + " ms");
             //Console.WriteLine("Total time elapsed: " + stopwatchTotal.ElapsedMilliseconds + " ms\r\n");
 
-            recorder.resetSWRecord();
-            stopwatchProcess.Reset();
+            //recorder.resetSWRecord();
+            //stopwatchProcess.Reset();
 
             //Console.WriteLine("Recording...");
             recorder.startRecording();

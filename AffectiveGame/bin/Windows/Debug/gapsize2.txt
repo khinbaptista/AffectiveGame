@@ -149,9 +149,9 @@ collider
 5200 1200 100 80
 5300 1200 100 80
 
-300 1160 100 80 true false false 0.85 1
-1600 1320 300 80 true false false 0.85 1
-4500 1280 400 80 true false false 0.85 1
+300 1160 100 80 true false false 0.85 0
+1600 1320 300 80 true false false 0.85 0
+4500 1280 400 80 true false false 0.85 0
 
 moon
 3300 1380 100 80
