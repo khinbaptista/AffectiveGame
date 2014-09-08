@@ -62,7 +62,7 @@ namespace AffectiveGame.Screens
         {
             if (mainMenu.selectedEntry == 0)
             {
-                game.AddScreen(new Level.LevelOne(game, null));
+                game.AddScreen(new Level.LevelScreen(game, null, Environment.CurrentDirectory + Level.LevelScreen.LevelOneFile));
                 this.ExitScreen();
             }
             else if (mainMenu.selectedEntry == 1)

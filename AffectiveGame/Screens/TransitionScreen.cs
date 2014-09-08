@@ -51,7 +51,7 @@ namespace AffectiveGame.Screens
                         case ScreenType.MainMenu:
                             newScreen = new MainMenuScreen(game, null); break;
                         case ScreenType.LevelOne:
-                            newScreen = new Level.LevelOne(game, null); break;
+                            newScreen = new Level.LevelScreen(game, null, Environment.CurrentDirectory + Level.LevelScreen.LevelOneFile); break;
                         default:
                             newScreen = new MainMenuScreen(game, null); break;
                     }

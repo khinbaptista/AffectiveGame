@@ -10,8 +10,10 @@ using AffectiveGame.Actors;
 
 namespace AffectiveGame.Screens.Level
 {
-    abstract class LevelScreen : GameScreen
+    class LevelScreen : GameScreen
     {
+        public const string LevelOneFile = @"\gapsize2.txt";
+
         protected struct Tunnel
         {
             public int entranceIndex { get; private set; }
@@ -50,8 +52,12 @@ namespace AffectiveGame.Screens.Level
         public Camera camera;
         public Actors.Moon moon;
         protected Texture2D background;
+        protected Texture2D grassGround;
+        protected Texture2D stoneGround;
+        protected Actors.Fire flame;
+        public string filepath { get; protected set; }
 
-        public LevelScreen(GameMain game, GameScreen father, float gravitySpeed, ScreenState state = ScreenState.TransitionOn)
+        public LevelScreen(GameMain game, GameScreen father, string levelFile, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
             : base(game, father, state)
         {
             this.gravitySpeed = new Vector2(0, gravitySpeed);
@@ -60,7 +66,8 @@ namespace AffectiveGame.Screens.Level
             fearArea = new List<Rectangle>();
             tunnels = new List<Tunnel>();
             moonTriggers = new List<Rectangle>();
-            //LoadContent(game.Content);
+            filepath = levelFile;
+            LoadContent(game.Content);
 
             soundControl = new Comparison.Manager();
             soundControl.startProcessing();
@@ -75,7 +82,15 @@ namespace AffectiveGame.Screens.Level
 
             moon = new Moon(game, this);
             moon.LoadContent(content);
-            
+
+            grassGround = content.Load<Texture2D>("stoneGround");
+            stoneGround = content.Load<Texture2D>("stone");
+            flame = new Actors.Fire(game, this);
+            flame.position = new Vector2(300, 700);
+
+            LevelFromFile(Environment.CurrentDirectory + @"\gapsize2.txt");
+            startPosition = new Vector2(startZone.X, startZone.Y);
+            Edon = new Actors.Character(game, this, startPosition);
         }
 
         public override void Update(GameTime gameTime)
@@ -86,8 +101,8 @@ namespace AffectiveGame.Screens.Level
                 return;
 
             Edon.Update(gameTime);
-
             moon.Update(gameTime);
+            flame.Update(gameTime);
 
             Vector2 edonPosition = Edon.position;
             camera.SmoothMove(new Vector2(edonPosition.X, Edon.grounded ? edonPosition.Y - game.viewport.Height / 4 : camera.position.Y));
@@ -120,7 +135,39 @@ namespace AffectiveGame.Screens.Level
             spriteBatch.End();
 
             moon.Draw(gameTime, spriteBatch);
+            flame.Draw(spriteBatch, gameTime);
             Edon.Draw(spriteBatch, gameTime);
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, camera.transform);
+
+            Texture2D usedSprite = grassGround;
+            for (int i = 0; i < environmentColliders.Count; i++)
+            {
+                switch (environmentColliders[i].sprite)
+                {
+                    case 1:
+                        usedSprite = grassGround;
+                        break;
+                    case 2:
+                        usedSprite = stoneGround;
+                        break;
+                }
+                if (environmentColliders[i].isActive)
+                    spriteBatch.Draw(usedSprite, environmentColliders[i].GetBox(), Color.White);
+                //spriteBatch.Draw(blank, environmentColliders[i].GetBox(), new Color(0.6f, 0.5f, 0.2f, 0.0f));
+            }
+
+            // debug
+            foreach (Rectangle fearZone in fearArea)
+                spriteBatch.Draw(blank, fearZone, new Color(0.3f, 0, 0, 0.5f));
+
+            foreach (Rectangle moonTrigger in moonTriggers)
+                spriteBatch.Draw(blank, moonTrigger, new Color(1, 1, 0.5f, 0.5f));
+
+            spriteBatch.Draw(blank, startZone, new Color(0, 0.2f, 0.4f, 0.5f));
+            spriteBatch.Draw(blank, endZone, new Color(0.4f, 0.1f, 0, 0.5f));
+
+            spriteBatch.End();
         }
 
         public List<Collider> GetColliders() { return environmentColliders; }

@@ -881,7 +881,7 @@ namespace AffectiveGame.Actors
         {
             Screens.GameScreen.ScreenType thisScreen;
 
-            if (levelScreen is Screens.Level.LevelOne)
+            if (levelScreen.filepath.EndsWith(Screens.Level.LevelScreen.LevelOneFile))
                 thisScreen = Screens.GameScreen.ScreenType.LevelOne;
             else// if (is something else) thisScreen = something else;
                 thisScreen = Screens.GameScreen.ScreenType.LevelOne;
