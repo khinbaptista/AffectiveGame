@@ -12,6 +12,7 @@ namespace AffectiveGame.Screens.Level
     {
         protected Texture2D grassGround;
         protected Texture2D stoneGround;
+        protected Texture2D blankSprite;
         protected Actors.Fire flame;
 
         public LevelOne(GameMain game, GameScreen father, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
@@ -26,6 +27,7 @@ namespace AffectiveGame.Screens.Level
 
             grassGround = content.Load<Texture2D>("stoneGround");
             stoneGround = content.Load<Texture2D>("stone");
+            blankSprite = content.Load<Texture2D>("blank");
             flame = new Actors.Fire(game, this);
             flame.position = new Vector2(300, 700);
 
@@ -60,6 +62,9 @@ namespace AffectiveGame.Screens.Level
             {
                 switch (environmentColliders[i].sprite)
                 {
+                    case 0:
+                        usedSprite = blankSprite;
+                        break;
                     case 1:
                         usedSprite = grassGround;
                         break;
