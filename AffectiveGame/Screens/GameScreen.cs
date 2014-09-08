@@ -24,6 +24,12 @@ namespace AffectiveGame.Screens
 
     abstract public class GameScreen// : IGameComponent
     {
+        public enum ScreenType
+        {
+            MainMenu,
+            LevelOne
+        }
+
         #region Attributes
 
         /// <summary>
@@ -254,7 +260,7 @@ namespace AffectiveGame.Screens
             this.ToggleUnderneath();
         }
 
-        public void CreateTransitionScreen(GameScreen nextScreen)
+        public void CreateTransitionScreen(ScreenType nextScreen)
         {
             this.ExitScreen();
             game.AddScreen(new TransitionScreen(game, nextScreen));

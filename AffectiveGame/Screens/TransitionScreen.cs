@@ -13,7 +13,7 @@ namespace AffectiveGame.Screens
     /// </summary>
     class TransitionScreen : GameScreen
     {
-        private GameScreen next;
+        private GameScreen.ScreenType next;
         private TimeSpan duration;
         private TimeSpan counter;
 
@@ -22,15 +22,15 @@ namespace AffectiveGame.Screens
         /// </summary>
         /// <param name="nextScreen">The screen to be created after this transition ends</param>
         /// <param name="duration">Duration of this transition in miliseconds</param>
-        public TransitionScreen(GameMain game, GameScreen nextScreen, int duration = 500)
+        public TransitionScreen(GameMain game, ScreenType nextScreen, int duration = 500)
             : base (game, null, ScreenState.TransitionOn)
         {
             transitionOnTime = TimeSpan.FromMilliseconds(500);
             transitionOffTime = TimeSpan.FromMilliseconds(500);
-            next = nextScreen;
 
             this.duration = TimeSpan.FromMilliseconds(duration);
             counter = TimeSpan.Zero;
+            next = nextScreen;
 
             LoadContent(game.Content);
         }
@@ -45,8 +45,19 @@ namespace AffectiveGame.Screens
 
                 if (counter > duration)
                 {
+                    GameScreen newScreen;
+                    switch (next)
+                    {
+                        case ScreenType.MainMenu:
+                            newScreen = new MainMenuScreen(game, null); break;
+                        case ScreenType.LevelOne:
+                            newScreen = new Level.LevelOne(game, null); break;
+                        default:
+                            newScreen = new MainMenuScreen(game, null); break;
+                    }
+
                     this.ExitScreen();
-                    game.AddScreen(next);
+                    game.AddScreen(newScreen);
                 }
             }
         }

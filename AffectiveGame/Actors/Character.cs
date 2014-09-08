@@ -879,12 +879,12 @@ namespace AffectiveGame.Actors
 
         private void Die()
         {
-            Screens.GameScreen thisScreen;
+            Screens.GameScreen.ScreenType thisScreen;
 
             if (levelScreen is Screens.Level.LevelOne)
-                thisScreen = new Screens.Level.LevelOne(game, null);
+                thisScreen = Screens.GameScreen.ScreenType.LevelOne;
             else// if (is something else) thisScreen = something else;
-                thisScreen = new Screens.Level.LevelOne(game, null);
+                thisScreen = Screens.GameScreen.ScreenType.LevelOne;
 
             levelScreen.CreateTransitionScreen(thisScreen);
         }
