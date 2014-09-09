@@ -26,7 +26,7 @@ namespace AffectiveGame.Actors
         # region Attributes
 
         // debug
-        bool debug = false;
+        bool debug = true;
         SpriteFont font;
         bool backToStart = true;
 

@@ -26,6 +26,8 @@ namespace AffectiveGame.Actors
         protected float moonSpeed = 15;
         protected bool moonAnimation = false;
         protected bool fullMoon = false;
+        protected SoundEffect howling;
+        protected bool howlPlayed = false;
         
         public Moon(GameMain game, Screens.Level.LevelScreen levelScreen)
         {
@@ -45,6 +47,7 @@ namespace AffectiveGame.Actors
 
         public void LoadContent(ContentManager content)
         {
+            howling = game.Content.Load<SoundEffect>("howling");
             moonSprite = content.Load<Texture2D>("moon");
             cloudSprite = content.Load<Texture2D>("cloud");
             frameTimer = TimeSpan.Zero;
@@ -82,6 +85,12 @@ namespace AffectiveGame.Actors
                 else
                     fullMoon = false;
             }
+
+            if(fullMoon && !howlPlayed)
+                playHowling();
+
+            if (!fullMoon)
+                howlPlayed = false;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -101,6 +110,12 @@ namespace AffectiveGame.Actors
         public bool getMoonValue()
         {
             return fullMoon;
+        }
+
+        public void playHowling()
+        {
+            howling.Play();
+            howlPlayed = true;
         }
 
     }

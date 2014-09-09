@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using AffectiveGame.Actors;
 
 namespace AffectiveGame.Screens.Level
@@ -52,6 +54,9 @@ namespace AffectiveGame.Screens.Level
 
         protected List<Tunnel> tunnels;
 
+        protected Song backgroundSound;
+        protected bool songstart = false;
+
         protected Comparison.Manager soundControl;
         public Camera camera;
         public Actors.Moon moon;
@@ -74,6 +79,8 @@ namespace AffectiveGame.Screens.Level
             filepath = levelFile;
             LoadContent(game.Content);
 
+            backgroundSound = game.Content.Load<Song>("backgroundSound");
+
             soundControl = new Comparison.Manager();
             soundControl.startProcessing();
         }
@@ -89,6 +96,8 @@ namespace AffectiveGame.Screens.Level
             moon = new Moon(game, this);
             moon.LoadContent(content);
 
+            MediaPlayer.IsRepeating = true; 
+
             grassGround = content.Load<Texture2D>("stoneGround");
             stoneGround = content.Load<Texture2D>("stone");
 
@@ -100,6 +109,12 @@ namespace AffectiveGame.Screens.Level
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            if (!songstart)
+            {
+                MediaPlayer.Play(backgroundSound);
+                songstart = true;
+            }  
 
             if (screenState != ScreenState.Active)
                 return;
@@ -416,7 +431,7 @@ namespace AffectiveGame.Screens.Level
         public override void ExitScreen()
         {
             soundControl.stopProcessing();
-
+            MediaPlayer.Stop();
             base.ExitScreen();
         }
 
