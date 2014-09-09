@@ -79,7 +79,7 @@ namespace AffectiveGame.Screens.Level
             filepath = levelFile;
             LoadContent(game.Content);
 
-            backgroundSound = game.Content.Load<Song>("backgroundSound");
+            backgroundSound = game.Content.Load<Song>("normalBack");
 
             soundControl = new Comparison.Manager();
             soundControl.startProcessing();
