@@ -26,7 +26,7 @@ namespace AffectiveGame.Actors
         # region Attributes
 
         // debug
-        bool debug = true;
+        bool debug = false;
         SpriteFont font;
         bool backToStart = true;
 
@@ -103,6 +103,11 @@ namespace AffectiveGame.Actors
             get { return _action; }
         }
 
+        public float fear
+        {
+            get { return _fear; }
+        }
+
         public Screens.Level.Collider lastSafeCollider
         {
             get { return _lastSafeCollider; }
@@ -166,6 +171,12 @@ namespace AffectiveGame.Actors
 
             if (updateFrame)
                 animations[(int)_action].UpdateFrame();
+
+            if (reachedEnd)
+            {
+                endedLevel();
+                reachedEnd = false;
+            }
 
             if (howlBonus)
             {
@@ -878,6 +889,18 @@ namespace AffectiveGame.Actors
         }
 
         private void Die()
+        {
+            Screens.GameScreen.ScreenType thisScreen;
+
+            if (levelScreen.filepath.EndsWith(Screens.Level.LevelScreen.LevelOneFile))
+                thisScreen = Screens.GameScreen.ScreenType.LevelOne;
+            else// if (is something else) thisScreen = something else;
+                thisScreen = Screens.GameScreen.ScreenType.LevelOne;
+
+            levelScreen.CreateTransitionScreen(thisScreen);
+        }
+
+        private void endedLevel()
         {
             Screens.GameScreen.ScreenType thisScreen;
 

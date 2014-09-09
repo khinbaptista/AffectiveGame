@@ -10,7 +10,7 @@ namespace AffectiveGame.Actors
 {
     class TreeOnFire : Actor
     {
-        public TreeOnFire(GameMain game, Screens.Level.LevelScreen levelScreen)
+        public TreeOnFire(GameMain game, Screens.Level.LevelScreen levelScreen, Vector2 pos)
             : base(game, levelScreen)
         {
             spriteSheet = game.Content.Load<Texture2D>("treeOnFire");
@@ -18,16 +18,18 @@ namespace AffectiveGame.Actors
 
             Animation anim = new Animation();
 
-            this.frameInterval = TimeSpan.FromMilliseconds(300);
+            this.frameInterval = TimeSpan.FromMilliseconds(200);
 
-            int frameWidth = spriteSheet.Width / 3;
-            int scale = 1;
+            int frameWidth = spriteSheet.Width / 5;
+            int scale = 2;
 
-            _position = new Rectangle(0, 0, frameWidth * scale, spriteSheet.Height * scale);
+            _position = new Rectangle((int)pos.X, (int)pos.Y, frameWidth * scale, spriteSheet.Height * scale);
 
             anim.InsertFrame(new Rectangle(0, 0, frameWidth, spriteSheet.Height));
             anim.InsertFrame(new Rectangle(frameWidth, 0, frameWidth, spriteSheet.Height));
             anim.InsertFrame(new Rectangle(frameWidth * 2, 0, frameWidth, spriteSheet.Height));
+            anim.InsertFrame(new Rectangle(frameWidth * 3, 0, frameWidth, spriteSheet.Height));
+            anim.InsertFrame(new Rectangle(frameWidth * 4, 0, frameWidth, spriteSheet.Height));
 
             animations.Add(anim);
             animations[0].Start();

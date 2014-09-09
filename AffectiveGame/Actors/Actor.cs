@@ -93,6 +93,11 @@ namespace AffectiveGame.Actors
                 updateFrame = false;
         }
 
+        public Rectangle getDimensions()
+        {
+            return _position;
+        }
+
         public virtual void HandleInput(InputHandler input) { }
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime) { }

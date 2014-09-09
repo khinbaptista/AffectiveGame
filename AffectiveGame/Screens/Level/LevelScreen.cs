@@ -13,6 +13,8 @@ namespace AffectiveGame.Screens.Level
     class LevelScreen : GameScreen
     {
         public const string LevelOneFile = @"\gapsize2.txt";
+        SpriteFont font;
+        bool debug = false;
 
         protected struct Tunnel
         {
@@ -42,6 +44,8 @@ namespace AffectiveGame.Screens.Level
         protected List<Collider> environmentColliders;
         protected List<Rectangle> fearArea;
         protected List<Rectangle> moonTriggers;
+        protected List<Actors.Fire> flame;
+        protected List<Actors.TreeOnFire> fireTree;
         protected Rectangle endZone;
         protected Rectangle startZone;
         protected Vector2 startPosition;
@@ -54,8 +58,6 @@ namespace AffectiveGame.Screens.Level
         protected Texture2D background;
         protected Texture2D grassGround;
         protected Texture2D stoneGround;
-        protected Actors.Fire flame;
-        protected Actors.TreeOnFire fireTree;
         public string filepath { get; protected set; }
 
         public LevelScreen(GameMain game, GameScreen father, string levelFile, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
@@ -67,6 +69,8 @@ namespace AffectiveGame.Screens.Level
             fearArea = new List<Rectangle>();
             tunnels = new List<Tunnel>();
             moonTriggers = new List<Rectangle>();
+            flame = new List<Fire>();
+            fireTree = new List<TreeOnFire>();
             filepath = levelFile;
             LoadContent(game.Content);
 
@@ -77,6 +81,7 @@ namespace AffectiveGame.Screens.Level
         public override void LoadContent(ContentManager content)
         {
             base.LoadContent(content);
+            font = content.Load<SpriteFont>("tempFont");
 
             background = content.Load<Texture2D>("Sky2");
             camera = new Camera(game.viewport, startPosition);
@@ -86,13 +91,8 @@ namespace AffectiveGame.Screens.Level
 
             grassGround = content.Load<Texture2D>("stoneGround");
             stoneGround = content.Load<Texture2D>("stone");
-            flame = new Actors.Fire(game, this);
-            flame.position = new Vector2(300, 700);
 
-            fireTree = new Actors.TreeOnFire(game, this);
-            fireTree.position = new Vector2(800, 700);
-
-            LevelFromFile(Environment.CurrentDirectory + @"\gapsize2.txt");
+            LevelFromFile(this.filepath);
             startPosition = new Vector2(startZone.X, startZone.Y);
             Edon = new Actors.Character(game, this, startPosition);
         }
@@ -106,8 +106,10 @@ namespace AffectiveGame.Screens.Level
 
             Edon.Update(gameTime);
             moon.Update(gameTime);
-            flame.Update(gameTime);
-            fireTree.Update(gameTime);
+            foreach (Fire fire in flame)
+                fire.Update(gameTime);
+            foreach (TreeOnFire burningTree in fireTree)
+                burningTree.Update(gameTime);
 
             Vector2 edonPosition = Edon.position;
             camera.SmoothMove(new Vector2(edonPosition.X, Edon.grounded ? edonPosition.Y - game.viewport.Height / 4 : camera.position.Y));
@@ -140,8 +142,10 @@ namespace AffectiveGame.Screens.Level
             spriteBatch.End();
 
             moon.Draw(gameTime, spriteBatch);
-            flame.Draw(spriteBatch, gameTime);
-            fireTree.Draw(spriteBatch, gameTime);
+            foreach (Fire fire in flame)
+                fire.Draw(spriteBatch, gameTime);
+            foreach(TreeOnFire burningTree in fireTree)
+                burningTree.Draw(spriteBatch, gameTime);
             Edon.Draw(spriteBatch, gameTime);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, camera.transform);
@@ -151,28 +155,52 @@ namespace AffectiveGame.Screens.Level
             {
                 switch (environmentColliders[i].sprite)
                 {
+                    case 0:
+                        usedSprite = blank;
+                        break;
                     case 1:
                         usedSprite = grassGround;
                         break;
                     case 2:
                         usedSprite = stoneGround;
                         break;
+                    default:
+                        usedSprite = blank;
+                        break;
                 }
                 if (environmentColliders[i].isActive)
-                    spriteBatch.Draw(usedSprite, environmentColliders[i].GetBox(), Color.White);
+                {
+                    if (environmentColliders[i].sprite != 0 || debug)
+                        spriteBatch.Draw(usedSprite, environmentColliders[i].GetBox(), Color.White);
+                }
                 //spriteBatch.Draw(blank, environmentColliders[i].GetBox(), new Color(0.6f, 0.5f, 0.2f, 0.0f));
             }
 
             // debug
-            foreach (Rectangle fearZone in fearArea)
-                spriteBatch.Draw(blank, fearZone, new Color(0.3f, 0, 0, 0.5f));
+            if (debug)
+            {
+                foreach (Rectangle fearZone in fearArea)
+                    spriteBatch.Draw(blank, fearZone, new Color(0.3f, 0, 0, 0.5f));
 
-            foreach (Rectangle moonTrigger in moonTriggers)
-                spriteBatch.Draw(blank, moonTrigger, new Color(1, 1, 0.5f, 0.5f));
+                foreach (Rectangle moonTrigger in moonTriggers)
+                    spriteBatch.Draw(blank, moonTrigger, new Color(1, 1, 0.5f, 0.5f));
 
-            spriteBatch.Draw(blank, startZone, new Color(0, 0.2f, 0.4f, 0.5f));
-            spriteBatch.Draw(blank, endZone, new Color(0.4f, 0.1f, 0, 0.5f));
+                spriteBatch.Draw(blank, startZone, new Color(0, 0.2f, 0.4f, 0.5f));
+                spriteBatch.Draw(blank, endZone, new Color(0.4f, 0.1f, 0, 0.5f));
+            }
 
+            spriteBatch.End();
+
+            calmBar(spriteBatch);
+        }
+
+        protected void calmBar(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, "Calm:", new Vector2(1050, 30), Color.White);
+            spriteBatch.Draw(blank, new Rectangle(1048, 58, (int)(0.8 * 300) + 4, 24), Color.DarkSlateGray);
+            spriteBatch.Draw(blank, new Rectangle(1050, 60, (int)(0.8 * 300), 20), Color.IndianRed);
+            spriteBatch.Draw(blank, new Rectangle(1050, 60, (int)(0.8*(300 - (int)Edon.fear)), 20), Color.LightSteelBlue);
             spriteBatch.End();
         }
 
@@ -234,6 +262,7 @@ namespace AffectiveGame.Screens.Level
             bool readingMoonTrigger = false;
             bool readingStartZone = false;
             bool readingEndZone = false;
+            bool readingScenario = false;
 
             while (!file.EndOfStream)
             {
@@ -250,6 +279,7 @@ namespace AffectiveGame.Screens.Level
                     readingMoonTrigger = false;
                     readingStartZone = false;
                     readingEndZone = false;
+                    readingScenario = false;
                     continue;
                 }
                 else if (text.StartsWith("collider"))
@@ -260,6 +290,7 @@ namespace AffectiveGame.Screens.Level
                     readingMoonTrigger = false;
                     readingStartZone = false;
                     readingEndZone = false;
+                    readingScenario = false;
                     continue;
                 }
                 else if (text.StartsWith("tunnel"))
@@ -270,6 +301,7 @@ namespace AffectiveGame.Screens.Level
                     readingMoonTrigger = false;
                     readingStartZone = false;
                     readingEndZone = false;
+                    readingScenario = false;
                     continue;
                 }
                 else if (text.StartsWith("moon"))
@@ -280,6 +312,7 @@ namespace AffectiveGame.Screens.Level
                     readingTunnel = false;
                     readingStartZone = false;
                     readingEndZone = false;
+                    readingScenario = false;
                     continue;
                 }
                 else if (text.StartsWith("start"))
@@ -290,6 +323,7 @@ namespace AffectiveGame.Screens.Level
                     readingTunnel = false;
                     readingStartZone = true;
                     readingEndZone = false;
+                    readingScenario = false;
                     continue;
                 }
                 else if (text.StartsWith("end"))
@@ -300,6 +334,18 @@ namespace AffectiveGame.Screens.Level
                     readingTunnel = false;
                     readingStartZone = false;
                     readingEndZone = true;
+                    readingScenario = false;
+                    continue;
+                }
+                else if (text.StartsWith("scenario"))
+                {
+                    readingMoonTrigger = false;
+                    readingColliders = false;
+                    readingFearZones = false;
+                    readingTunnel = false;
+                    readingStartZone = false;
+                    readingEndZone = false;
+                    readingScenario = true;
                     continue;
                 }
 
@@ -344,6 +390,24 @@ namespace AffectiveGame.Screens.Level
                     if (values.Length == 4)
                         endZone = new Rectangle(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]));
                 }
+                else if (readingScenario)
+                {
+                    if (values.Length == 3)
+                    {
+                        switch (int.Parse(values[0]))
+                        {
+                            case 1:
+                                flame.Add(new Fire(game, this, new Vector2(int.Parse(values[1]), int.Parse(values[2]))));
+                                fearArea.Add(new Rectangle(int.Parse(values[1]), int.Parse(values[2]), flame[0].getDimensions().Width, flame[0].getDimensions().Height));
+                                break;
+                            case 2:
+                                fireTree.Add(new TreeOnFire(game, this, new Vector2(int.Parse(values[1]), int.Parse(values[2]))));
+                                fearArea.Add(new Rectangle(int.Parse(values[1]), int.Parse(values[2]), fireTree[0].getDimensions().Width, fireTree[0].getDimensions().Height));
+                                break;
+                        }
+                    }
+                }
+
             }
 
             file.Close();
