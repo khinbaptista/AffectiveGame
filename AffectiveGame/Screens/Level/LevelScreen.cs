@@ -63,6 +63,7 @@ namespace AffectiveGame.Screens.Level
         protected Texture2D background;
         protected Texture2D grassGround;
         protected Texture2D stoneGround;
+        protected Tree scenarioTrees;
         public string filepath { get; protected set; }
 
         public LevelScreen(GameMain game, GameScreen father, string levelFile, float gravitySpeed = 300, ScreenState state = ScreenState.TransitionOn)
@@ -102,6 +103,9 @@ namespace AffectiveGame.Screens.Level
             stoneGround = content.Load<Texture2D>("stone");
 
             LevelFromFile(this.filepath);
+
+            scenarioTrees = new Tree(game, this, environmentColliders);
+
             startPosition = new Vector2(startZone.X, startZone.Y);
             Edon = new Actors.Character(game, this, startPosition);
         }
@@ -161,6 +165,7 @@ namespace AffectiveGame.Screens.Level
                 fire.Draw(spriteBatch, gameTime);
             foreach(TreeOnFire burningTree in fireTree)
                 burningTree.Draw(spriteBatch, gameTime);
+            scenarioTrees.Draw(spriteBatch, gameTime);
             Edon.Draw(spriteBatch, gameTime);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, camera.transform);
@@ -370,11 +375,11 @@ namespace AffectiveGame.Screens.Level
                 {
                     if (values.Length == 4)
                         environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3])));
-                    else if (values.Length == 5)
-                        environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]), int.Parse(values[4])));
-                    else if (values.Length == 9)
+                    else if (values.Length == 6)
+                        environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]), int.Parse(values[4]), bool.Parse(values[5])));
+                    else if (values.Length == 10)
                         environmentColliders.Add(new Collider(int.Parse(values[0]), int.Parse(values[1]), int.Parse(values[2]), int.Parse(values[3]),
-                                                    bool.Parse(values[4]), bool.Parse(values[5]), bool.Parse(values[6]), float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture), int.Parse(values[8])));
+                                                    bool.Parse(values[4]), bool.Parse(values[5]), bool.Parse(values[6]), float.Parse(values[7], System.Globalization.CultureInfo.InvariantCulture), int.Parse(values[8]), bool.Parse(values[9])));
                 }
                 else if (readingFearZones)
                 {

@@ -14,6 +14,7 @@ namespace AffectiveGame.Screens.Level
         private bool _isHarmful;
         private bool _isDiggable;
         private bool _isWater;
+        private bool _hasTree;
         private float _damage;
         private float _friction;
         private bool _isActive;
@@ -43,6 +44,15 @@ namespace AffectiveGame.Screens.Level
         public bool isWater {
             get { return _isWater; }
             set { _isWater = value; } }
+
+        /// <summary>
+        /// A collider can have a tree attached to it
+        /// </summary>
+        public bool hasTree
+        {
+            get { return _hasTree; }
+            set { _hasTree = value; }
+        }
 
         /// <summary>
         /// In case the collider is harmful, this is how much damage it makes
@@ -87,10 +97,11 @@ namespace AffectiveGame.Screens.Level
             _isWater = false;
             _friction = 0.85f;
             _isActive = true;
+            _hasTree = false;
             _sprite = 1;
         }
 
-        public Collider(int posX, int posY, int posWidth, int posHeight, int sprite)
+        public Collider(int posX, int posY, int posWidth, int posHeight, int sprite, bool tree)
         {
             box = new Rectangle(posX, posY, posWidth, posHeight);
             _isHarmful = false;
@@ -98,10 +109,11 @@ namespace AffectiveGame.Screens.Level
             _isWater = false;
             _friction = 0.85f;
             _isActive = true;
+            _hasTree = tree;
             _sprite = sprite;
         }
 
-        public Collider(int posX, int posY, int posWidth, int posHeight, bool isHarmful, bool isDiggable, bool isWater, float friction, int sprite)
+        public Collider(int posX, int posY, int posWidth, int posHeight, bool isHarmful, bool isDiggable, bool isWater, float friction, int sprite, bool tree)
         {
             box = new Rectangle(posX, posY, posWidth, posHeight);
             _isHarmful = isHarmful;
@@ -109,6 +121,7 @@ namespace AffectiveGame.Screens.Level
             _isWater = isWater;
             _friction = friction;
             _isActive = true;
+            _hasTree = tree;
             _sprite = sprite;
         }
 
