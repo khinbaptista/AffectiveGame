@@ -63,6 +63,7 @@ namespace AffectiveGame.Screens.Level
         protected Texture2D background;
         protected Texture2D grassGround;
         protected Texture2D stoneGround;
+        protected Texture2D tunnelBG;
         protected Tree scenarioTrees;
         public string filepath { get; protected set; }
 
@@ -101,6 +102,7 @@ namespace AffectiveGame.Screens.Level
 
             grassGround = content.Load<Texture2D>("stoneGround");
             stoneGround = content.Load<Texture2D>("stone");
+            tunnelBG = content.Load<Texture2D>("Dirt-1");
 
             LevelFromFile(this.filepath);
 
@@ -166,7 +168,6 @@ namespace AffectiveGame.Screens.Level
             foreach(TreeOnFire burningTree in fireTree)
                 burningTree.Draw(spriteBatch, gameTime);
             scenarioTrees.Draw(spriteBatch, gameTime);
-            Edon.Draw(spriteBatch, gameTime);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null, camera.transform);
 
@@ -175,6 +176,9 @@ namespace AffectiveGame.Screens.Level
             {
                 switch (environmentColliders[i].sprite)
                 {
+                    case -1:
+                        usedSprite = tunnelBG;
+                        break;
                     case 0:
                         usedSprite = blank;
                         break;
@@ -188,7 +192,7 @@ namespace AffectiveGame.Screens.Level
                         usedSprite = blank;
                         break;
                 }
-                if (environmentColliders[i].isActive)
+                if (environmentColliders[i].isActive || environmentColliders[i].isBG)
                 {
                     if (environmentColliders[i].sprite != 0 || debug)
                         spriteBatch.Draw(usedSprite, environmentColliders[i].GetBox(), Color.White);
@@ -210,6 +214,8 @@ namespace AffectiveGame.Screens.Level
             }
 
             spriteBatch.End();
+
+            Edon.Draw(spriteBatch, gameTime);
 
             calmBar(spriteBatch);
         }
@@ -248,7 +254,10 @@ namespace AffectiveGame.Screens.Level
                 if (tunnel.entranceIndex == index)
                 {
                     foreach (int cover in tunnel.coverIndexes)
+                    {
                         environmentColliders[cover].Deactivate();
+                        environmentColliders[cover].becomeBG();
+                    }
                 }
 
         }

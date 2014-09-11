@@ -18,6 +18,7 @@ namespace AffectiveGame.Screens.Level
         private float _damage;
         private float _friction;
         private bool _isActive;
+        private bool _isBG;
         private int _sprite;
 
         # endregion
@@ -85,6 +86,14 @@ namespace AffectiveGame.Screens.Level
             get { return _sprite; }
         }
 
+        /// <summary>
+        /// Checks if the block has became background
+        /// </summary>
+        public bool isBG
+        {
+            get { return _isBG; }
+        }
+
         # endregion
 
         # region Methods
@@ -99,6 +108,7 @@ namespace AffectiveGame.Screens.Level
             _isActive = true;
             _hasTree = false;
             _sprite = 1;
+            _isBG = false;
         }
 
         public Collider(int posX, int posY, int posWidth, int posHeight, int sprite, bool tree)
@@ -111,6 +121,7 @@ namespace AffectiveGame.Screens.Level
             _isActive = true;
             _hasTree = tree;
             _sprite = sprite;
+            _isBG = false;
         }
 
         public Collider(int posX, int posY, int posWidth, int posHeight, bool isHarmful, bool isDiggable, bool isWater, float friction, int sprite, bool tree)
@@ -123,6 +134,7 @@ namespace AffectiveGame.Screens.Level
             _isActive = true;
             _hasTree = tree;
             _sprite = sprite;
+            _isBG = false;
         }
 
         public Rectangle GetBox() { return box; }
@@ -143,6 +155,13 @@ namespace AffectiveGame.Screens.Level
         {
             _isActive = false;
         }
+
+        public void becomeBG()
+        {
+            _isBG = true;
+            _sprite = -1;
+        }
+
 
         /// <summary>
         /// Enables / Disables the collider. Shouldn't be used.
