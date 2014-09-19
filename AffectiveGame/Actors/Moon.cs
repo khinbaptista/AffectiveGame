@@ -114,7 +114,9 @@ namespace AffectiveGame.Actors
 
         public void playHowling()
         {
-            howling.Play();
+            SoundEffectInstance howlInstance = howling.CreateInstance();
+            howlInstance.Volume = 0.15f;
+            howlInstance.Play();
             howlPlayed = true;
         }
 
