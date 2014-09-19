@@ -223,10 +223,10 @@ namespace AffectiveGame.Screens.Level
         protected void calmBar(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, "Calm:", new Vector2(1050, 30), Color.White);
-            spriteBatch.Draw(blank, new Rectangle(1048, 58, (int)(0.8 * 300) + 4, 24), Color.DarkSlateGray);
-            spriteBatch.Draw(blank, new Rectangle(1050, 60, (int)(0.8 * 300), 20), Color.IndianRed);
-            spriteBatch.Draw(blank, new Rectangle(1050, 60, (int)(0.8*(300 - (int)Edon.fear)), 20), Color.LightSteelBlue);
+            spriteBatch.DrawString(font, "Calm:", new Vector2(game.viewport.Width - 330, 30), Color.White);
+            spriteBatch.Draw(blank, new Rectangle(game.viewport.Width - 332, 58, (int)(0.8 * 300) + 4, 24), Color.DarkSlateGray);
+            spriteBatch.Draw(blank, new Rectangle(game.viewport.Width - 330, 60, (int)(0.8 * 300), 20), Color.IndianRed);
+            spriteBatch.Draw(blank, new Rectangle(game.viewport.Width - 330, 60, (int)(0.8 * (300 - (int)Edon.fear)), 20), Color.LightSteelBlue);
             spriteBatch.End();
         }
 
